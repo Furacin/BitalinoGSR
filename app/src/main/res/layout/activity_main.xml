@@ -23,9 +23,9 @@
         android:layout_height="wrap_content"
         android:text="" />
 
-    <com.github.mikephil.charting.charts.LineChart
-        android:id="@+id/linechart"
+    <com.jjoe64.graphview.GraphView
         android:layout_width="match_parent"
-        android:layout_height="400dp"></com.github.mikephil.charting.charts.LineChart>
+        android:layout_height="200dip"
+        android:id="@+id/graph" />
 
 </LinearLayout>

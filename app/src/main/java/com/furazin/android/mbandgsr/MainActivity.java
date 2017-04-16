@@ -1,6 +1,5 @@
 package com.furazin.android.mbandgsr;
 
-import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -8,11 +7,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.data.LineData;
-import com.github.mikephil.charting.data.LineDataSet;
-import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
+import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.series.DataPoint;
+import com.jjoe64.graphview.series.LineGraphSeries;
 import com.microsoft.band.BandClient;
 import com.microsoft.band.BandClientManager;
 import com.microsoft.band.BandException;
@@ -30,15 +27,16 @@ public class MainActivity extends AppCompatActivity {
     private Button btnStart;
     private TextView txtStatus;
 
-    LineChart lineChart; // Gráfico de datis
-    ArrayList<Entry> gsrValues; // Valores que va a is teniendo la grafica
     int contador;
+
+    GraphView graph; // Elemento de la gráfica
+    ArrayList<DataPoint> gsrValues; // Array con los distintos valores de la GSR
 
     private BandGsrEventListener mGsrEventListener = new BandGsrEventListener() {
         @Override
         public void onBandGsrChanged(final BandGsrEvent event) {
             if (event != null) {
-                appendToUI(String.format("Resistance = %d kOhms\n", event.getResistance()));
+                appendToUI(String.format("Resistencia = %d kOhms\n", event.getResistance()));
                 graphic(event.getResistance());
             }
         }
@@ -58,11 +56,10 @@ public class MainActivity extends AppCompatActivity {
                 new GsrSubscriptionTask().execute();
             }
         });
-        // Gráfica
-        lineChart = (LineChart) findViewById(R.id.linechart);
+//        // Gráfica
+        graph = (GraphView) findViewById(R.id.graph);
         gsrValues = new ArrayList<>();
         contador = 0;
-
     }
 
     @Override
@@ -104,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
                 if (getConnectedBandClient()) {
                     int hardwareVersion = Integer.parseInt(client.getHardwareVersion().await());
                     if (hardwareVersion >= 20) {
-                        appendToUI("Band is connected.\n");
+                        appendToUI("Microsoft Band conectada.\n");
                         client.getSensorManager().registerGsrEventListener(mGsrEventListener);
                     } else {
                         appendToUI("The Gsr sensor is not supported with your Band version. Microsoft Band 2 is required.\n");
@@ -155,28 +152,26 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
 
-        appendToUI("Band is connecting...\n");
+        appendToUI("Conectando con Microsoft Band...\n");
         return ConnectionState.CONNECTED == client.connect().await();
     }
 
 
     public void graphic(int res) {
+        LineGraphSeries<DataPoint> series = new LineGraphSeries<DataPoint>();
+        gsrValues.add(new DataPoint(contador,res));
+        DataPoint[] points = new DataPoint[500];
 
-        gsrValues.add(new Entry(res,contador));
-        contador++;
-        LineDataSet linedata = new LineDataSet(gsrValues,"res");
-        linedata.setDrawCircles(false);
-        linedata.setColor(Color.BLUE);
 
-        String[] xaxes = new String[(gsrValues.size())];
         for (int i=0; i<gsrValues.size(); i++) {
-            xaxes[i] = gsrValues.get(i).toString();
+            int x = (int)gsrValues.get(i).getX();
+            int y = (int)gsrValues.get(i).getY();
+            //points[i] = new DataPoint(x,y);
+            series.appendData(new DataPoint(x,y),true,500);
         }
 
-        ArrayList<ILineDataSet> lineDataSet = new ArrayList<>();
-        lineDataSet.add(linedata);
+        contador ++;
 
-        lineChart.setData(new LineData(lineDataSet));
-        //lineChart.setVisibleXRangeMaximum();
+        graph.addSeries(series);
     }
 }
