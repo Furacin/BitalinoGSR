@@ -1,5 +1,6 @@
 package com.furazin.android.mbandgsr;
 
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -7,6 +8,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.microsoft.band.BandClient;
 import com.microsoft.band.BandClientManager;
 import com.microsoft.band.BandException;
@@ -16,18 +22,24 @@ import com.microsoft.band.ConnectionState;
 import com.microsoft.band.sensors.BandGsrEvent;
 import com.microsoft.band.sensors.BandGsrEventListener;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity {
 
     private BandClient client = null;
     private Button btnStart;
     private TextView txtStatus;
 
+    LineChart lineChart; // Gráfico de datis
+    ArrayList<Entry> gsrValues; // Valores que va a is teniendo la grafica
+    int contador;
+
     private BandGsrEventListener mGsrEventListener = new BandGsrEventListener() {
         @Override
         public void onBandGsrChanged(final BandGsrEvent event) {
             if (event != null) {
                 appendToUI(String.format("Resistance = %d kOhms\n", event.getResistance()));
-                System.out.println(event.getResistance());
+                graphic(event.getResistance());
             }
         }
     };
@@ -46,6 +58,11 @@ public class MainActivity extends AppCompatActivity {
                 new GsrSubscriptionTask().execute();
             }
         });
+        // Gráfica
+        lineChart = (LineChart) findViewById(R.id.linechart);
+        gsrValues = new ArrayList<>();
+        contador = 0;
+
     }
 
     @Override
@@ -140,5 +157,26 @@ public class MainActivity extends AppCompatActivity {
 
         appendToUI("Band is connecting...\n");
         return ConnectionState.CONNECTED == client.connect().await();
+    }
+
+
+    public void graphic(int res) {
+
+        gsrValues.add(new Entry(res,contador));
+        contador++;
+        LineDataSet linedata = new LineDataSet(gsrValues,"res");
+        linedata.setDrawCircles(false);
+        linedata.setColor(Color.BLUE);
+
+        String[] xaxes = new String[(gsrValues.size())];
+        for (int i=0; i<gsrValues.size(); i++) {
+            xaxes[i] = gsrValues.get(i).toString();
+        }
+
+        ArrayList<ILineDataSet> lineDataSet = new ArrayList<>();
+        lineDataSet.add(linedata);
+
+        lineChart.setData(new LineData(lineDataSet));
+        //lineChart.setVisibleXRangeMaximum();
     }
 }
