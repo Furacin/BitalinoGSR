@@ -2,10 +2,10 @@
     <string name="app_name">MBandGSR</string>
     <string name="action_settings">Settings</string>
 
-    <string name="steps">Steps to use this app: \n
-        1. Pair your band with the phone\n
-        2. Make sure Microsoft Health is installed\n
-        3. Press the Start button\n
-        4. Data from the GSR sensor should be displayed.</string>
+    <string name="steps">Pasos para usar esta app: \n
+        1. Empareja la pulsera con tu teléfono.\n
+        2. Asegúrate de que la app Microsoft Band está instalada.\n
+        3. Presiona START.\n
+        4. Datos del sensor GSR deberían de estar mostrándose.</string>
     <string name="start">Start</string>
 </resources>
