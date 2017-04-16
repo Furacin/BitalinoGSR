@@ -27,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
         public void onBandGsrChanged(final BandGsrEvent event) {
             if (event != null) {
                 appendToUI(String.format("Resistance = %d kOhms\n", event.getResistance()));
+                System.out.println(event.getResistance());
             }
         }
     };
