@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:paddingTop="16dp"
+    android:paddingBottom="16dp" tools:context=".Formulario">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:layout_editor_absoluteY="8dp"
+        tools:layout_editor_absoluteX="8dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textEmailAddress"
+                android:ems="10"
+                android:id="@+id/nombre"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:hint="Nombre"
+                android:layout_marginTop="10dp"/>
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword"
+                android:ems="10"
+                android:id="@+id/apellidos"
+                android:layout_below="@+id/nombre"
+                android:hint="Apellidos"
+                android:layout_marginTop="10dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:layout_marginLeft="5dp"
+                android:textSize="20dp"
+                android:layout_marginTop="10dp"
+                android:layout_below="@+id/apellidos"
+                android:id="@+id/textview_fecha"
+                android:text="Fecha:" />
+
+            <EditText
+                android:id="@+id/editTextFecha"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="date"
+                android:layout_below="@+id/textview_fecha">
+                <requestFocus />
+            </EditText>
+
+            <ImageButton
+                android:id="@+id/imageButton1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/editTextFecha"
+                android:layout_toRightOf="@+id/editTextFecha"
+                android:contentDescription="Selecciona fecha"
+                android:cropToPadding="true"
+                android:src="@drawable/date_icon" />
+
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:layout_marginLeft="5dp"
+                android:textSize="20dp"
+                android:layout_marginTop="10dp"
+                android:layout_below="@+id/editTextFecha"
+                android:id="@+id/textview_sexo"
+                android:text="Sexo:" />
+
+            <RadioGroup
+                android:id="@+id/radioGenero"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/textview_sexo"
+                android:orientation="vertical" >
+
+                <RadioButton
+                    android:id="@+id/radioButton1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Femenino"
+                    android:checked="true" />
+
+                <RadioButton
+                    android:id="@+id/radioButton2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Masculino" />
+
+            </RadioGroup>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:layout_marginLeft="5dp"
+                android:textSize="20dp"
+                android:layout_marginTop="75dp"
+                android:layout_below="@+id/textview_sexo"
+                android:id="@+id/textview_descripcion"
+                android:text="Descripción:" />
+
+            <EditText
+                android:id="@+id/text_descripcion"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:ems="10"
+                android:gravity="left|top"
+                android:layout_below="@+id/textview_descripcion"
+                android:inputType="textMultiLine" >
+
+                <requestFocus />
+            </EditText>
+
+
+
+            <!--<EditText-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:inputType="textPassword"-->
+            <!--android:ems="10"-->
+            <!--android:id="@+id/Edad"-->
+            <!--android:layout_below="@+id/apellidos"-->
+            <!--android:hint="Apellidos"-->
+            <!--android:layout_marginTop="10dp"/>-->
+
+            <!--<Button-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="LOGIN"-->
+            <!--android:id="@+id/button"-->
+            <!--android:layout_below="@+id/password"-->
+            <!--android:layout_marginTop="10dp"-->
+            <!--android:onClick="checkLogin"/>-->
+
+        </RelativeLayout>
+
+    </ScrollView>
+
+</RelativeLayout>

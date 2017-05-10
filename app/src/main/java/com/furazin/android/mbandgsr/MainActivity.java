@@ -1,5 +1,6 @@
 package com.furazin.android.mbandgsr;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -46,6 +47,15 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Button NuevoForm = (Button) findViewById(R.id.FormularioButton);
+        NuevoForm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(getApplicationContext(),Formulario.class);
+                startActivity(i);
+            }
+        });
 
         txtStatus = (TextView) findViewById(R.id.txtStatus);
         btnStart = (Button) findViewById(R.id.btnStart);
@@ -160,14 +170,14 @@ public class MainActivity extends AppCompatActivity {
     public void graphic(int res) {
         LineGraphSeries<DataPoint> series = new LineGraphSeries<DataPoint>();
         gsrValues.add(new DataPoint(contador,res));
-        DataPoint[] points = new DataPoint[500];
+        DataPoint[] points = new DataPoint[100000];
 
 
         for (int i=0; i<gsrValues.size(); i++) {
             int x = (int)gsrValues.get(i).getX();
             int y = (int)gsrValues.get(i).getY();
             //points[i] = new DataPoint(x,y);
-            series.appendData(new DataPoint(x,y),true,500);
+            series.appendData(new DataPoint(x,y),true,50000);
         }
 
         contador ++;

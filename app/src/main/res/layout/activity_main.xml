@@ -5,6 +5,12 @@
     android:layout_margin="15dp"
     android:orientation="vertical" >
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Nuevo formulario"
+        android:id="@+id/FormularioButton"/>
+
     <TextView
         android:id="@+id/txtStep"
         android:layout_width="match_parent"
