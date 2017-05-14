@@ -3,9 +3,12 @@ package com.furazin.android.mbandgsr;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -35,6 +38,9 @@ public class MainActivity extends AppCompatActivity {
     GraphView graph; // Elemento de la gráfica
     ArrayList<DataPoint> gsrValues; // Array con los distintos valores de la GSR
 
+    // DrawerLayout
+    private DrawerLayout mDrawerLayout;
+
     private BandGsrEventListener mGsrEventListener = new BandGsrEventListener() {
         @Override
         public void onBandGsrChanged(final BandGsrEvent event) {
@@ -50,11 +56,17 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // ------------------------------------------------------------------------------------
+        // INTERFAZ
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         actionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
         actionBar.setDisplayHomeAsUpEnabled(true);
+
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+
+        // ------------------------------------------------------------------------------------
 
         Button NuevoForm = (Button) findViewById(R.id.FormularioButton);
         NuevoForm.setOnClickListener(new View.OnClickListener() {
@@ -78,6 +90,22 @@ public class MainActivity extends AppCompatActivity {
         graph = (GraphView) findViewById(R.id.graph);
         gsrValues = new ArrayList<>();
         contador = 0;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        switch (id) {
+            case android.R.id.home:
+                mDrawerLayout.openDrawer(GravityCompat.START);
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
