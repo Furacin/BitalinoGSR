@@ -4,7 +4,9 @@
     android:layout_height="match_parent" android:paddingLeft="16dp"
     android:paddingRight="16dp"
     android:paddingTop="16dp"
-    android:paddingBottom="16dp" tools:context=".Formulario">
+    android:paddingBottom="16dp" tools:context=".Formulario"
+    android:descendantFocusability="beforeDescendants"
+    android:focusableInTouchMode="true">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -56,7 +58,6 @@
                 android:ems="10"
                 android:inputType="date"
                 android:layout_below="@+id/textview_fecha">
-                <requestFocus />
             </EditText>
 
             <ImageButton
@@ -123,7 +124,6 @@
                 android:layout_below="@+id/textview_descripcion"
                 android:inputType="textMultiLine" >
 
-                <requestFocus />
             </EditText>
 
 
