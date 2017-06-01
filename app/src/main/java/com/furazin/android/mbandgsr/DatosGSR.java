@@ -1,6 +1,5 @@
 package com.furazin.android.mbandgsr;
 
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -51,15 +50,6 @@ public class DatosGSR extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_datos);
-
-        Button NuevoForm = (Button) findViewById(R.id.FormularioButton);
-        NuevoForm.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent i = new Intent(getApplicationContext(),Formulario.class);
-                startActivity(i);
-            }
-        });
 
         txtStatus = (TextView) findViewById(R.id.txtStatus);
         btnStart = (Button) findViewById(R.id.btnStart);
