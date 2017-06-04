@@ -2,7 +2,6 @@ package com.furazin.android.mbandgsr;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -11,7 +10,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -43,16 +41,16 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        Button camera_video = (Button) findViewById(R.id.video_button);
-        camera_video.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent takeVideoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
-                if (takeVideoIntent.resolveActivity(getPackageManager()) != null) {
-                    startActivityForResult(takeVideoIntent, REQUEST_VIDEO_CAPTURE);
-                }
-            }
-        });
+//        Button camera_video = (Button) findViewById(R.id.video_button);
+//        camera_video.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Intent takeVideoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+//                if (takeVideoIntent.resolveActivity(getPackageManager()) != null) {
+//                    startActivityForResult(takeVideoIntent, REQUEST_VIDEO_CAPTURE);
+//                }
+//            }
+//        });
     }
 
     @Override
