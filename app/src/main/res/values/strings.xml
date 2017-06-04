@@ -8,4 +8,5 @@
         3. Presiona START.\n
         4. Datos del sensor GSR deberían de estar mostrándose.</string>
     <string name="start">Start</string>
+    <string name="auth_failed">Error al iniciar sesión</string>
 </resources>
