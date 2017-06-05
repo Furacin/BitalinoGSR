@@ -11,8 +11,8 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Datos del sujeto de pruebas"
-        android:textSize="24dp"
+        android:text="Información de la experiencia"
+        android:textSize="22dp"
         android:textStyle="bold"
         android:id="@+id/formulario_titulo"
         android:layout_marginLeft="4dp"
@@ -121,8 +121,54 @@
                 android:ems="10"
                 android:layout_marginLeft="5dp"
                 android:textSize="20dp"
-                android:layout_marginTop="75dp"
-                android:layout_below="@+id/textview_sexo"
+                android:layout_marginTop="10dp"
+                android:layout_below="@+id/radioGenero"
+                android:id="@+id/TextViewMultimedia"
+                android:text="Opciones Multimedia:" />
+
+            <RadioGroup
+                android:id="@+id/radioMultimedia"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/TextViewMultimedia"
+                android:orientation="vertical" >
+
+                <RadioButton
+                    android:id="@+id/radioVideo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Sólo Vídeo"
+                    android:checked="true" />
+
+                <RadioButton
+                    android:id="@+id/radioAudio"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Solo Audio" />
+
+                <RadioButton
+                    android:id="@+id/radioAudioYVideo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Audio y Vídeo" />
+
+                <RadioButton
+                    android:id="@+id/radioNoMultimedia"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Ninguno" />
+
+            </RadioGroup>
+
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:layout_marginLeft="5dp"
+                android:textSize="20dp"
+                android:layout_marginTop="15dp"
+                android:layout_below="@+id/radioMultimedia"
                 android:id="@+id/textview_descripcion"
                 android:text="Descripción:" />
 
@@ -142,7 +188,7 @@
                 android:layout_width="260dp"
                 android:layout_height="60dp"
                 android:layout_below="@+id/text_descripcion"
-                android:layout_marginTop="30dp"
+                android:layout_marginTop="60dp"
                 android:text="Iniciar prueba"
                 android:textSize="18dp"
                 android:textColor="@color/white"
