@@ -1,6 +1,8 @@
 package com.furazin.android.mbandgsr;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -26,20 +28,31 @@ public class Login extends AppCompatActivity {
     private FirebaseAuth.AuthStateListener mAuthListener;
     private String TAG;
     String email, password;
+    EditText editTextEmail, editTextPassword;
+
+    // Variable para recordar las credenciales del usuario
+    private SharedPreferences sharedPref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_activity);
 
+        // Instanciamos una referencia al Contexto
+        Context context = this.getApplicationContext();
+        //Instanciamos el objeto SharedPrefere  nces y creamos un fichero Privado bajo el
+        //nombre definido con la clave preference_file_key en el fichero string.xml
+        sharedPref = context.getSharedPreferences(
+                getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+
         Button bt_conectar = (Button) findViewById(R.id.bt_conectar);
         bt_conectar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                EditText editTextEmail = (EditText) findViewById(R.id.edittext_email);
+                editTextEmail = (EditText) findViewById(R.id.edittext_email);
                 email = editTextEmail.getText().toString();
 
-                EditText editTextPassword = (EditText) findViewById(R.id.edittext_password);
+                editTextPassword = (EditText) findViewById(R.id.edittext_password);
                 password = editTextPassword.getText().toString();
                 iniciarSesion(email,password);
             }
@@ -80,7 +93,7 @@ public class Login extends AppCompatActivity {
                         else {
                             Toast.makeText(Login.this, "Login correcto!",
                                     Toast.LENGTH_SHORT).show();
-//                            saveProfile();
+                            saveProfile();
                             Intent i = new Intent(Login.this, MainActivity.class);
                             startActivity(i);
                             finish();
@@ -101,5 +114,33 @@ public class Login extends AppCompatActivity {
         if (mAuthListener != null) {
             mAuth.removeAuthStateListener(mAuthListener);
         }
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
+
+    private void saveProfile() {
+        //Capturamos en una variable de tipo String
+        String input_email = editTextEmail.getText().toString();
+        String input_password = editTextPassword.getText().toString();
+
+        //Instanciamos un objeto del SharedPreferences.Editor
+        //el cual nos permite almacenar con su metodo putString
+        //los 4 valores del perfil profesional asociandolos a una
+        //clave la cual definimos como un string en el fichero strings.xml
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString(getString(R.string.password_key), input_password);
+        editor.putString(getString(R.string.email_key), input_email);
+
+        //NOTA: En el caso de que necesitemos gauirdar un valor numerico podeis usar
+        //el metodo putInt en vez del putString.
+
+        //Con el mtodo commit logramos guardar los datos en el fichero
+        //de preferncias compartidas de nombre cuyo nombre se defini en
+        // el String preference_file_key
+        editor.commit();
+
+        //Notificamos la usuario de que se han guardado los datos del perfil correctamente.
+        //Toast.makeText(getApplicationContext(),getString(R.string.msg_save), Toast.LENGTH_SHORT).show();
+
     }
 }
