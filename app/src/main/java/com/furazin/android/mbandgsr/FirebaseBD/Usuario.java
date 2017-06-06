@@ -1,6 +1,4 @@
-package com.furazin.android.mbandgsr;
-
-import java.util.ArrayList;
+package com.furazin.android.mbandgsr.FirebaseBD;
 
 /**
  * Created by manza on 05/06/2017.
@@ -8,7 +6,6 @@ import java.util.ArrayList;
 
 public class Usuario {
 
-    ArrayList<String> experiencias;
     String contraseña;
     String email;
 
@@ -16,8 +13,8 @@ public class Usuario {
 
     }
 
-    public Usuario(ArrayList<String> experiencias, String contraseña, String email) {
-        this.experiencias = experiencias;
+    public Usuario(String contraseña, String email) {
+
         this.contraseña = contraseña;
         this.email = email;
     }
@@ -28,9 +25,5 @@ public class Usuario {
 
     public String getContraseña() {
         return contraseña;
-    }
-
-    public ArrayList<String> getExperiencias() {
-        return experiencias;
     }
 }

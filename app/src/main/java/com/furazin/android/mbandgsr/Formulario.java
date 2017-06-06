@@ -10,14 +10,22 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.furazin.android.mbandgsr.Dialog.DateDialog;
+import com.furazin.android.mbandgsr.FirebaseBD.Experiencia;
+import com.furazin.android.mbandgsr.FirebaseBD.Usuario;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 /**
  * Created by manza on 11/05/2017.
@@ -25,9 +33,24 @@ import com.google.firebase.database.ValueEventListener;
 
 public class Formulario extends AppCompatActivity{
 
+    public enum Sexo {
+        MASCULINO,
+        FEMENINO
+    }
+
+    public enum OpcionMultimedia {
+        SOLO_VIDEO,
+        SOLO_AUDIO,
+        AUDIO_Y_VIDEO,
+        NO_MULTIMEDIA
+    }
+
     public static EditText txtDate;
-    EditText nombre, apellidos, fecha_nacimiento, descripcion;
-    RadioButton sexo_masculino, sexo_femenino;
+    EditText edit_nombre, edit_apellidos, edit_fecha_nacimiento, edit_descripcion;
+//    RadioButton radio_sexo_masculino, radio_sexo_femenino;
+//    RadioButton radio_video, radio_audio, radio_video_audio, radio_ninguno;
+    RadioGroup radio_sexo;
+    RadioGroup radio_opcion_multimedia;
 
     // Variable para recordar las credenciales del usuario
     private SharedPreferences sharedPref;
@@ -66,19 +89,27 @@ public class Formulario extends AppCompatActivity{
             }
         });
 
-        nombre = (EditText) findViewById(R.id.editTextNombre);
-        apellidos = (EditText) findViewById(R.id.editTextApellidos);
-        fecha_nacimiento = (EditText) findViewById(R.id.editTextFecha);
-        descripcion = (EditText) findViewById(R.id.text_descripcion);
+        edit_nombre = (EditText) findViewById(R.id.editTextNombre);
+        edit_apellidos = (EditText) findViewById(R.id.editTextApellidos);
+        edit_fecha_nacimiento = (EditText) findViewById(R.id.editTextFecha);
+        edit_descripcion = (EditText) findViewById(R.id.text_descripcion);
 
-        sexo_femenino = (RadioButton) findViewById(R.id.radioButton1) ;
-        sexo_masculino = (RadioButton) findViewById(R.id.radioButton2) ;
+//        radio_sexo_femenino = (RadioButton) findViewById(R.id.radioButton1) ;
+//        radio_sexo_masculino = (RadioButton) findViewById(R.id.radioButton2) ;
+//
+//        radio_video = (RadioButton) findViewById(R.id.radioVideo);
+//        radio_audio = (RadioButton) findViewById(R.id.radioAudio);
+//        radio_video_audio = (RadioButton) findViewById(R.id.radioAudioYVideo);
+//        radio_ninguno = (RadioButton) findViewById(R.id.radioNoMultimedia);
+
+        radio_sexo = (RadioGroup) findViewById(R.id.radioGenero);
+        radio_opcion_multimedia = (RadioGroup) findViewById(R.id.radioMultimedia);
 
         Button ButtonInicio = (Button) findViewById(R.id.InicioPrueba_Button);
         ButtonInicio.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!isEmpty(nombre) && !isEmpty(apellidos) && !isEmpty(fecha_nacimiento) && !isEmpty(descripcion)) {
+                if (!isEmpty(edit_nombre) && !isEmpty(edit_apellidos) && !isEmpty(edit_fecha_nacimiento) && !isEmpty(edit_descripcion)) {
                     PushFirebase();
                     Intent i = new Intent(getApplicationContext(), DatosGSR.class);
                     startActivity(i);
@@ -101,17 +132,21 @@ public class Formulario extends AppCompatActivity{
 
         // Write a message to the database
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("users");
+        final DatabaseReference myRef = database.getReference("users");
 //        myRef.push().setValue(email);
 
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-//                    String db_email = snapshot.getValue(String.class);
                     Usuario user = snapshot.getValue(Usuario.class);
                     if (user.getEmail().equals(email)) {
-                        System.out.println( "HOLAaa" + user.getEmail());
+                        // Obtenemos la key del usuario logueado
+                        String key = snapshot.getKey();
+                        // Creamos una experiencia con los datos del formulario para ser almacenada en la base de datos en firabase
+                        Experiencia experiencia = ExperienciaFormulario();
+                        // Añadimos la informacion del formulario, y en la bd se creara una entrada con la fecha y hora actuales
+                        myRef.child(key).child("Experiencias").child(getFechaYHora()).setValue(experiencia);
                     }
                }
             }
@@ -122,16 +157,32 @@ public class Formulario extends AppCompatActivity{
             }
         });
 
-//        String key = myRef.child("users").push().getKey();
-//        DatabaseReference myRef = database.getReference(email);
-//        DatabaseReference myRef = database.getReference("users");
-//        myRef.push();
+    }
 
-//        myRef.setValue(email);
-//        myRef.child("nombre").setValue(nombre);
-//        myRef.child("apellidos").setValue(apellidos);
-//        myRef.child("fecha_nacimiento").setValue(fecha_nacimiento);
-//        myRef.child("descripcion").setValue(descripcion);
+    Experiencia ExperienciaFormulario() {
+        String nombre = edit_nombre.getText().toString();
+        String apellidos = edit_apellidos.getText().toString();
+        String fecha_nacimiento = edit_fecha_nacimiento.getText().toString();
+        String sexo = ((RadioButton)findViewById(radio_sexo.getCheckedRadioButtonId())).getText().toString();
+
+        String opcion_multimedia = ((RadioButton)findViewById(radio_opcion_multimedia.getCheckedRadioButtonId())).getText().toString();
+
+        String descripcion = edit_descripcion.getText().toString();
+
+        return new Experiencia(nombre,apellidos,fecha_nacimiento, sexo,opcion_multimedia,descripcion);
+    }
+
+    String getFechaYHora() {
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat mdformat = new SimpleDateFormat("yyyyMMdd");
+        String currentDate = mdformat.format(calendar.getTime());
+
+        SimpleDateFormat format = new SimpleDateFormat("HHmm", Locale.US);
+        String hour = format.format(new Date());
+
+        currentDate+=hour;
+
+        return currentDate;
     }
 
 }

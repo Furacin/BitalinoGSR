@@ -101,14 +101,14 @@
                 android:orientation="vertical" >
 
                 <RadioButton
-                    android:id="@+id/radioButton1"
+                    android:id="@+id/radioFemenino"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Femenino"
                     android:checked="true" />
 
                 <RadioButton
-                    android:id="@+id/radioButton2"
+                    android:id="@+id/radioMasculino"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Masculino" />
