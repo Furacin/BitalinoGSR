@@ -1,11 +1,16 @@
 package com.furazin.android.mbandgsr;
 
+import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.VideoView;
 
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
@@ -27,9 +32,14 @@ import java.util.ArrayList;
 
 public class DatosGSR extends AppCompatActivity {
 
+    private int ACTIVITY_START_CAMERA_APP =0;
+    static final int REQUEST_VIDEO_CAPTURE = 1;
+
     private BandClient client = null;
     private Button btnStart;
     private TextView txtStatus;
+    VideoView video_record;
+    private String videoPath = "";
 
     int contador;
 
@@ -51,13 +61,17 @@ public class DatosGSR extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_datos);
 
+        video_record = (VideoView) findViewById(R.id.videoview);
+
         txtStatus = (TextView) findViewById(R.id.txtStatus);
         btnStart = (Button) findViewById(R.id.btnStart);
         btnStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 txtStatus.setText("");
+
                 new GsrSubscriptionTask().execute();
+                GrabarVideo();
             }
         });
 //        // Gráfica
@@ -70,6 +84,9 @@ public class DatosGSR extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         txtStatus.setText("");
+//        File f = new File("/storage/sdcard1/DCIM/Camera/");
+//        File f = getLatestFilefromDir("/storage/sdcard1/DCIM/Camera/");
+//        System.out.println("HOLAaa" + f.getName());
     }
 
     @Override
@@ -96,6 +113,57 @@ public class DatosGSR extends AppCompatActivity {
             }
         }
         super.onDestroy();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        // Con esto obtenemos el path del vídeo que acabamos de grabar de la experiencia realizada
+        if(resultCode==RESULT_OK)
+        {
+            Uri vid = data.getData();
+            videoPath = getRealPathFromURI(vid);
+        }
+
+    }
+
+    /*
+    /  Método para iniciar la grabación de vídeo por el usuario
+     */
+    public void GrabarVideo() {
+        Intent takeVideoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+        if (takeVideoIntent.resolveActivity(getPackageManager()) != null) {
+            startActivityForResult(takeVideoIntent, REQUEST_VIDEO_CAPTURE);
+        }
+    }
+
+//    private File getLatestFilefromDir(String dirPath){
+//        File dir = new File(dirPath);
+//        File[] files = dir.listFiles();
+//        if (files == null || files.length == 0) {
+//            return null;
+//        }
+//
+//        File lastModifiedFile = files[0];
+//        for (int i = 1; i < files.length; i++) {
+//            if (lastModifiedFile.getName().contains("VID_")) { // Si es un vídeo
+//                if (lastModifiedFile.lastModified() < files[i].lastModified()) {
+//                    lastModifiedFile = files[i];
+//                }
+//
+//            }
+//        }
+//        return lastModifiedFile;
+
+
+//    }
+
+    public String getRealPathFromURI(Uri contentUri) {
+        String[] proj = { MediaStore.Images.Media.DATA };
+        Cursor cursor = managedQuery(contentUri, proj, null, null, null);
+        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        cursor.moveToFirst();
+        return cursor.getString(column_index);
     }
 
     private class GsrSubscriptionTask extends AsyncTask<Void, Void, Void> {

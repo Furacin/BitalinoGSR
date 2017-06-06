@@ -110,7 +110,7 @@ public class Formulario extends AppCompatActivity{
             @Override
             public void onClick(View view) {
                 if (!isEmpty(edit_nombre) && !isEmpty(edit_apellidos) && !isEmpty(edit_fecha_nacimiento) && !isEmpty(edit_descripcion)) {
-                    PushFirebase();
+                    WriteFirebase();
                     Intent i = new Intent(getApplicationContext(), DatosGSR.class);
                     startActivity(i);
                 }
@@ -125,7 +125,7 @@ public class Formulario extends AppCompatActivity{
         return etText.getText().toString().trim().length() == 0;
     }
 
-    public void PushFirebase() {
+    public void WriteFirebase() {
 
         // Obtenemos email del usuario que se ha logueado
         final String email = sharedPref.getString((getString(R.string.email_key)), "");
@@ -133,7 +133,6 @@ public class Formulario extends AppCompatActivity{
         // Write a message to the database
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         final DatabaseReference myRef = database.getReference("users");
-//        myRef.push().setValue(email);
 
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
