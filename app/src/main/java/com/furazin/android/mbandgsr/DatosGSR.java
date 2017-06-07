@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -428,6 +429,7 @@ public class DatosGSR extends AppCompatActivity {
 
     public void graphicTemperatura(double res) {
         LineGraphSeries<DataPoint> series = new LineGraphSeries<DataPoint>();
+        series.setColor(Color.MAGENTA);
         temperaturaValues.add(new DataPoint(contador_temp,res));
         DataPoint[] points = new DataPoint[100000];
 
@@ -446,6 +448,7 @@ public class DatosGSR extends AppCompatActivity {
 
     public void graphicFC(int res) {
         LineGraphSeries<DataPoint> series = new LineGraphSeries<DataPoint>();
+        series.setColor(Color.RED);
         fcValues.add(new DataPoint(contador_fc,res));
         DataPoint[] points = new DataPoint[100000];
 
