@@ -1,6 +1,8 @@
 package com.furazin.android.mbandgsr;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -32,7 +34,11 @@ import com.microsoft.band.sensors.BandGsrEvent;
 import com.microsoft.band.sensors.BandGsrEventListener;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 /**
  * Created by manza on 15/05/2017.
@@ -54,6 +60,10 @@ public class DatosGSR extends AppCompatActivity {
 
     int contador;
 
+    // Variable para recordar las credenciales del usuario
+    private SharedPreferences sharedPref;
+
+
     GraphView graph; // Elemento de la gráfica
     ArrayList<DataPoint> gsrValues; // Array con los distintos valores de la GSR
 
@@ -71,6 +81,13 @@ public class DatosGSR extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_datos);
+
+        // Instanciamos una referencia al Contexto
+        Context context = this.getApplicationContext();
+        //Instanciamos el objeto SharedPrefere  nces y creamos un fichero Privado bajo el
+        //nombre definido con la clave preference_file_key en el fichero string.xml
+        sharedPref = context.getSharedPreferences(
+                getString(R.string.preference_file_key), Context.MODE_PRIVATE);
 
         // Variable de Firebase para gestionar el almacenamiento de archivos
         mStorageRef = FirebaseStorage.getInstance().getReference();
@@ -149,9 +166,15 @@ public class DatosGSR extends AppCompatActivity {
         }
     }
 
+    /*
+    / Método para subir un archivo a Firebase
+     */
     public void SubirArchivoFirebase(String path) {
         Uri file = Uri.fromFile(new File(path));
-        StorageReference archivoRef = mStorageRef.child(path);
+        // Obtenemos email del usuario que se ha logueado
+        final String email = sharedPref.getString((getString(R.string.email_key)), "");
+        StorageReference archivoRef = mStorageRef.child(email + "/Vídeos/" +getFechaYHora());
+
 
         archivoRef.putFile(file)
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -171,27 +194,9 @@ public class DatosGSR extends AppCompatActivity {
                 });
     }
 
-//    private File getLatestFilefromDir(String dirPath){
-//        File dir = new File(dirPath);
-//        File[] files = dir.listFiles();
-//        if (files == null || files.length == 0) {
-//            return null;
-//        }
-//
-//        File lastModifiedFile = files[0];
-//        for (int i = 1; i < files.length; i++) {
-//            if (lastModifiedFile.getName().contains("VID_")) { // Si es un vídeo
-//                if (lastModifiedFile.lastModified() < files[i].lastModified()) {
-//                    lastModifiedFile = files[i];
-//                }
-//
-//            }
-//        }
-//        return lastModifiedFile;
-
-
-//    }
-
+    /*
+    / Método para obtener el path de un vídeo
+     */
     public String getRealPathFromURI(Uri contentUri) {
         String[] proj = { MediaStore.Images.Media.DATA };
         Cursor cursor = managedQuery(contentUri, proj, null, null, null);
@@ -200,6 +205,24 @@ public class DatosGSR extends AppCompatActivity {
         return cursor.getString(column_index);
     }
 
+    String getFechaYHora() {
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat mdformat = new SimpleDateFormat("yyyyMMdd");
+        String currentDate = mdformat.format(calendar.getTime());
+
+        SimpleDateFormat format = new SimpleDateFormat("HHmm", Locale.US);
+        String hour = format.format(new Date());
+
+        currentDate+=hour;
+
+        return currentDate;
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+
+    /*
+    / Método para mostrar los datos de la GSR en tiempo real
+     */
     private class GsrSubscriptionTask extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... params) {
