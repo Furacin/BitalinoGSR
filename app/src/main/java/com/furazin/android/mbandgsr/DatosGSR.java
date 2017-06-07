@@ -96,6 +96,11 @@ public class DatosGSR extends AppCompatActivity {
             if (event != null) {
                 appendTemperaturaToUI(String.format("Temperatura = %.2f degrees Celsius", event.getTemperature()));
                 graphicTemperatura(event.getTemperature());
+                try {
+                    Thread.sleep(3000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         }
     };
@@ -106,6 +111,11 @@ public class DatosGSR extends AppCompatActivity {
             if (event != null) {
                 appendFCToUI(String.format("Frecuencia cardiaca = %d beats per minute\n", event.getHeartRate()));
                 graphicFC(event.getHeartRate());
+                try {
+                    Thread.sleep(3000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         }
     };
@@ -143,7 +153,7 @@ public class DatosGSR extends AppCompatActivity {
                 new HeartRateConsentTask().execute(reference);
 
                 new SubscriptionTask().execute();
-//                GrabarVideo();
+                GrabarVideo();
             }
         });
 
@@ -285,9 +295,10 @@ public class DatosGSR extends AppCompatActivity {
                         appendGSRToUI("Microsoft Band conectada.\n");
                         appendTemperaturaToUI("Microsoft Band conectada.\n");
                         appendFCToUI("Microsoft Band conectada.\n");
-                        client.getSensorManager().registerHeartRateEventListener(mHeartRateEventListener);
-                        client.getSensorManager().registerGsrEventListener(mGsrEventListener);
-                        client.getSensorManager().registerBarometerEventListener(mBarometerEventListener);
+                            client.getSensorManager().registerHeartRateEventListener(mHeartRateEventListener);
+                            client.getSensorManager().registerGsrEventListener(mGsrEventListener);
+                            client.getSensorManager().registerBarometerEventListener(mBarometerEventListener);
+
                     } else {
                         appendGSRToUI("The Gsr sensor is not supported with your Band version. Microsoft Band 2 is required.\n");
                     }
@@ -330,25 +341,10 @@ public class DatosGSR extends AppCompatActivity {
                         });
                     }
                 } else {
-//                    appendToUI("Band isn't connected. Please make sure bluetooth is on and the band is in range.\n");
                 }
             } catch (BandException e) {
-//                String exceptionMessage="";
-//                switch (e.getErrorType()) {
-//                    case UNSUPPORTED_SDK_VERSION_ERROR:
-//                        exceptionMessage = "Microsoft Health BandService doesn't support your SDK Version. Please update to latest SDK.\n";
-//                        break;
-//                    case SERVICE_ERROR:
-//                        exceptionMessage = "Microsoft Health BandService is not available. Please make sure Microsoft Health is installed and that you have the correct permissions.\n";
-//                        break;
-//                    default:
-//                        exceptionMessage = "Unknown error occured: " + e.getMessage() + "\n";
-//                        break;
-//                }
-//                appendToUI(exceptionMessage);
 
             } catch (Exception e) {
-//                appendToUI(e.getMessage());
             }
             return null;
         }
