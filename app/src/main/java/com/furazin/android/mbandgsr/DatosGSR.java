@@ -139,7 +139,7 @@ public class DatosGSR extends AppCompatActivity {
             }
         });
 //        // Gráfica
-        graph = (GraphView) findViewById(R.id.graph);
+        graph = (GraphView) findViewById(R.id.graph_GSR);
         gsrValues = new ArrayList<>();
         contador = 0;
     }

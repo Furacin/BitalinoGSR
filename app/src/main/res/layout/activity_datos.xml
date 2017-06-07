@@ -27,27 +27,27 @@
                 android:text="@string/start" />
 
             <TextView
-                android:id="@+id/txtTemperatura"
-                android:layout_marginTop="15dp"
-                android:layout_marginBottom="5dp"
+                android:id="@+id/txtGSR"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="-10dp"
                 android:layout_below="@+id/btnStart"
                 android:text="" />
 
             <TextView
-                android:id="@+id/txtGSR"
+                android:id="@+id/txtTemperatura"
+                android:layout_marginBottom="5dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/txtTemperatura"
+                android:layout_below="@+id/txtGSR"
                 android:text="" />
 
             <TextView
                 android:id="@+id/txtFC"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="-10dp"
-                android:layout_below="@+id/txtGSR"
+                android:layout_below="@+id/txtTemperatura"
                 android:text="" />
 
             <com.jjoe64.graphview.GraphView
@@ -55,7 +55,21 @@
                 android:layout_marginTop="20dp"
                 android:layout_width="match_parent"
                 android:layout_height="200dip"
-                android:id="@+id/graph" />
+                android:id="@+id/graph_GSR" />
+
+            <com.jjoe64.graphview.GraphView
+                android:layout_below="@+id/graph_GSR"
+                android:layout_marginTop="20dp"
+                android:layout_width="match_parent"
+                android:layout_height="200dip"
+                android:id="@+id/graph_Temperatura" />
+
+            <com.jjoe64.graphview.GraphView
+                android:layout_below="@+id/graph_Temperatura"
+                android:layout_marginTop="20dp"
+                android:layout_width="match_parent"
+                android:layout_height="200dip"
+                android:id="@+id/graph_FC" />
 
         </RelativeLayout>
 
