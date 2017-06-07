@@ -21,10 +21,22 @@
 
             <Button
                 android:id="@+id/btnStart"
-                android:layout_below="@+id/txtStep"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/start" />
+                android:text="Empezar"
+                android:layout_marginTop="10dp"
+                android:layout_below="@+id/txtStep"
+                android:layout_toStartOf="@+id/textView" />
+
+            <Button
+                android:id="@+id/btnStop"
+                android:layout_marginTop="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="invisible"
+                android:text="Parar"
+                android:layout_below="@+id/txtStep"
+                android:layout_toEndOf="@+id/textView" />
 
             <TextView
                 android:id="@+id/txtGSR"
@@ -48,28 +60,62 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/txtTemperatura"
+                android:layout_marginBottom="40dp"
                 android:text="" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Resistencia Galvánica"
+                android:layout_centerInParent="true"
+                android:layout_above="@+id/graph_GSR" />
 
             <com.jjoe64.graphview.GraphView
                 android:layout_below="@+id/txtFC"
-                android:layout_marginTop="20dp"
                 android:layout_width="match_parent"
                 android:layout_height="200dip"
+                android:layout_marginBottom="20dp"
                 android:id="@+id/graph_GSR" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Temperatura"
+                android:layout_centerInParent="true"
+                android:layout_above="@+id/graph_Temperatura"
+                android:id="@+id/textView" />
 
             <com.jjoe64.graphview.GraphView
                 android:layout_below="@+id/graph_GSR"
-                android:layout_marginTop="20dp"
                 android:layout_width="match_parent"
                 android:layout_height="200dip"
+                android:layout_marginBottom="20dp"
                 android:id="@+id/graph_Temperatura" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Frecuencia Cardíaca"
+                android:layout_marginBottom="40dp"
+                android:layout_centerInParent="true"
+                android:layout_above="@+id/graph_FC"
+                android:id="@+id/textView2" />
 
             <com.jjoe64.graphview.GraphView
                 android:layout_below="@+id/graph_Temperatura"
-                android:layout_marginTop="20dp"
                 android:layout_width="match_parent"
                 android:layout_height="200dip"
+                android:layout_marginBottom="20dp"
                 android:id="@+id/graph_FC" />
+
+            <Chronometer
+                android:id="@+id/chronometer3"
+                android:visibility="invisible"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="223dp" />
 
         </RelativeLayout>
 

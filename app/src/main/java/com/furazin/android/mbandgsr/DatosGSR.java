@@ -9,12 +9,14 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Chronometer;
 import android.widget.TextView;
 import android.widget.VideoView;
 
@@ -38,7 +40,6 @@ import com.microsoft.band.sensors.BandGsrEvent;
 import com.microsoft.band.sensors.BandGsrEventListener;
 import com.microsoft.band.sensors.BandHeartRateEvent;
 import com.microsoft.band.sensors.BandHeartRateEventListener;
-import com.microsoft.band.sensors.HeartRateConsentListener;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
@@ -61,7 +62,7 @@ public class DatosGSR extends AppCompatActivity {
     static final int REQUEST_VIDEO_CAPTURE = 1;
 
     private BandClient client = null;
-    private Button btnStart;
+    private Button btnStart, btnStop;
     private TextView txtGSR, txtTemperatura, txtFC;
     VideoView video_record;
     private String videoPath = "";
@@ -80,6 +81,9 @@ public class DatosGSR extends AppCompatActivity {
     ArrayList<DataPoint> temperaturaValues; // Array con los distintos valores de la GSR
     ArrayList<DataPoint> fcValues; // Array con los distintos valores de la GSR
 
+    // Cronómetro
+    Chronometer crono;
+
     private BandGsrEventListener mGsrEventListener = new BandGsrEventListener() {
         @Override
         public void onBandGsrChanged(final BandGsrEvent event) {
@@ -97,7 +101,7 @@ public class DatosGSR extends AppCompatActivity {
                 appendTemperaturaToUI(String.format("Temperatura = %.2f degrees Celsius", event.getTemperature()));
                 graphicTemperatura(event.getTemperature());
                 try {
-                    Thread.sleep(3000);
+                    Thread.sleep(2500);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -112,7 +116,7 @@ public class DatosGSR extends AppCompatActivity {
                 appendFCToUI(String.format("Frecuencia cardiaca = %d beats per minute\n", event.getHeartRate()));
                 graphicFC(event.getHeartRate());
                 try {
-                    Thread.sleep(3000);
+                    Thread.sleep(2500);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -142,20 +146,37 @@ public class DatosGSR extends AppCompatActivity {
         final WeakReference<Activity> reference = new WeakReference<Activity>(this);
 
         btnStart = (Button) findViewById(R.id.btnStart);
+        btnStop = (Button) findViewById(R.id.btnStop);
+
         btnStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                btnStop.setVisibility(View.VISIBLE);
                 txtGSR.setText("");
                 txtTemperatura.setText("");
                 txtFC.setText("");
 
                 // Permitir monitorizar la Frecuencia Cardiaca
-                new HeartRateConsentTask().execute(reference);
+//                new HeartRateConsentTask().execute(reference);
+
+                crono.setVisibility(View.VISIBLE);
+                crono.setBase(SystemClock.elapsedRealtime());
+                crono.start();
 
                 new SubscriptionTask().execute();
                 GrabarVideo();
             }
         });
+
+        btnStop.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
+        // Cronómetro
+        crono = (Chronometer) findViewById(R.id.chronometer3);
 
 //        // Gráfica
         graphGSR = (GraphView) findViewById(R.id.graph_GSR);
@@ -285,7 +306,7 @@ public class DatosGSR extends AppCompatActivity {
     /*
     / Método para mostrar los datos de la GSR en tiempo real
      */
-    private class   SubscriptionTask extends AsyncTask<Void, Void, Void> {
+    private class SubscriptionTask extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... params) {
             try {
@@ -327,28 +348,28 @@ public class DatosGSR extends AppCompatActivity {
         }
     }
 
-    private class HeartRateConsentTask extends AsyncTask<WeakReference<Activity>, Void, Void> {
-        @Override
-        protected Void doInBackground(WeakReference<Activity>... params) {
-            try {
-                if (getConnectedBandClient()) {
-
-                    if (params[0].get() != null) {
-                        client.getSensorManager().requestHeartRateConsent(params[0].get(), new HeartRateConsentListener() {
-                            @Override
-                            public void userAccepted(boolean consentGiven) {
-                            }
-                        });
-                    }
-                } else {
-                }
-            } catch (BandException e) {
-
-            } catch (Exception e) {
-            }
-            return null;
-        }
-    }
+//    private class HeartRateConsentTask extends AsyncTask<WeakReference<Activity>, Void, Void> {
+//        @Override
+//        protected Void doInBackground(WeakReference<Activity>... params) {
+//            try {
+//                if (getConnectedBandClient()) {
+//
+//                    if (params[0].get() != null) {
+//                        client.getSensorManager().requestHeartRateConsent(params[0].get(), new HeartRateConsentListener() {
+//                            @Override
+//                            public void userAccepted(boolean consentGiven) {
+//                            }
+//                        });
+//                    }
+//                } else {
+//                }
+//            } catch (BandException e) {
+//
+//            } catch (Exception e) {
+//            }
+//            return null;
+//        }
+//    }
 
     /*
     / Datos de la interfaz con los valores de la pulsera
