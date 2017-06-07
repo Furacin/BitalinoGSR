@@ -89,7 +89,6 @@ public class DatosGSR extends AppCompatActivity {
         public void onBandGsrChanged(final BandGsrEvent event) {
             if (event != null) {
                 appendGSRToUI(String.format("GSR = %d kOhms\n", event.getResistance()));
-//                graphicGSR(event.getResistance());
                 nuevoDatoGSR(event.getResistance());
             }
         }
@@ -100,7 +99,6 @@ public class DatosGSR extends AppCompatActivity {
         public void onBandBarometerChanged(final BandBarometerEvent event) {
             if (event != null) {
                 appendTemperaturaToUI(String.format("Temperatura = %.2f degrees Celsius", event.getTemperature()));
-//                graphicTemperatura(event.getTemperature());
                 nuevoDatoTemperatura(event.getTemperature());
 //                try {
 //                    Thread.sleep(2500);
@@ -116,7 +114,6 @@ public class DatosGSR extends AppCompatActivity {
         public void onBandHeartRateChanged(final BandHeartRateEvent event) {
             if (event != null) {
                 appendFCToUI(String.format("Frecuencia cardiaca = %d beats per minute\n", event.getHeartRate()));
-//                graphicFC(event.getHeartRate());
                 nuevoDatoFC(event.getHeartRate());
 //                try {
 //                    Thread.sleep(2500);
@@ -174,6 +171,7 @@ public class DatosGSR extends AppCompatActivity {
         btnStop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                crono.stop();
                 graphicGSR();
                 graphicTemperatura();
                 graphicFC();
