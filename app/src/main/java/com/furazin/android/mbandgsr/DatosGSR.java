@@ -1,5 +1,6 @@
 package com.furazin.android.mbandgsr;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -30,10 +31,16 @@ import com.microsoft.band.BandException;
 import com.microsoft.band.BandIOException;
 import com.microsoft.band.BandInfo;
 import com.microsoft.band.ConnectionState;
+import com.microsoft.band.sensors.BandBarometerEvent;
+import com.microsoft.band.sensors.BandBarometerEventListener;
 import com.microsoft.band.sensors.BandGsrEvent;
 import com.microsoft.band.sensors.BandGsrEventListener;
+import com.microsoft.band.sensors.BandHeartRateEvent;
+import com.microsoft.band.sensors.BandHeartRateEventListener;
+import com.microsoft.band.sensors.HeartRateConsentListener;
 
 import java.io.File;
+import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -54,7 +61,7 @@ public class DatosGSR extends AppCompatActivity {
 
     private BandClient client = null;
     private Button btnStart;
-    private TextView txtStatus;
+    private TextView txtGSR, txtTemperatura, txtFC;
     VideoView video_record;
     private String videoPath = "";
 
@@ -67,12 +74,30 @@ public class DatosGSR extends AppCompatActivity {
     GraphView graph; // Elemento de la gráfica
     ArrayList<DataPoint> gsrValues; // Array con los distintos valores de la GSR
 
-        private BandGsrEventListener mGsrEventListener = new BandGsrEventListener() {
+    private BandGsrEventListener mGsrEventListener = new BandGsrEventListener() {
         @Override
         public void onBandGsrChanged(final BandGsrEvent event) {
             if (event != null) {
-                appendToUI(String.format("Resistencia = %d kOhms\n", event.getResistance()));
+                appendGSRToUI(String.format("GSR = %d kOhms\n", event.getResistance()));
                 graphic(event.getResistance());
+            }
+        }
+    };
+
+    private BandBarometerEventListener mBarometerEventListener = new BandBarometerEventListener() {
+        @Override
+        public void onBandBarometerChanged(final BandBarometerEvent event) {
+            if (event != null) {
+                appendTemperaturaToUI(String.format("Temperatura = %.2f degrees Celsius", event.getTemperature()));
+            }
+        }
+    };
+
+    private BandHeartRateEventListener mHeartRateEventListener = new BandHeartRateEventListener() {
+        @Override
+        public void onBandHeartRateChanged(final BandHeartRateEvent event) {
+            if (event != null) {
+                appendFCToUI(String.format("Frecuencia cardiaca = %d beats per minute\n", event.getHeartRate()));
             }
         }
     };
@@ -92,17 +117,25 @@ public class DatosGSR extends AppCompatActivity {
         // Variable de Firebase para gestionar el almacenamiento de archivos
         mStorageRef = FirebaseStorage.getInstance().getReference();
 
-        video_record = (VideoView) findViewById(R.id.videoview);
+        txtGSR = (TextView) findViewById(R.id.txtGSR);
+        txtTemperatura = (TextView) findViewById(R.id.txtTemperatura);
+        txtFC = (TextView) findViewById(R.id.txtFC);
 
-        txtStatus = (TextView) findViewById(R.id.txtStatus);
+        final WeakReference<Activity> reference = new WeakReference<Activity>(this);
+
         btnStart = (Button) findViewById(R.id.btnStart);
         btnStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                txtStatus.setText("");
+                txtGSR.setText("");
+                txtTemperatura.setText("");
+                txtFC.setText("");
 
-                new GsrSubscriptionTask().execute();
-                GrabarVideo();
+                // Permitir monitorizar la Frecuencia Cardiaca
+                new HeartRateConsentTask().execute(reference);
+
+                new SubscriptionTask().execute();
+//                GrabarVideo();
             }
         });
 //        // Gráfica
@@ -114,7 +147,9 @@ public class DatosGSR extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        txtStatus.setText("");
+        txtGSR.setText("");
+        txtTemperatura.setText("");
+        txtFC.setText("");
     }
 
     @Override
@@ -123,8 +158,10 @@ public class DatosGSR extends AppCompatActivity {
         if (client != null) {
             try {
                 client.getSensorManager().unregisterGsrEventListener(mGsrEventListener);
+                client.getSensorManager().unregisterBarometerEventListener(mBarometerEventListener);
+                client.getSensorManager().unregisterHeartRateEventListener(mHeartRateEventListener);
             } catch (BandIOException e) {
-                appendToUI(e.getMessage());
+                appendGSRToUI(e.getMessage());
             }
         }
     }
@@ -218,25 +255,29 @@ public class DatosGSR extends AppCompatActivity {
         return currentDate;
     }
 
-    ///////////////////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     /*
     / Método para mostrar los datos de la GSR en tiempo real
      */
-    private class GsrSubscriptionTask extends AsyncTask<Void, Void, Void> {
+    private class   SubscriptionTask extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... params) {
             try {
                 if (getConnectedBandClient()) {
                     int hardwareVersion = Integer.parseInt(client.getHardwareVersion().await());
                     if (hardwareVersion >= 20) {
-                        appendToUI("Microsoft Band conectada.\n");
+                        appendGSRToUI("Microsoft Band conectada.\n");
+                        appendTemperaturaToUI("Microsoft Band conectada.\n");
+                        appendFCToUI("Microsoft Band conectada.\n");
+                        client.getSensorManager().registerHeartRateEventListener(mHeartRateEventListener);
                         client.getSensorManager().registerGsrEventListener(mGsrEventListener);
+                        client.getSensorManager().registerBarometerEventListener(mBarometerEventListener);
                     } else {
-                        appendToUI("The Gsr sensor is not supported with your Band version. Microsoft Band 2 is required.\n");
+                        appendGSRToUI("The Gsr sensor is not supported with your Band version. Microsoft Band 2 is required.\n");
                     }
                 } else {
-                    appendToUI("Band isn't connected. Please make sure bluetooth is on and the band is in range.\n");
+                    appendGSRToUI("Band isn't connected. Please make sure bluetooth is on and the band is in range.\n");
                 }
             } catch (BandException e) {
                 String exceptionMessage="";
@@ -251,20 +292,79 @@ public class DatosGSR extends AppCompatActivity {
                         exceptionMessage = "Unknown error occured: " + e.getMessage() + "\n";
                         break;
                 }
-                appendToUI(exceptionMessage);
+                appendGSRToUI(exceptionMessage);
 
             } catch (Exception e) {
-                appendToUI(e.getMessage());
+                appendGSRToUI(e.getMessage());
             }
             return null;
         }
     }
 
-    private void appendToUI(final String string) {
+    private class HeartRateConsentTask extends AsyncTask<WeakReference<Activity>, Void, Void> {
+        @Override
+        protected Void doInBackground(WeakReference<Activity>... params) {
+            try {
+                if (getConnectedBandClient()) {
+
+                    if (params[0].get() != null) {
+                        client.getSensorManager().requestHeartRateConsent(params[0].get(), new HeartRateConsentListener() {
+                            @Override
+                            public void userAccepted(boolean consentGiven) {
+                            }
+                        });
+                    }
+                } else {
+//                    appendToUI("Band isn't connected. Please make sure bluetooth is on and the band is in range.\n");
+                }
+            } catch (BandException e) {
+//                String exceptionMessage="";
+//                switch (e.getErrorType()) {
+//                    case UNSUPPORTED_SDK_VERSION_ERROR:
+//                        exceptionMessage = "Microsoft Health BandService doesn't support your SDK Version. Please update to latest SDK.\n";
+//                        break;
+//                    case SERVICE_ERROR:
+//                        exceptionMessage = "Microsoft Health BandService is not available. Please make sure Microsoft Health is installed and that you have the correct permissions.\n";
+//                        break;
+//                    default:
+//                        exceptionMessage = "Unknown error occured: " + e.getMessage() + "\n";
+//                        break;
+//                }
+//                appendToUI(exceptionMessage);
+
+            } catch (Exception e) {
+//                appendToUI(e.getMessage());
+            }
+            return null;
+        }
+    }
+
+    /*
+    / Datos de la interfaz con los valores de la pulsera
+     */
+    private void appendGSRToUI(final String string) {
         this.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                txtStatus.setText(string);
+                txtGSR.setText(string);
+            }
+        });
+    }
+
+    private void appendTemperaturaToUI(final String string) {
+        this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                txtTemperatura.setText(string);
+            }
+        });
+    }
+
+    private void appendFCToUI(final String string) {
+        this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                txtFC.setText(string);
             }
         });
     }
@@ -273,7 +373,9 @@ public class DatosGSR extends AppCompatActivity {
         if (client == null) {
             BandInfo[] devices = BandClientManager.getInstance().getPairedBands();
             if (devices.length == 0) {
-                appendToUI("Band isn't paired with your phone.\n");
+                appendGSRToUI("Band isn't paired with your phone.\n");
+                appendTemperaturaToUI("Band isn't paired with your phone.\n");
+                appendFCToUI("Band isn't paired with your phone.\n");
                 return false;
             }
             client = BandClientManager.getInstance().create(getBaseContext(), devices[0]);
@@ -281,11 +383,17 @@ public class DatosGSR extends AppCompatActivity {
             return true;
         }
 
-        appendToUI("Conectando con Microsoft Band...\n");
+        appendGSRToUI("Conectando con Microsoft Band...\n");
+        appendTemperaturaToUI("Conectando con Microsoft Band...\n");
+        appendFCToUI("Conectando con Microsoft Band...\n");
         return ConnectionState.CONNECTED == client.connect().await();
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    /*
+    / Gráfica con los valores de la GSR
+     */
     public void graphic(int res) {
         LineGraphSeries<DataPoint> series = new LineGraphSeries<DataPoint>();
         gsrValues.add(new DataPoint(contador,res));

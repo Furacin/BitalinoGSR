@@ -27,20 +27,31 @@
                 android:text="@string/start" />
 
             <TextView
-                android:id="@+id/txtStatus"
+                android:id="@+id/txtTemperatura"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="5dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/btnStart"
                 android:text="" />
 
-            <VideoView
-                android:id="@+id/videoview"
-                android:layout_below="@+id/txtStatus"
-                android:layout_width="wrap_content"
-                android:layout_height="200dp" />
+            <TextView
+                android:id="@+id/txtGSR"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/txtTemperatura"
+                android:text="" />
+
+            <TextView
+                android:id="@+id/txtFC"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="-10dp"
+                android:layout_below="@+id/txtGSR"
+                android:text="" />
 
             <com.jjoe64.graphview.GraphView
-                android:layout_below="@+id/videoview"
+                android:layout_below="@+id/txtFC"
                 android:layout_marginTop="20dp"
                 android:layout_width="match_parent"
                 android:layout_height="200dip"
