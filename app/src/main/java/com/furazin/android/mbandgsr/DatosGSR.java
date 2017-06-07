@@ -6,12 +6,19 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.VideoView;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
@@ -24,6 +31,7 @@ import com.microsoft.band.ConnectionState;
 import com.microsoft.band.sensors.BandGsrEvent;
 import com.microsoft.band.sensors.BandGsrEventListener;
 
+import java.io.File;
 import java.util.ArrayList;
 
 /**
@@ -31,6 +39,9 @@ import java.util.ArrayList;
  */
 
 public class DatosGSR extends AppCompatActivity {
+
+    private static final String UPLOAD_COMPLETE = "UPLOAD";
+    private StorageReference mStorageRef;
 
     private int ACTIVITY_START_CAMERA_APP =0;
     static final int REQUEST_VIDEO_CAPTURE = 1;
@@ -61,6 +72,9 @@ public class DatosGSR extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_datos);
 
+        // Variable de Firebase para gestionar el almacenamiento de archivos
+        mStorageRef = FirebaseStorage.getInstance().getReference();
+
         video_record = (VideoView) findViewById(R.id.videoview);
 
         txtStatus = (TextView) findViewById(R.id.txtStatus);
@@ -84,9 +98,6 @@ public class DatosGSR extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         txtStatus.setText("");
-//        File f = new File("/storage/sdcard1/DCIM/Camera/");
-//        File f = getLatestFilefromDir("/storage/sdcard1/DCIM/Camera/");
-//        System.out.println("HOLAaa" + f.getName());
     }
 
     @Override
@@ -123,6 +134,7 @@ public class DatosGSR extends AppCompatActivity {
         {
             Uri vid = data.getData();
             videoPath = getRealPathFromURI(vid);
+            SubirArchivoFirebase(videoPath);
         }
 
     }
@@ -135,6 +147,28 @@ public class DatosGSR extends AppCompatActivity {
         if (takeVideoIntent.resolveActivity(getPackageManager()) != null) {
             startActivityForResult(takeVideoIntent, REQUEST_VIDEO_CAPTURE);
         }
+    }
+
+    public void SubirArchivoFirebase(String path) {
+        Uri file = Uri.fromFile(new File(path));
+        StorageReference archivoRef = mStorageRef.child(path);
+
+        archivoRef.putFile(file)
+                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        // Get a URL to the uploaded content
+//                        Uri downloadUrl = taskSnapshot.getDownloadUrl()
+                        Log.d(UPLOAD_COMPLETE,"Archivo subido con éxito");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception exception) {
+                        // Handle unsuccessful uploads
+                        // ...
+                    }
+                });
     }
 
 //    private File getLatestFilefromDir(String dirPath){
