@@ -65,21 +65,26 @@ public class DatosGSR extends AppCompatActivity {
     VideoView video_record;
     private String videoPath = "";
 
-    int contador;
+    int contador_gsr, contador_temp, contador_fc;
 
     // Variable para recordar las credenciales del usuario
     private SharedPreferences sharedPref;
 
 
-    GraphView graph; // Elemento de la gráfica
+    GraphView graphGSR; // Elemento de la gráfica
+    GraphView graphTemperatura; // Elemento de la gráfica
+    GraphView graphFC; // Elemento de la gráfica
+
     ArrayList<DataPoint> gsrValues; // Array con los distintos valores de la GSR
+    ArrayList<DataPoint> temperaturaValues; // Array con los distintos valores de la GSR
+    ArrayList<DataPoint> fcValues; // Array con los distintos valores de la GSR
 
     private BandGsrEventListener mGsrEventListener = new BandGsrEventListener() {
         @Override
         public void onBandGsrChanged(final BandGsrEvent event) {
             if (event != null) {
                 appendGSRToUI(String.format("GSR = %d kOhms\n", event.getResistance()));
-                graphic(event.getResistance());
+                graphicGSR(event.getResistance());
             }
         }
     };
@@ -89,6 +94,7 @@ public class DatosGSR extends AppCompatActivity {
         public void onBandBarometerChanged(final BandBarometerEvent event) {
             if (event != null) {
                 appendTemperaturaToUI(String.format("Temperatura = %.2f degrees Celsius", event.getTemperature()));
+                graphicTemperatura(event.getTemperature());
             }
         }
     };
@@ -98,6 +104,7 @@ public class DatosGSR extends AppCompatActivity {
         public void onBandHeartRateChanged(final BandHeartRateEvent event) {
             if (event != null) {
                 appendFCToUI(String.format("Frecuencia cardiaca = %d beats per minute\n", event.getHeartRate()));
+                graphicFC(event.getHeartRate());
             }
         }
     };
@@ -138,10 +145,17 @@ public class DatosGSR extends AppCompatActivity {
 //                GrabarVideo();
             }
         });
+
 //        // Gráfica
-        graph = (GraphView) findViewById(R.id.graph_GSR);
+        graphGSR = (GraphView) findViewById(R.id.graph_GSR);
+        graphTemperatura = (GraphView) findViewById(R.id.graph_Temperatura);
+        graphFC = (GraphView) findViewById(R.id.graph_FC);
         gsrValues = new ArrayList<>();
-        contador = 0;
+        temperaturaValues = new ArrayList<>();
+        fcValues = new ArrayList<>();
+        contador_gsr = 0;
+        contador_temp = 0;
+        contador_fc = 0;
     }
 
     @Override
@@ -394,9 +408,9 @@ public class DatosGSR extends AppCompatActivity {
     /*
     / Gráfica con los valores de la GSR
      */
-    public void graphic(int res) {
+    public void graphicGSR(int res) {
         LineGraphSeries<DataPoint> series = new LineGraphSeries<DataPoint>();
-        gsrValues.add(new DataPoint(contador,res));
+        gsrValues.add(new DataPoint(contador_gsr,res));
         DataPoint[] points = new DataPoint[100000];
 
 
@@ -407,8 +421,44 @@ public class DatosGSR extends AppCompatActivity {
             series.appendData(new DataPoint(x,y),true,50000);
         }
 
-        contador ++;
+        contador_gsr ++;
 
-        graph.addSeries(series);
+        graphGSR.addSeries(series);
+    }
+
+    public void graphicTemperatura(double res) {
+        LineGraphSeries<DataPoint> series = new LineGraphSeries<DataPoint>();
+        temperaturaValues.add(new DataPoint(contador_temp,res));
+        DataPoint[] points = new DataPoint[100000];
+
+
+        for (int i=0; i<temperaturaValues.size(); i++) {
+            int x = (int)temperaturaValues.get(i).getX();
+            int y = (int)temperaturaValues.get(i).getY();
+            //points[i] = new DataPoint(x,y);
+            series.appendData(new DataPoint(x,y),true,50000);
+        }
+
+        contador_temp ++;
+
+        graphTemperatura.addSeries(series);
+    }
+
+    public void graphicFC(int res) {
+        LineGraphSeries<DataPoint> series = new LineGraphSeries<DataPoint>();
+        fcValues.add(new DataPoint(contador_fc,res));
+        DataPoint[] points = new DataPoint[100000];
+
+
+        for (int i=0; i<fcValues.size(); i++) {
+            int x = (int)fcValues.get(i).getX();
+            int y = (int)fcValues.get(i).getY();
+            //points[i] = new DataPoint(x,y);
+            series.appendData(new DataPoint(x,y),true,50000);
+        }
+
+        contador_fc ++;
+
+        graphFC.addSeries(series);
     }
 }
