@@ -33,17 +33,7 @@ import java.util.Locale;
 
 public class Formulario extends AppCompatActivity{
 
-    public enum Sexo {
-        MASCULINO,
-        FEMENINO
-    }
-
-    public enum OpcionMultimedia {
-        SOLO_VIDEO,
-        SOLO_AUDIO,
-        AUDIO_Y_VIDEO,
-        NO_MULTIMEDIA
-    }
+    public static String NOMBRE_EXPERIENCIA = "";
 
     public static EditText txtDate;
     EditText edit_nombre, edit_apellidos, edit_fecha_nacimiento, edit_descripcion;
@@ -54,6 +44,9 @@ public class Formulario extends AppCompatActivity{
 
     // Variable para recordar las credenciales del usuario
     private SharedPreferences sharedPref;
+
+    // Nombre de la experiencia creada con este formulario. La guardamos porque va a ser pasada al siguiente intent (Datos de los sensores)
+    // para luego añadir los datos de los mismos en la base de datos de Firebase
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,8 +104,14 @@ public class Formulario extends AppCompatActivity{
             public void onClick(View view) {
                 if (!isEmpty(edit_nombre) && !isEmpty(edit_apellidos) && !isEmpty(edit_fecha_nacimiento) && !isEmpty(edit_descripcion)) {
                     WriteFirebase();
+                                    try {
+                    Thread.sleep(2500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                     Intent i = new Intent(getApplicationContext(), DatosGSR.class);
                     startActivity(i);
+                    finish();
                 }
                 else {
                     Toast.makeText(getApplicationContext(), "No puede estar ningún campo del formulario vacío", Toast.LENGTH_SHORT).show();
@@ -145,7 +144,8 @@ public class Formulario extends AppCompatActivity{
                         // Creamos una experiencia con los datos del formulario para ser almacenada en la base de datos en firabase
                         Experiencia experiencia = ExperienciaFormulario();
                         // Añadimos la informacion del formulario, y en la bd se creara una entrada con la fecha y hora actuales
-                        myRef.child(key).child("Experiencias").child(getFechaYHora()).setValue(experiencia);
+                        NOMBRE_EXPERIENCIA = getFechaYHora();
+                        myRef.child(key).child("Experiencias").child(NOMBRE_EXPERIENCIA).setValue(experiencia);
                     }
                }
             }

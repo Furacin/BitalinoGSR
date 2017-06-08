@@ -14,14 +14,21 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.util.Pair;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.TextView;
 import android.widget.VideoView;
 
+import com.furazin.android.mbandgsr.FirebaseBD.Usuario;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -54,6 +61,9 @@ import java.util.Locale;
  */
 
 public class DatosGSR extends AppCompatActivity {
+
+    private String NOMBRE_EXPERIENCIA = Formulario.NOMBRE_EXPERIENCIA;
+    private String EMAIL_USUARIO;
 
     private static final String UPLOAD_COMPLETE = "UPLOAD";
     private StorageReference mStorageRef;
@@ -128,6 +138,7 @@ public class DatosGSR extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_datos);
+        System.out.println("HOLAaa"+ Formulario.NOMBRE_EXPERIENCIA);
 
         // Instanciamos una referencia al Contexto
         Context context = this.getApplicationContext();
@@ -135,6 +146,9 @@ public class DatosGSR extends AppCompatActivity {
         //nombre definido con la clave preference_file_key en el fichero string.xml
         sharedPref = context.getSharedPreferences(
                 getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+
+        // Obtenemos email del usuario que se ha logueado
+        EMAIL_USUARIO = sharedPref.getString((getString(R.string.email_key)), "");
 
         // Variable de Firebase para gestionar el almacenamiento de archivos
         mStorageRef = FirebaseStorage.getInstance().getReference();
@@ -175,6 +189,7 @@ public class DatosGSR extends AppCompatActivity {
                 graphicGSR();
                 graphicTemperatura();
                 graphicFC();
+                WriteDatosGraficaFirebase(gsrValues, temperaturaValues, fcValues);
             }
         });
 
@@ -257,9 +272,8 @@ public class DatosGSR extends AppCompatActivity {
      */
     public void SubirArchivoFirebase(String path) {
         Uri file = Uri.fromFile(new File(path));
-        // Obtenemos email del usuario que se ha logueado
-        final String email = sharedPref.getString((getString(R.string.email_key)), "");
-        StorageReference archivoRef = mStorageRef.child(email + "/Vídeos/" +getFechaYHora());
+
+        StorageReference archivoRef = mStorageRef.child(EMAIL_USUARIO + "/Vídeos/" +getFechaYHora());
 
 
         archivoRef.putFile(file)
@@ -408,16 +422,31 @@ public class DatosGSR extends AppCompatActivity {
      */
 
     public void nuevoDatoGSR(int res) {
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         gsrValues.add(new DataPoint(contador_gsr,res));
         contador_gsr ++;
     }
 
     public void nuevoDatoTemperatura(double res) {
+        try {
+            Thread.sleep(2500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         temperaturaValues.add(new DataPoint(contador_temp,res));
         contador_temp ++;
     }
 
     public void nuevoDatoFC(int res) {
+        try {
+            Thread.sleep(2500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         fcValues.add(new DataPoint(contador_fc,res));
         contador_fc ++;
     }
@@ -425,7 +454,6 @@ public class DatosGSR extends AppCompatActivity {
     public void graphicGSR() {
         LineGraphSeries<DataPoint> series = new LineGraphSeries<DataPoint>();
         DataPoint[] points = new DataPoint[100000];
-
 
         for (int i=0; i<gsrValues.size(); i++) {
             int x = (int)gsrValues.get(i).getX();
@@ -442,7 +470,6 @@ public class DatosGSR extends AppCompatActivity {
         series.setColor(Color.MAGENTA);
         DataPoint[] points = new DataPoint[100000];
 
-
         for (int i=0; i<temperaturaValues.size(); i++) {
             int x = (int)temperaturaValues.get(i).getX();
             int y = (int)temperaturaValues.get(i).getY();
@@ -458,7 +485,6 @@ public class DatosGSR extends AppCompatActivity {
         series.setColor(Color.RED);
         DataPoint[] points = new DataPoint[100000];
 
-
         for (int i=0; i<fcValues.size(); i++) {
             int x = (int)fcValues.get(i).getX();
             int y = (int)fcValues.get(i).getY();
@@ -468,4 +494,92 @@ public class DatosGSR extends AppCompatActivity {
 
         graphFC.addSeries(series);
     }
+
+    public void WriteDatosGraficaFirebase(ArrayList<DataPoint> datos_gsr, ArrayList<DataPoint> datos_temperatura, ArrayList<DataPoint> datos_fc) {
+
+        final ArrayList<Pair<String,String>> valores_gsr = new ArrayList<>();
+
+        for (int i=0; i<datos_gsr.size(); i++) {
+            int x = (int)datos_gsr.get(i).getX();
+            int y = (int)datos_gsr.get(i).getY();
+
+            valores_gsr.add(new Pair<String, String>(String.valueOf(x),String.valueOf(y)));
+        }
+
+        final ArrayList<Pair<String,String>> valores_temperatura = new ArrayList<>();
+
+        for (int i=0; i<datos_temperatura.size(); i++) {
+            int x = (int)datos_temperatura.get(i).getX();
+            int y = (int)datos_temperatura.get(i).getY();
+
+            valores_temperatura.add(new Pair<String, String>(String.valueOf(x),String.valueOf(y)));
+        }
+
+        final ArrayList<Pair<String,String>> valores_fc = new ArrayList<>();
+
+        for (int i=0; i<datos_fc.size(); i++) {
+            int x = (int)datos_fc.get(i).getX();
+            int y = (int)datos_fc.get(i).getY();
+
+            valores_fc.add(new Pair<String, String>(String.valueOf(x),String.valueOf(y)));
+        }
+
+        // Write a message to the database
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        final DatabaseReference myRef = database.getReference("users");
+
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    Usuario user = snapshot.getValue(Usuario.class);
+                    if (user.getEmail().equals(EMAIL_USUARIO)) {
+                        // Obtenemos la key del usuario logueado
+                        final String key = snapshot.getKey();
+                        // Creamos una experiencia con los datos del formulario para ser almacenada en la base de datos en firabase
+//                        ValoresGraficas valores_graficas = new ValoresGraficas(valores_gsr, valores_temperatura, valores_fc);
+                        // Añadimos la informacion del formulario, y en la bd se creara una entrada con la fecha y hora actuales
+
+                        new Thread(new Runnable() {
+                            public void run() {
+                                for (int i=0; i<valores_gsr.size(); i++) {
+//                            myRef.child(key).child("Experiencias").child(NOMBRE_EXPERIENCIA).child("Datos Gráficas").child("GSR").child(String.valueOf(i)).child("first").setValue(valores_gsr.get(i).first);
+                                    myRef.child(key).child("Experiencias").child(NOMBRE_EXPERIENCIA).child("Datos Gráficas").child("GSR").child(String.valueOf(i)).child("second").setValue(valores_gsr.get(i).second);
+                                }
+                            }
+                        }).start();
+
+                        new Thread(new Runnable() {
+                            public void run() {
+                                for (int i=0; i<valores_temperatura.size(); i++) {
+//                            myRef.child(key).child("Experiencias").child(NOMBRE_EXPERIENCIA).child("Datos Gráficas").child("Temperatura").child(String.valueOf(i)).child("first").setValue(valores_temperatura.get(i).first);
+                                    myRef.child(key).child("Experiencias").child(NOMBRE_EXPERIENCIA).child("Datos Gráficas").child("Temperatura").child(String.valueOf(i)).child("second").setValue(valores_temperatura.get(i).second);
+                                }
+                            }
+                        }).start();
+
+                        new Thread(new Runnable() {
+                            public void run() {
+                                for (int i=0; i<valores_fc.size(); i++) {
+//                            myRef.child(key).child("Experiencias").child(NOMBRE_EXPERIENCIA).child("Datos Gráficas").child("FC").child(String.valueOf(i)).child("first").setValue(valores_fc.get(i).first);
+                                    myRef.child(key).child("Experiencias").child(NOMBRE_EXPERIENCIA).child("Datos Gráficas").child("FC").child(String.valueOf(i)).child("second").setValue(valores_fc.get(i).second);
+                                }
+                            }
+                        }).start();
+
+
+//                        myRef.child(key).child("Experiencias").child(NOMBRE_EXPERIENCIA).child("Datos Gráficas").child("GSR").setValue(valores_gsr);
+//                        myRef.child(key).child("Experiencias").child(NOMBRE_EXPERIENCIA).child("Datos Gráficas").child("Temperatura").setValue(valores_temperatura);
+//                        myRef.child(key).child("Experiencias").child(NOMBRE_EXPERIENCIA).child("Datos Gráficas").child("FrecuenciaCardiaca").setValue(valores_fc);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
 }
