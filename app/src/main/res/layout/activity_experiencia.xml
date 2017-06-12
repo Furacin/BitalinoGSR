@@ -1,6 +1,119 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-</LinearLayout>
+    <TextView
+        android:id="@+id/fecha"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:layout_marginLeft="180dp"
+        android:text="TextView" />
+
+    <TextView
+        android:id="@+id/nombre"
+        android:layout_below="@+id/fecha"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:layout_marginLeft="103dp"
+        android:text="TextView" />
+
+    <TextView
+        android:layout_below="@+id/nombre"
+        android:id="@+id/apellidos"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:layout_marginLeft="112dp"
+        android:text="TextView" />
+
+    <TextView
+        android:layout_below="@+id/apellidos"
+        android:id="@+id/sexo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:layout_marginLeft="87dp"
+        android:text="TextView" />
+
+    <TextView
+        android:layout_below="@+id/sexo"
+        android:id="@+id/fecha_nacimiento"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:layout_marginLeft="180dp"
+        android:text="TextView" />
+
+    <TextView
+        android:layout_below="@+id/fecha_nacimiento"
+        android:id="@+id/descripcion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:layout_marginLeft="130dp"
+        android:text="TextView" />
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/fecha"
+        android:layout_marginLeft="30dp"
+        android:text="Fecha de realización: "
+        android:textStyle="bold"
+         />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/nombre"
+        android:layout_marginLeft="30dp"
+        android:text="Nombre: "
+        android:textStyle="bold"
+        />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/apellidos"
+        android:layout_marginLeft="30dp"
+        android:text="Apellidos: "
+        android:textStyle="bold"
+        />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/sexo"
+        android:layout_marginLeft="30dp"
+        android:text="Sexo: "
+        android:textStyle="bold"
+        />
+
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/fecha_nacimiento"
+        android:layout_marginLeft="30dp"
+        android:text="Fecha de nacimiento: "
+        android:textStyle="bold"
+        />
+
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/descripcion"
+        android:layout_marginLeft="30dp"
+        android:text="Descripción: "
+        android:textStyle="bold"
+        />
+
+</RelativeLayout>

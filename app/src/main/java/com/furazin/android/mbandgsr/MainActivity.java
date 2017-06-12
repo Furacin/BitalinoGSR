@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
     private LinearLayout layout;
     // Variable para recordar las credenciales del usuario
     private SharedPreferences sharedPref;
-    private String EMAIL_USUARIO;
+    public static String EMAIL_USUARIO;
 
     // DrawerLayout
     private DrawerLayout mDrawerLayout;
@@ -96,7 +96,6 @@ public class MainActivity extends AppCompatActivity {
                         myRef.child(user_key).child("Experiencias").addValueEventListener(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
-//                                String value = dataSnapshot.getChildren()
 //                                System.out.println("HOLAA" + value);
                                 for(DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
                                     String experienciaTitle = singleSnapshot.getKey();
