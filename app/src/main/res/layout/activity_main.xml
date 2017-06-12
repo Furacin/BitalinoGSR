@@ -20,14 +20,38 @@
             android:background="?attr/colorPrimary"
             android:theme="@style/ThemeOverlay.AppCompat.Dark" />
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/experiencias_list"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_alignParentTop="true"
-            android:layout_marginBottom="12dp"
-            android:orientation="vertical"
-            android:scrollbars="none"/>
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Experiencias Realizadas"
+                android:textSize="18dp"
+                android:textStyle="bold"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="80dp"/>
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="2dip"
+                android:layout_marginTop="120dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:background="#969696" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/experiencias_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="120dp"
+                android:layout_marginBottom="0dp"
+                android:orientation="vertical"
+                android:scrollbars="none"/>
+
+        </RelativeLayout>
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/fab"

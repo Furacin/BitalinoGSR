@@ -2,20 +2,20 @@ package com.furazin.android.mbandgsr;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.TextView;
+import android.widget.Button;
 
 import java.util.List;
 
 public class RecyclerViewHolders extends RecyclerView.ViewHolder{
     private static final String TAG = RecyclerViewHolders.class.getSimpleName();
 //    public ImageView markIcon;
-    public TextView Name;
+    public Button Name;
 //    public ImageView deleteIcon;
     private List<String> experienciasObject;
     public RecyclerViewHolders(final View itemView, final List<String> experienciasObject) {
         super(itemView);
         this.experienciasObject = experienciasObject;
-        Name = (TextView)itemView.findViewById(R.id.task_title);
+        Name = (Button)itemView.findViewById(R.id.experiencia_title);
 //        markIcon = (ImageView)itemView.findViewById(R.id.task_icon);
 //        deleteIcon = (ImageView)itemView.findViewById(R.id.task_delete);
 //        deleteIcon.setOnClickListener(new View.OnClickListener() {
