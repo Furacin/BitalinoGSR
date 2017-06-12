@@ -1,27 +1,60 @@
 package com.furazin.android.mbandgsr;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.LinearLayout;
+
+import com.furazin.android.mbandgsr.FirebaseBD.Usuario;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
+
+    private LinearLayout layout;
+    // Variable para recordar las credenciales del usuario
+    private SharedPreferences sharedPref;
+    private String EMAIL_USUARIO;
 
     // DrawerLayout
     private DrawerLayout mDrawerLayout;
 
-    static final int REQUEST_VIDEO_CAPTURE = 1;
+    private List<String> experiencias;
+    private RecyclerView recyclerView;
+    private LinearLayoutManager linearLayoutManager;
+    private RecyclerViewAdapter recyclerViewAdapter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // Instanciamos una referencia al Contexto
+        Context context = this.getApplicationContext();
+        //Instanciamos el objeto SharedPreferences y creamos un fichero Privado bajo el
+        //nombre definido con la clave preference_file_key en el fichero string.xml
+        sharedPref = context.getSharedPreferences(
+                getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+        // Obtenemos email del usuario que se ha logueado
+        EMAIL_USUARIO = sharedPref.getString((getString(R.string.email_key)), "");
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -41,16 +74,82 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-//        Button camera_video = (Button) findViewById(R.id.video_button);
-//        camera_video.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Intent takeVideoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
-//                if (takeVideoIntent.resolveActivity(getPackageManager()) != null) {
-//                    startActivityForResult(takeVideoIntent, REQUEST_VIDEO_CAPTURE);
-//                }
-//            }
-//        });
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        final DatabaseReference myRef = database.getReference("users");
+
+        experiencias = new ArrayList<String>();
+        recyclerView = (RecyclerView)findViewById(R.id.experiencias_list);
+        linearLayoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(linearLayoutManager);
+
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    Usuario user = snapshot.getValue(Usuario.class);
+                    final String user_key;
+                    if (user.getEmail().equals(EMAIL_USUARIO)) {
+                        // Obtenemos la key del usuario logueado
+                        user_key = snapshot.getKey();
+
+                        myRef.child(user_key).child("Experiencias").addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+//                                String value = dataSnapshot.getChildren()
+//                                System.out.println("HOLAA" + value);
+                                for(DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
+                                    String experienciaTitle = singleSnapshot.getKey();
+//                                    System.out.println(experienciaTitle);
+                                    experiencias.add(experienciaTitle);
+                                    recyclerViewAdapter = new RecyclerViewAdapter(MainActivity.this, experiencias);
+                                    recyclerView.setAdapter(recyclerViewAdapter);
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
+
+//                        myRef.child(user_key).child("Experiencias").addChildEventListener(new ChildEventListener() {
+//                            @Override
+//                            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+//                                getExperiencias(dataSnapshot);
+//                            }
+//                            @Override
+//                            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+////                                getExperiencias(dataSnapshot);
+//                            }
+//                            @Override
+//                            public void onChildRemoved(DataSnapshot dataSnapshot) {
+////                                getExperiencias(dataSnapshot);
+//                            }
+//                            @Override
+//                            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+//                            }
+//                            @Override
+//                            public void onCancelled(DatabaseError databaseError) {
+//                            }
+//                        });
+                    }
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void getExperiencias(DataSnapshot dataSnapshot){
+        for(DataSnapshot singleSnapshot : dataSnapshot.getChildren()){
+            String experienciaTitle = singleSnapshot.getValue(String.class);
+            System.out.println(experienciaTitle);
+//            experiencias.add(new Experiencia(taskTitle));
+//            recyclerViewAdapter = new RecyclerViewAdapter(MainActivity.this, experiencias);
+//            recyclerView.setAdapter(recyclerViewAdapter);
+        }
     }
 
     @Override

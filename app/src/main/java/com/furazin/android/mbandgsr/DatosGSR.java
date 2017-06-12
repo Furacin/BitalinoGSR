@@ -1,6 +1,5 @@
 package com.furazin.android.mbandgsr;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -49,7 +48,6 @@ import com.microsoft.band.sensors.BandHeartRateEvent;
 import com.microsoft.band.sensors.BandHeartRateEventListener;
 
 import java.io.File;
-import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -157,7 +155,6 @@ public class DatosGSR extends AppCompatActivity {
         txtTemperatura = (TextView) findViewById(R.id.txtTemperatura);
         txtFC = (TextView) findViewById(R.id.txtFC);
 
-        final WeakReference<Activity> reference = new WeakReference<Activity>(this);
 
         btnStart = (Button) findViewById(R.id.btnStart);
         btnStop = (Button) findViewById(R.id.btnStop);
@@ -273,8 +270,8 @@ public class DatosGSR extends AppCompatActivity {
     public void SubirArchivoFirebase(String path) {
         Uri file = Uri.fromFile(new File(path));
 
-        StorageReference archivoRef = mStorageRef.child(EMAIL_USUARIO + "/Vídeos/" +getFechaYHora());
-
+        StorageReference archivoRef = mStorageRef.child(EMAIL_USUARIO + "/Vídeos/" + NOMBRE_EXPERIENCIA);
+        System.out.println("HOLA" + file.toString());
 
         archivoRef.putFile(file)
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
