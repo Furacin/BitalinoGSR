@@ -1,8 +1,12 @@
-package com.furazin.android.mbandgsr;
+package com.furazin.android.mbandgsr.RecyclerExperiencias;
 
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
+
+import com.furazin.android.mbandgsr.InfoExperiencia;
+import com.furazin.android.mbandgsr.R;
 
 import java.util.List;
 
@@ -16,6 +20,15 @@ public class RecyclerViewHolders extends RecyclerView.ViewHolder{
         super(itemView);
         this.experienciasObject = experienciasObject;
         Name = (Button)itemView.findViewById(R.id.experiencia_title);
+        Name.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+//                System.out.println("HOLA" + Name.getText());
+                Intent i = new Intent(itemView.getContext(), InfoExperiencia.class);
+                i.putExtra("id_experiencia",Name.getText());
+                itemView.getContext().startActivity(i);
+            }
+        });
 //        markIcon = (ImageView)itemView.findViewById(R.id.task_icon);
 //        deleteIcon = (ImageView)itemView.findViewById(R.id.task_delete);
 //        deleteIcon.setOnClickListener(new View.OnClickListener() {

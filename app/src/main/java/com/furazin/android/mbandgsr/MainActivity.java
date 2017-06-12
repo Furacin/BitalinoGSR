@@ -17,6 +17,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 
 import com.furazin.android.mbandgsr.FirebaseBD.Usuario;
+import com.furazin.android.mbandgsr.RecyclerExperiencias.RecyclerViewAdapter;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -112,26 +113,6 @@ public class MainActivity extends AppCompatActivity {
                             }
                         });
 
-//                        myRef.child(user_key).child("Experiencias").addChildEventListener(new ChildEventListener() {
-//                            @Override
-//                            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-//                                getExperiencias(dataSnapshot);
-//                            }
-//                            @Override
-//                            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-////                                getExperiencias(dataSnapshot);
-//                            }
-//                            @Override
-//                            public void onChildRemoved(DataSnapshot dataSnapshot) {
-////                                getExperiencias(dataSnapshot);
-//                            }
-//                            @Override
-//                            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-//                            }
-//                            @Override
-//                            public void onCancelled(DatabaseError databaseError) {
-//                            }
-//                        });
                     }
                 }
             }
@@ -140,16 +121,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-    }
 
-    private void getExperiencias(DataSnapshot dataSnapshot){
-        for(DataSnapshot singleSnapshot : dataSnapshot.getChildren()){
-            String experienciaTitle = singleSnapshot.getValue(String.class);
-            System.out.println(experienciaTitle);
-//            experiencias.add(new Experiencia(taskTitle));
-//            recyclerViewAdapter = new RecyclerViewAdapter(MainActivity.this, experiencias);
-//            recyclerView.setAdapter(recyclerViewAdapter);
-        }
     }
 
     @Override
