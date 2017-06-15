@@ -36,7 +36,7 @@ public class UsuariosExperiencia extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_lista_usuarios);
 
         id_experiencia = getIntent().getExtras().getString("id_experiencia");
 
