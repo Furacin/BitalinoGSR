@@ -8,7 +8,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 import com.furazin.android.mbandgsr.FirebaseBD.Usuario;
-import com.furazin.android.mbandgsr.RecyclerExperiencias.RecyclerViewAdapter;
+import com.furazin.android.mbandgsr.RecyclerExperiencias.RecyclerViewAdapterDatosUsuario;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -27,11 +27,11 @@ public class UsuariosExperiencia extends AppCompatActivity {
     private SharedPreferences sharedPref;
     public static String EMAIL_USUARIO;
 
-    String id_experiencia;
+    public static String id_experiencia;
     private List<String> usuarios;
     private RecyclerView recyclerView;
     private LinearLayoutManager linearLayoutManager;
-    private RecyclerViewAdapter recyclerViewAdapter;
+    private RecyclerViewAdapterDatosUsuario recyclerViewAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,12 +72,11 @@ public class UsuariosExperiencia extends AppCompatActivity {
                         myRef.child(user_key).child("Experiencias").child(id_experiencia).addValueEventListener(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
-//                                System.out.println("HOLAA" + value);
                                 for(DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
                                     String nameUsuario = singleSnapshot.getKey();
-                                    System.out.println("HOLA" + nameUsuario);
+//                                    System.out.println("HOLA" + nameUsuario);
                                     usuarios.add(nameUsuario);
-                                    recyclerViewAdapter = new RecyclerViewAdapter(UsuariosExperiencia.this, usuarios);
+                                    recyclerViewAdapter = new RecyclerViewAdapterDatosUsuario(UsuariosExperiencia.this, usuarios);
                                     recyclerView.setAdapter(recyclerViewAdapter);
                                 }
                             }

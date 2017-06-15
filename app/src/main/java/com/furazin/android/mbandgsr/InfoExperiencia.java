@@ -18,7 +18,7 @@ import com.google.firebase.database.ValueEventListener;
 
 public class InfoExperiencia extends AppCompatActivity {
 
-    String id_experiencia;
+    String id_usuario;
     String EMAIL_USUARIO = MainActivity.EMAIL_USUARIO;
     TextView fecha, nombre, apellidos, sexo, fecha_nacimiento, descripcion;
 
@@ -34,7 +34,7 @@ public class InfoExperiencia extends AppCompatActivity {
         fecha_nacimiento = (TextView) findViewById(R.id.fecha_nacimiento);
         descripcion = (TextView) findViewById(R.id.descripcion);
 
-        id_experiencia = getIntent().getExtras().getString("id_experiencia");
+        id_usuario = getIntent().getExtras().getString("id_usuario");
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         final DatabaseReference myRef = database.getReference("users");
 
@@ -48,13 +48,13 @@ public class InfoExperiencia extends AppCompatActivity {
                     if (user.getEmail().equals(EMAIL_USUARIO)) {
                         // Obtenemos la key del usuario logueado
                         user_key = snapshot.getKey();
-                        myRef.child(user_key).child("Experiencias").child(id_experiencia).addValueEventListener(new ValueEventListener() {
+                        myRef.child(user_key).child("Experiencias").child(UsuariosExperiencia.id_experiencia).child(id_usuario).addValueEventListener(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 Experiencia e = dataSnapshot.getValue(Experiencia.class);
 //                                System.out.println(e.getNombre());
                                 String a = "Fecha de realización: ";
-                                fecha.setText(a + id_experiencia);
+                                fecha.setText(a + id_usuario);
                                 nombre.setText("Nombre: " + e.getNombre());
                                 apellidos.setText("Apellidos: " + e.getApellidos());
                                 sexo.setText("Sexo: " + e.getSexo());

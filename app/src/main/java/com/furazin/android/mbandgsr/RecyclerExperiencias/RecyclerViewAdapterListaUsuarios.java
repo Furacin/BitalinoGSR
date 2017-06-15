@@ -9,22 +9,22 @@ import android.view.ViewGroup;
 import com.furazin.android.mbandgsr.R;
 
 import java.util.List;
-public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewHolders> {
+public class RecyclerViewAdapterListaUsuarios extends RecyclerView.Adapter<RecyclerViewHoldersListaUsuarios> {
     private List<String> experiencias;
     protected Context context;
-    public RecyclerViewAdapter(Context context, List<String> experiencias) {
+    public RecyclerViewAdapterListaUsuarios(Context context, List<String> experiencias) {
         this.experiencias = experiencias;
         this.context = context;
     }
     @Override
-    public RecyclerViewHolders onCreateViewHolder(ViewGroup parent, int viewType) {
-        RecyclerViewHolders viewHolder = null;
+    public RecyclerViewHoldersListaUsuarios onCreateViewHolder(ViewGroup parent, int viewType) {
+        RecyclerViewHoldersListaUsuarios viewHolder = null;
         View layoutView = LayoutInflater.from(parent.getContext()).inflate(R.layout.to_do_list, parent, false);
-        viewHolder = new RecyclerViewHolders(layoutView, experiencias);
+        viewHolder = new RecyclerViewHoldersListaUsuarios(layoutView, experiencias);
         return viewHolder;
     }
     @Override
-    public void onBindViewHolder(RecyclerViewHolders holder, int position) {
+    public void onBindViewHolder(RecyclerViewHoldersListaUsuarios holder, int position) {
         holder.Name.setText(experiencias.get(position));
     }
     @Override
