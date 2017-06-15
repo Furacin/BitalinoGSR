@@ -5,8 +5,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
 
-import com.furazin.android.mbandgsr.InfoExperiencia;
 import com.furazin.android.mbandgsr.R;
+import com.furazin.android.mbandgsr.UsuariosExperiencia;
 
 import java.util.List;
 
@@ -24,7 +24,7 @@ public class RecyclerViewHolders extends RecyclerView.ViewHolder{
             @Override
             public void onClick(View view) {
 //                System.out.println("HOLA" + Name.getText());
-                Intent i = new Intent(itemView.getContext(), InfoExperiencia.class);
+                Intent i = new Intent(itemView.getContext(), UsuariosExperiencia.class);
                 i.putExtra("id_experiencia",Name.getText());
                 itemView.getContext().startActivity(i);
             }
