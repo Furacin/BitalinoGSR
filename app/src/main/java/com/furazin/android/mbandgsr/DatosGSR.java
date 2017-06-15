@@ -564,10 +564,6 @@ public class DatosGSR extends AppCompatActivity {
                             }
                         }).start();
 
-
-//                        myRef.child(key).child("Experiencias").child(NOMBRE_EXPERIENCIA).child("Datos Gráficas").child("GSR").setValue(valores_gsr);
-//                        myRef.child(key).child("Experiencias").child(NOMBRE_EXPERIENCIA).child("Datos Gráficas").child("Temperatura").setValue(valores_temperatura);
-//                        myRef.child(key).child("Experiencias").child(NOMBRE_EXPERIENCIA).child("Datos Gráficas").child("FrecuenciaCardiaca").setValue(valores_fc);
                     }
                 }
             }
