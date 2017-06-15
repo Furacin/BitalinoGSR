@@ -86,7 +86,7 @@ public class NuevaExperiencia extends AppCompatActivity {
             public void onClick(View view) {
                 Dialog dialog = new Dialog(NuevaExperiencia.this);
                 dialog.setContentView(R.layout.activity_formulario);
-                dialog.setTitle("Formulario de sujeto");
+                dialog.setTitle("Datos de la experiencia");
 //                TextView textViewUser = (TextView) dialog.findViewById(R.id.textBrand);
 //                textViewUser.setText("Hi");
                 dialog.show();
@@ -119,7 +119,7 @@ public class NuevaExperiencia extends AppCompatActivity {
 //                        Experiencia experiencia = ExperienciaFormulario();
                         // Añadimos la informacion del formulario, y en la bd se creara una entrada con la fecha y hora actuales
 //                        NOMBRE_EXPERIENCIA = getFechaYHora();
-                        myRef.child(key).child("Experiencias").child(nombre).setValue(getFechaYHora());
+                        myRef.child(key).child("Experiencias").child(nombre).child("terminada").setValue("no");
                     }
                 }
             }
