@@ -19,6 +19,7 @@
         <activity android:name=".DatosGSR"></activity>
         <activity android:name=".InfoExperiencia"></activity>
         <activity android:name=".UsuariosExperiencia"></activity>
+        <activity android:name=".NuevaExperiencia"></activity>
         <activity android:name=".Login">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

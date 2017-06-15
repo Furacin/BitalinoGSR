@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/edittext_experiencia"
+        android:hint="Nombre de experiencia"
+        android:layout_below="@+id/toolbar"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/edittext_experiencia"
+        android:id="@+id/btn_nombre_experiencia"
+        android:layout_centerHorizontal="true"
+        android:text="Nueva Experiencia"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sujetos de prueba participantes"
+        android:textSize="18dp"
+        android:id="@+id/textview_titulo"
+        android:layout_marginTop="30dp"
+        android:layout_below="@+id/btn_nombre_experiencia"
+        android:textStyle="bold"
+        android:layout_centerHorizontal="true" />
+
+    <View
+        android:id="@+id/line1"
+        android:layout_below="@+id/textview_titulo"
+        android:layout_width="wrap_content"
+        android:layout_height="2dip"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:background="#969696" />
+
+    <Button
+        android:id="@+id/btn_newuser"
+        android:layout_below="@+id/line1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:paddingBottom="10dp"
+        android:paddingTop="-10dp"
+        android:drawableBottom="@drawable/ic_adduser"
+        android:text="" />
+
+</RelativeLayout>
