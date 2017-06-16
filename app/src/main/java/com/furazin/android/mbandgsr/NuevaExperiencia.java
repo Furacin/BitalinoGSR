@@ -124,39 +124,39 @@ public class NuevaExperiencia extends AppCompatActivity {
         return etText.getText().toString().trim().length() == 0;
     }
 
-    public void WriteFirebase(final String nombre) {
-
-        // Obtenemos email del usuario que se ha logueado
-        final String email = sharedPref.getString((getString(R.string.email_key)), "");
-
-        // Write a message to the database
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        final DatabaseReference myRef = database.getReference("users");
-
-        myRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    Usuario user = snapshot.getValue(Usuario.class);
-                    if (user.getEmail().equals(email)) {
-                        // Obtenemos la key del usuario logueado
-                        String key = snapshot.getKey();
-                        // Creamos una experiencia con los datos del formulario para ser almacenada en la base de datos en firabase
-//                        Experiencia experiencia = ExperienciaFormulario();
-                        // Añadimos la informacion del formulario, y en la bd se creara una entrada con la fecha y hora actuales
-//                        NOMBRE_EXPERIENCIA = getFechaYHora();
-                        myRef.child(key).child("Experiencias").child(NOMBRE_EXPERIENCIA).child("terminada").setValue("no");
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
-    }
+//    public void WriteFirebase(final String nombre) {
+//
+//        // Obtenemos email del usuario que se ha logueado
+//        final String email = sharedPref.getString((getString(R.string.email_key)), "");
+//
+//        // Write a message to the database
+//        FirebaseDatabase database = FirebaseDatabase.getInstance();
+//        final DatabaseReference myRef = database.getReference("users");
+//
+//        myRef.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+//                    Usuario user = snapshot.getValue(Usuario.class);
+//                    if (user.getEmail().equals(email)) {
+//                        // Obtenemos la key del usuario logueado
+//                        String key = snapshot.getKey();
+//                        // Creamos una experiencia con los datos del formulario para ser almacenada en la base de datos en firabase
+////                        Experiencia experiencia = ExperienciaFormulario();
+//                        // Añadimos la informacion del formulario, y en la bd se creara una entrada con la fecha y hora actuales
+////                        NOMBRE_EXPERIENCIA = getFechaYHora();
+//                        myRef.child(key).child("Experiencias").child(NOMBRE_EXPERIENCIA).child("terminada").setValue("no");
+//                    }
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//
+//            }
+//        });
+//
+//    }
 
     public void WriteFirebase(final Experiencia experiencia) {
 
@@ -179,7 +179,7 @@ public class NuevaExperiencia extends AppCompatActivity {
 //                        Experiencia experiencia = ExperienciaFormulario();
                         // Añadimos la informacion del formulario, y en la bd se creara una entrada con la fecha y hora actuales
 //                        NOMBRE_EXPERIENCIA = getFechaYHora();
-                        myRef.child(key).child("Experiencias").child(NOMBRE_EXPERIENCIA).setValue(experiencia);
+                        myRef.child(key).child("Experiencias").child(NOMBRE_EXPERIENCIA).child(experiencia.getNombre()).setValue(experiencia);
 //                        myRef.child(key).child("Experiencias").child(NOMBRE_EXPERIENCIA).child("terminada").setValue("no");
                     }
                 }
