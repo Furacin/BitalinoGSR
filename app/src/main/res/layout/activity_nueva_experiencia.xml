@@ -48,6 +48,16 @@
         android:layout_marginRight="20dp"
         android:background="#969696" />
 
+    <android.support.v7.widget.RecyclerView
+        android:layout_below="@+id/line1"
+        android:id="@+id/sujetos_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="120dp"
+        android:layout_marginBottom="0dp"
+        android:orientation="vertical"
+        android:scrollbars="none"/>
+
     <Button
         android:id="@+id/btn_newuser"
         android:layout_below="@+id/line1"

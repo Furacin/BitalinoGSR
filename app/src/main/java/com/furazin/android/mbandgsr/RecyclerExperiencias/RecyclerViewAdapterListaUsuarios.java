@@ -29,6 +29,6 @@ public class RecyclerViewAdapterListaUsuarios extends RecyclerView.Adapter<Recyc
     }
     @Override
     public int getItemCount() {
-        return this.experiencias.size();
+            return this.experiencias.size();
     }
 }

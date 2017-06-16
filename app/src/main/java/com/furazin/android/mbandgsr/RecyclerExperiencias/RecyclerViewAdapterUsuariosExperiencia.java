@@ -19,7 +19,7 @@ public class RecyclerViewAdapterUsuariosExperiencia extends RecyclerView.Adapter
     private List<String> usuarios_creados;
     protected Context context;
 
-    public RecyclerViewAdapterUsuariosExperiencia(List<String> usuarios_creados, Context context) {
+    public RecyclerViewAdapterUsuariosExperiencia(Context context, List<String> usuarios_creados) {
         this.usuarios_creados = usuarios_creados;
         this.context = context;
     }
@@ -29,7 +29,7 @@ public class RecyclerViewAdapterUsuariosExperiencia extends RecyclerView.Adapter
         RecyclerViewHoldersUsuariosExperiencia viewHolder = null;
         View layouView = LayoutInflater.from(parent.getContext()).inflate(R.layout.to_do_list_2, parent, false);
         viewHolder = new RecyclerViewHoldersUsuariosExperiencia(layouView,usuarios_creados);
-        return null;
+        return viewHolder;
     }
 
     @Override
@@ -39,6 +39,6 @@ public class RecyclerViewAdapterUsuariosExperiencia extends RecyclerView.Adapter
 
     @Override
     public int getItemCount() {
-        return 0;
+        return this.usuarios_creados.size();
     }
 }

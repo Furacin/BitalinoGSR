@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -15,11 +17,17 @@ import android.widget.Toast;
 
 import com.furazin.android.mbandgsr.FirebaseBD.Experiencia;
 import com.furazin.android.mbandgsr.FirebaseBD.Usuario;
+import com.furazin.android.mbandgsr.RecyclerExperiencias.RecyclerViewAdapterUsuariosExperiencia;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.furazin.android.mbandgsr.MainActivity.EMAIL_USUARIO;
 
 /**
  * Created by manza on 15/06/2017.
@@ -35,8 +43,15 @@ public class NuevaExperiencia extends AppCompatActivity {
     Button btn_newuser, btn_nuevaexperiencia;
     EditText edit_nombre_experiencia;
 
+    Dialog dialog;
+
     // Variable para recordar las credenciales del usuario
     private SharedPreferences sharedPref;
+
+    private List<String> lista_sujetos;
+    private RecyclerView recyclerView;
+    private LinearLayoutManager linearLayoutManager;
+    private RecyclerViewAdapterUsuariosExperiencia recyclerViewAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,12 +65,20 @@ public class NuevaExperiencia extends AppCompatActivity {
         sharedPref = context.getSharedPreferences(
                 getString(R.string.preference_file_key), Context.MODE_PRIVATE);
 
+        // RecyclerView para mostrar la lista de suejetos que el investigador va añadiendo a la experiencia
+        lista_sujetos = new ArrayList<String>();
+        recyclerView = (RecyclerView)findViewById(R.id.sujetos_list);
+        linearLayoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(linearLayoutManager);
+
+
         titulo = (TextView) findViewById(R.id.textview_titulo);
         linea = findViewById(R.id.line1);
         btn_newuser = (Button) findViewById(R.id.btn_newuser);
         btn_nuevaexperiencia = (Button) findViewById(R.id.btn_nombre_experiencia);
         edit_nombre_experiencia = (EditText) findViewById(R.id.edittext_experiencia);
 
+        // Cuando el investigador introduce un nombre para la experiencia, se muestra el botón para añadir sujetos de prueba
         btn_nuevaexperiencia.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -82,7 +105,7 @@ public class NuevaExperiencia extends AppCompatActivity {
         btn_adduser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final Dialog dialog = new Dialog(NuevaExperiencia.this);
+                dialog = new Dialog(NuevaExperiencia.this);
                 dialog.setContentView(R.layout.activity_formulario);
                 dialog.setTitle("Datos de la experiencia");
 
@@ -112,10 +135,60 @@ public class NuevaExperiencia extends AppCompatActivity {
                         Experiencia experiencia = new Experiencia(nombre,apellidos,fecha_nacimiento, sexo,opcion_multimedia,descripcion);
                         WriteFirebase(experiencia);
                         dialog.dismiss();
+
+                        RefreshListaSujetos();
+
                     }
                 });
 
                 dialog.show();
+
+            }
+        });
+
+    }
+
+    public void RefreshListaSujetos() {
+
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        final DatabaseReference myRef = database.getReference("users");
+
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+//                lista_sujetos.remove(lista_sujetos);
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    Usuario user = snapshot.getValue(Usuario.class);
+                    final String user_key;
+                    if (user.getEmail().equals(EMAIL_USUARIO)) {
+                        // Obtenemos la key del usuario logueado
+                        user_key = snapshot.getKey();
+
+                        myRef.child(user_key).child("Experiencias").child(edit_nombre_experiencia.getText().toString()).addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+//                                System.out.println("HOLAA" + value);
+                                for(DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
+                                    String experienciaTitle = singleSnapshot.getKey();
+//                                    System.out.println(experienciaTitle);
+                                    lista_sujetos.add(experienciaTitle);
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
+
+                    }
+                }
+                recyclerViewAdapter = new RecyclerViewAdapterUsuariosExperiencia(NuevaExperiencia.this, lista_sujetos);
+                recyclerView.setAdapter(recyclerViewAdapter);
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
             }
         });
     }
@@ -123,40 +196,6 @@ public class NuevaExperiencia extends AppCompatActivity {
     private boolean isEmpty(EditText etText) {
         return etText.getText().toString().trim().length() == 0;
     }
-
-//    public void WriteFirebase(final String nombre) {
-//
-//        // Obtenemos email del usuario que se ha logueado
-//        final String email = sharedPref.getString((getString(R.string.email_key)), "");
-//
-//        // Write a message to the database
-//        FirebaseDatabase database = FirebaseDatabase.getInstance();
-//        final DatabaseReference myRef = database.getReference("users");
-//
-//        myRef.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-//                    Usuario user = snapshot.getValue(Usuario.class);
-//                    if (user.getEmail().equals(email)) {
-//                        // Obtenemos la key del usuario logueado
-//                        String key = snapshot.getKey();
-//                        // Creamos una experiencia con los datos del formulario para ser almacenada en la base de datos en firabase
-////                        Experiencia experiencia = ExperienciaFormulario();
-//                        // Añadimos la informacion del formulario, y en la bd se creara una entrada con la fecha y hora actuales
-////                        NOMBRE_EXPERIENCIA = getFechaYHora();
-//                        myRef.child(key).child("Experiencias").child(NOMBRE_EXPERIENCIA).child("terminada").setValue("no");
-//                    }
-//                }
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//
-//            }
-//        });
-//
-//    }
 
     public void WriteFirebase(final Experiencia experiencia) {
 
@@ -193,16 +232,4 @@ public class NuevaExperiencia extends AppCompatActivity {
 
     }
 
-//    String getFechaYHora() {
-//        Calendar calendar = Calendar.getInstance();
-//        SimpleDateFormat mdformat = new SimpleDateFormat("yyyyMMdd");
-//        String currentDate = mdformat.format(calendar.getTime());
-//
-//        SimpleDateFormat format = new SimpleDateFormat("HHmm", Locale.US);
-//        String hour = format.format(new Date());
-//
-//        currentDate+=hour;
-//
-//        return currentDate;
-//    }
 }
