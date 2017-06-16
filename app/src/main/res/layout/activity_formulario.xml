@@ -8,12 +8,22 @@
     android:descendantFocusability="beforeDescendants"
     android:focusableInTouchMode="true">
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Información de la experiencia"
+        android:textSize="18dp"
+        android:textStyle="bold"
+        android:id="@+id/formulario_titulo"
+        android:layout_marginLeft="4dp"
+        />
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:layout_editor_absoluteY="8dp"
-        tools:layout_editor_absoluteX="8dp">
+        tools:layout_editor_absoluteX="8dp"
+        android:layout_below="@+id/formulario_titulo">
 
         <RelativeLayout
             android:layout_width="match_parent"

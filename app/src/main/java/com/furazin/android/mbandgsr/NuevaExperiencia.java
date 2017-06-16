@@ -8,20 +8,18 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.furazin.android.mbandgsr.FirebaseBD.Experiencia;
 import com.furazin.android.mbandgsr.FirebaseBD.Usuario;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Locale;
 
 /**
  * Created by manza on 15/06/2017.
@@ -66,8 +64,8 @@ public class NuevaExperiencia extends AppCompatActivity {
                 btn_newuser.setVisibility(View.VISIBLE);
 
                 if (!isEmpty(edit_nombre_experiencia)) {
-                    String nombre_experiencia = edit_nombre_experiencia.getText().toString();
-                    WriteFirebase(nombre_experiencia);
+                    NOMBRE_EXPERIENCIA = edit_nombre_experiencia.getText().toString();
+//                    WriteFirebase(NOMBRE_EXPERIENCIA);
                 }
                 else
                     Toast.makeText(getApplicationContext(), "Se debe de introducir un nombre.", Toast.LENGTH_SHORT).show();
@@ -84,11 +82,39 @@ public class NuevaExperiencia extends AppCompatActivity {
         btn_adduser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Dialog dialog = new Dialog(NuevaExperiencia.this);
+                final Dialog dialog = new Dialog(NuevaExperiencia.this);
                 dialog.setContentView(R.layout.activity_formulario);
                 dialog.setTitle("Datos de la experiencia");
-//                TextView textViewUser = (TextView) dialog.findViewById(R.id.textBrand);
-//                textViewUser.setText("Hi");
+
+                TextView textViewTitle = (TextView) dialog.findViewById(R.id.formulario_titulo);
+                textViewTitle.setText(edit_nombre_experiencia.getText().toString());
+
+                final EditText edit_nombre = (EditText) dialog.findViewById(R.id.editTextNombre);
+                final EditText edit_apellidos = (EditText) dialog.findViewById(R.id.editTextApellidos);
+                final EditText edit_fecha_nacimiento = (EditText) dialog.findViewById(R.id.editTextFecha);
+                final EditText edit_descripcion = (EditText) dialog.findViewById(R.id.text_descripcion);
+
+                final RadioGroup radio_sexo = (RadioGroup) dialog.findViewById(R.id.radioGenero);
+                final RadioGroup radio_opcion_multimedia = (RadioGroup) dialog.findViewById(R.id.radioMultimedia);
+
+                Button btn_guardar_datos = (Button) dialog.findViewById(R.id.InicioPrueba_Button);
+                btn_guardar_datos.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        String nombre = edit_nombre.getText().toString();
+                        String apellidos = edit_apellidos.getText().toString();
+                        String fecha_nacimiento = edit_fecha_nacimiento.getText().toString();
+                        String sexo = ((RadioButton)dialog.findViewById(radio_sexo.getCheckedRadioButtonId())).getText().toString();
+
+                        String opcion_multimedia = ((RadioButton)dialog.findViewById(radio_opcion_multimedia.getCheckedRadioButtonId())).getText().toString();
+
+                        String descripcion = edit_descripcion.getText().toString();
+                        Experiencia experiencia = new Experiencia(nombre,apellidos,fecha_nacimiento, sexo,opcion_multimedia,descripcion);
+                        WriteFirebase(experiencia);
+                        dialog.dismiss();
+                    }
+                });
+
                 dialog.show();
             }
         });
@@ -119,7 +145,7 @@ public class NuevaExperiencia extends AppCompatActivity {
 //                        Experiencia experiencia = ExperienciaFormulario();
                         // Añadimos la informacion del formulario, y en la bd se creara una entrada con la fecha y hora actuales
 //                        NOMBRE_EXPERIENCIA = getFechaYHora();
-                        myRef.child(key).child("Experiencias").child(nombre).child("terminada").setValue("no");
+                        myRef.child(key).child("Experiencias").child(NOMBRE_EXPERIENCIA).child("terminada").setValue("no");
                     }
                 }
             }
@@ -132,16 +158,51 @@ public class NuevaExperiencia extends AppCompatActivity {
 
     }
 
-    String getFechaYHora() {
-        Calendar calendar = Calendar.getInstance();
-        SimpleDateFormat mdformat = new SimpleDateFormat("yyyyMMdd");
-        String currentDate = mdformat.format(calendar.getTime());
+    public void WriteFirebase(final Experiencia experiencia) {
 
-        SimpleDateFormat format = new SimpleDateFormat("HHmm", Locale.US);
-        String hour = format.format(new Date());
+        // Obtenemos email del usuario que se ha logueado
+        final String email = sharedPref.getString((getString(R.string.email_key)), "");
 
-        currentDate+=hour;
+        // Write a message to the database
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        final DatabaseReference myRef = database.getReference("users");
 
-        return currentDate;
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    Usuario user = snapshot.getValue(Usuario.class);
+                    if (user.getEmail().equals(email)) {
+                        // Obtenemos la key del usuario logueado
+                        String key = snapshot.getKey();
+                        // Creamos una experiencia con los datos del formulario para ser almacenada en la base de datos en firabase
+//                        Experiencia experiencia = ExperienciaFormulario();
+                        // Añadimos la informacion del formulario, y en la bd se creara una entrada con la fecha y hora actuales
+//                        NOMBRE_EXPERIENCIA = getFechaYHora();
+                        myRef.child(key).child("Experiencias").child(NOMBRE_EXPERIENCIA).setValue(experiencia);
+//                        myRef.child(key).child("Experiencias").child(NOMBRE_EXPERIENCIA).child("terminada").setValue("no");
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
     }
+
+//    String getFechaYHora() {
+//        Calendar calendar = Calendar.getInstance();
+//        SimpleDateFormat mdformat = new SimpleDateFormat("yyyyMMdd");
+//        String currentDate = mdformat.format(calendar.getTime());
+//
+//        SimpleDateFormat format = new SimpleDateFormat("HHmm", Locale.US);
+//        String hour = format.format(new Date());
+//
+//        currentDate+=hour;
+//
+//        return currentDate;
+//    }
 }

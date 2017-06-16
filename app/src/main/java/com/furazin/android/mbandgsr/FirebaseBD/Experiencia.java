@@ -11,6 +11,7 @@ public class Experiencia {
     String sexo;
     String opcion_multimedia;
     String descripcion;
+    String terminada;
 
     public Experiencia() {
     }
@@ -22,6 +23,7 @@ public class Experiencia {
         this.sexo = sexo;
         this.opcion_multimedia = opcion_multimedia;
         this.descripcion = descripcion;
+        this.terminada = "no";
     }
 
     public String getNombre() {

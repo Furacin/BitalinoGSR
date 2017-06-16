@@ -1,7 +1,6 @@
 package com.furazin.android.mbandgsr;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -11,6 +10,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.furazin.android.mbandgsr.Dialog.DateDialog;
@@ -41,6 +41,8 @@ public class Formulario extends AppCompatActivity{
 //    RadioButton radio_video, radio_audio, radio_video_audio, radio_ninguno;
     RadioGroup radio_sexo;
     RadioGroup radio_opcion_multimedia;
+
+    TextView titulo;
 
     // Variable para recordar las credenciales del usuario
     private SharedPreferences sharedPref;
@@ -98,20 +100,23 @@ public class Formulario extends AppCompatActivity{
         radio_sexo = (RadioGroup) findViewById(R.id.radioGenero);
         radio_opcion_multimedia = (RadioGroup) findViewById(R.id.radioMultimedia);
 
+        titulo = (TextView) findViewById(R.id.formulario_titulo);
+
         Button ButtonInicio = (Button) findViewById(R.id.InicioPrueba_Button);
         ButtonInicio.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (!isEmpty(edit_nombre) && !isEmpty(edit_apellidos) && !isEmpty(edit_fecha_nacimiento) && !isEmpty(edit_descripcion)) {
                     WriteFirebase();
-                                    try {
-                    Thread.sleep(2500);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                    Intent i = new Intent(getApplicationContext(), DatosGSR.class);
-                    startActivity(i);
-                    finish();
+
+                    try {
+                        Thread.sleep(500);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+//                    Intent i = new Intent(getApplicationContext(), DatosGSR.class);
+//                    startActivity(i);
+//                    finish();
                 }
                 else {
                     Toast.makeText(getApplicationContext(), "No puede estar ningún campo del formulario vacío", Toast.LENGTH_SHORT).show();
@@ -138,6 +143,7 @@ public class Formulario extends AppCompatActivity{
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     Usuario user = snapshot.getValue(Usuario.class);
+                    System.out.println("HOLA" + titulo.getText().toString());
                     if (user.getEmail().equals(email)) {
                         // Obtenemos la key del usuario logueado
                         String key = snapshot.getKey();
@@ -145,7 +151,8 @@ public class Formulario extends AppCompatActivity{
                         Experiencia experiencia = ExperienciaFormulario();
                         // Añadimos la informacion del formulario, y en la bd se creara una entrada con la fecha y hora actuales
                         NOMBRE_EXPERIENCIA = getFechaYHora();
-                        myRef.child(key).child("Experiencias").child(NOMBRE_EXPERIENCIA).setValue(experiencia);
+                        String titulo_experiencia = titulo.getText().toString(); // Obtenemos el titulo de la experiencia a través del Dialog abierto desde el activity de creación de experiencia
+                        myRef.child(key).child("Experiencias").child(NOMBRE_EXPERIENCIA).child(titulo_experiencia).setValue(experiencia);
                     }
                }
             }
