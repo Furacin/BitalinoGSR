@@ -25,7 +25,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import static com.furazin.android.mbandgsr.MainActivity.EMAIL_USUARIO;
 
@@ -48,7 +49,7 @@ public class NuevaExperiencia extends AppCompatActivity {
     // Variable para recordar las credenciales del usuario
     private SharedPreferences sharedPref;
 
-    private List<String> lista_sujetos;
+    private ArrayList<String> lista_sujetos;
     private RecyclerView recyclerView;
     private LinearLayoutManager linearLayoutManager;
     private RecyclerViewAdapterUsuariosExperiencia recyclerViewAdapter;
@@ -133,7 +134,9 @@ public class NuevaExperiencia extends AppCompatActivity {
 
                         String descripcion = edit_descripcion.getText().toString();
                         Experiencia experiencia = new Experiencia(nombre,apellidos,fecha_nacimiento, sexo,opcion_multimedia,descripcion);
+
                         WriteFirebase(experiencia);
+
                         dialog.dismiss();
 
                         RefreshListaSujetos();
@@ -152,45 +155,75 @@ public class NuevaExperiencia extends AppCompatActivity {
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         final DatabaseReference myRef = database.getReference("users");
-
+        final String[] user_key = new String[1];
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 //                lista_sujetos.remove(lista_sujetos);
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     Usuario user = snapshot.getValue(Usuario.class);
-                    final String user_key;
                     if (user.getEmail().equals(EMAIL_USUARIO)) {
                         // Obtenemos la key del usuario logueado
-                        user_key = snapshot.getKey();
-
-                        myRef.child(user_key).child("Experiencias").child(edit_nombre_experiencia.getText().toString()).addValueEventListener(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-//                                System.out.println("HOLAA" + value);
-                                for(DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
-                                    String experienciaTitle = singleSnapshot.getKey();
-//                                    System.out.println(experienciaTitle);
-                                    lista_sujetos.add(experienciaTitle);
-                                }
-                            }
-
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
-
-                            }
-                        });
-
+                        user_key[0] = snapshot.getKey();
                     }
                 }
-                recyclerViewAdapter = new RecyclerViewAdapterUsuariosExperiencia(NuevaExperiencia.this, lista_sujetos);
-                recyclerView.setAdapter(recyclerViewAdapter);
+
+                myRef.child(user_key[0]).child("Experiencias").child(edit_nombre_experiencia.getText().toString()).addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+//                                System.out.println("HOLAA" + value);
+                        for(DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
+                            String experienciaTitle = singleSnapshot.getKey();
+//                                    System.out.println(singleSnapshot.getValue(HashMap.class));
+                            lista_sujetos.add(experienciaTitle);
+                        }
+//                        System.out.println(lista_sujetos.size());
+                        lista_sujetos = EliminarRepetidos(lista_sujetos);
+                        recyclerViewAdapter = new RecyclerViewAdapterUsuariosExperiencia(NuevaExperiencia.this, lista_sujetos);
+                        recyclerView.setAdapter(recyclerViewAdapter);
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
             }
         });
+
+    }
+
+    private ArrayList<String> EliminarRepetidos(ArrayList<String> vector) {
+//            String arraycar[]={"4","1","2","6","7","2","2","5","5","6","2","4","2"};
+//            System.out.println(vector);
+//            for(int i=0;i<vector.size();i++){
+//                for(int j=0;j<vector.size()-1;j++){
+//                    if(i!=j){
+//                        if(vector.get(i).equals(vector.get(j))){
+//                            // eliminamos su valor
+//                            vector.remove(i);
+//                        }
+//                    }
+//                }
+//            }
+
+        ArrayList<String> res = new ArrayList<>();
+        Set<String> hs = new HashSet<>();
+        hs.addAll(vector);
+        res.addAll(hs);
+
+        return res;
+            // mostramos unicamente los que tienen valor
+//            int n=vector.size();
+//            for (int k=0;k<=n-1;k++){
+//                if(vector.get(k)!=""){
+//                    System.out.println( arraycar[k]);
+//                }
+//            }
     }
 
     private boolean isEmpty(EditText etText) {
