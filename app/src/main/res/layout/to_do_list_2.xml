@@ -2,13 +2,13 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="18dp"
-    android:paddingBottom="18dp"
+    android:paddingTop="0dp"
+    android:paddingBottom="0dp"
     android:orientation="horizontal">
 
     <TextView
         android:id="@+id/usuario_name"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="50"
         android:layout_marginLeft="40dp"
@@ -20,11 +20,13 @@
 
     <Button
         android:id="@+id/start_exp"
-        android:layout_width="0dp"
+        android:layout_width="25dp"
         android:layout_height="wrap_content"
-        android:drawableRight="@drawable/ic_start_experiencia"
-        android:paddingRight="18dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginLeft="10dp"
         android:layout_weight="15"
-        android:contentDescription="@string/app_name" />
+        android:contentDescription="@string/app_name"
+        android:drawableRight="@drawable/ic_start_experiencia"
+        android:paddingRight="14dp" />
 
 </LinearLayout>
