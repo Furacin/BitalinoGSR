@@ -89,7 +89,7 @@ public class NuevaExperiencia extends AppCompatActivity {
 
                 if (!isEmpty(edit_nombre_experiencia)) {
                     NOMBRE_EXPERIENCIA = edit_nombre_experiencia.getText().toString();
-//                    WriteFirebase(NOMBRE_EXPERIENCIA);
+                    edit_nombre_experiencia.setKeyListener(null);
                 }
                 else
                     Toast.makeText(getApplicationContext(), "Se debe de introducir un nombre.", Toast.LENGTH_SHORT).show();
