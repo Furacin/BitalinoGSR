@@ -37,7 +37,6 @@ import com.jjoe64.graphview.series.LineGraphSeries;
 import com.microsoft.band.BandClient;
 import com.microsoft.band.BandClientManager;
 import com.microsoft.band.BandException;
-import com.microsoft.band.BandIOException;
 import com.microsoft.band.BandInfo;
 import com.microsoft.band.ConnectionState;
 import com.microsoft.band.sensors.BandBarometerEvent;
@@ -53,6 +52,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Created by manza on 15/05/2017.
@@ -91,6 +93,8 @@ public class DatosGSR extends AppCompatActivity {
 
     // Cronómetro
     Chronometer crono;
+
+    Timer timer = new Timer();
 
     private BandGsrEventListener mGsrEventListener = new BandGsrEventListener() {
         @Override
@@ -136,7 +140,8 @@ public class DatosGSR extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_datos);
-        System.out.println("HOLAaa"+ Formulario.NOMBRE_EXPERIENCIA);
+
+        timer.schedule(new RandomValues(), 0, 2000);
 
         // Instanciamos una referencia al Contexto
         Context context = this.getApplicationContext();
@@ -216,15 +221,15 @@ public class DatosGSR extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        if (client != null) {
-            try {
-                client.getSensorManager().unregisterGsrEventListener(mGsrEventListener);
-                client.getSensorManager().unregisterBarometerEventListener(mBarometerEventListener);
-                client.getSensorManager().unregisterHeartRateEventListener(mHeartRateEventListener);
-            } catch (BandIOException e) {
-                appendGSRToUI(e.getMessage());
-            }
-        }
+//        if (client != null) {
+//            try {
+//                client.getSensorManager().unregisterGsrEventListener(mGsrEventListener);
+//                client.getSensorManager().unregisterBarometerEventListener(mBarometerEventListener);
+//                client.getSensorManager().unregisterHeartRateEventListener(mHeartRateEventListener);
+//            } catch (BandIOException e) {
+//                appendGSRToUI(e.getMessage());
+//            }
+//        }
     }
 
     @Override
@@ -323,44 +328,65 @@ public class DatosGSR extends AppCompatActivity {
     private class SubscriptionTask extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... params) {
-            try {
-                if (getConnectedBandClient()) {
-                    int hardwareVersion = Integer.parseInt(client.getHardwareVersion().await());
-                    if (hardwareVersion >= 20) {
-                        appendGSRToUI("Microsoft Band conectada.\n");
-                        appendTemperaturaToUI("Microsoft Band conectada.\n");
-                        appendFCToUI("Microsoft Band conectada.\n");
-                            client.getSensorManager().registerHeartRateEventListener(mHeartRateEventListener);
-                            client.getSensorManager().registerGsrEventListener(mGsrEventListener);
-                            client.getSensorManager().registerBarometerEventListener(mBarometerEventListener);
+//            try {
+//                if (getConnectedBandClient()) {
+//                    int hardwareVersion = Integer.parseInt(client.getHardwareVersion().await());
+//                    if (hardwareVersion >= 20) {
+//                        appendGSRToUI("Microsoft Band conectada.\n");
+//                        appendTemperaturaToUI("Microsoft Band conectada.\n");
+//                        appendFCToUI("Microsoft Band conectada.\n");
+//                            client.getSensorManager().registerHeartRateEventListener(mHeartRateEventListener);
+//                            client.getSensorManager().registerGsrEventListener(mGsrEventListener);
+//                            client.getSensorManager().registerBarometerEventListener(mBarometerEventListener);
+//
+//                    } else {
+//                        appendGSRToUI("The Gsr sensor is not supported with your Band version. Microsoft Band 2 is required.\n");
+//                    }
+//                } else {
+//                    appendGSRToUI("Band isn't connected. Please make sure bluetooth is on and the band is in range.\n");
+//                }
+//            } catch (BandException e) {
+//                String exceptionMessage="";
+//                switch (e.getErrorType()) {
+//                    case UNSUPPORTED_SDK_VERSION_ERROR:
+//                        exceptionMessage = "Microsoft Health BandService doesn't support your SDK Version. Please update to latest SDK.\n";
+//                        break;
+//                    case SERVICE_ERROR:
+//                        exceptionMessage = "Microsoft Health BandService is not available. Please make sure Microsoft Health is installed and that you have the correct permissions.\n";
+//                        break;
+//                    default:
+//                        exceptionMessage = "Unknown error occured: " + e.getMessage() + "\n";
+//                        break;
+//                }
+//                appendGSRToUI(exceptionMessage);
+//
+//            } catch (Exception e) {
+//                appendGSRToUI(e.getMessage());
+//            }
 
-                    } else {
-                        appendGSRToUI("The Gsr sensor is not supported with your Band version. Microsoft Band 2 is required.\n");
-                    }
-                } else {
-                    appendGSRToUI("Band isn't connected. Please make sure bluetooth is on and the band is in range.\n");
-                }
-            } catch (BandException e) {
-                String exceptionMessage="";
-                switch (e.getErrorType()) {
-                    case UNSUPPORTED_SDK_VERSION_ERROR:
-                        exceptionMessage = "Microsoft Health BandService doesn't support your SDK Version. Please update to latest SDK.\n";
-                        break;
-                    case SERVICE_ERROR:
-                        exceptionMessage = "Microsoft Health BandService is not available. Please make sure Microsoft Health is installed and that you have the correct permissions.\n";
-                        break;
-                    default:
-                        exceptionMessage = "Unknown error occured: " + e.getMessage() + "\n";
-                        break;
-                }
-                appendGSRToUI(exceptionMessage);
-
-            } catch (Exception e) {
-                appendGSRToUI(e.getMessage());
-            }
             return null;
         }
     }
+
+    private class RandomValues extends TimerTask {
+        public void run() {
+            Random rnd = new Random();
+            int valor_random = (int)(rnd.nextDouble() * 350000 + 0);
+            appendGSRToUI(String.format("GSR = %d kOhms\n", valor_random));
+            nuevoDatoGSR(valor_random);
+
+            Random rnd2 = new Random();
+            valor_random = (int)(rnd2.nextDouble() * 36 + 35);
+            appendTemperaturaToUI(String.format("Temperatura = %d degrees Celsius", valor_random));
+            nuevoDatoTemperatura(valor_random);
+
+            Random rnd3 = new Random();
+            valor_random = (int)(rnd3.nextDouble() * 110 + 60);
+            appendFCToUI(String.format("Frecuencia cardiaca = %d beats per minute\n", valor_random));
+            nuevoDatoFC(valor_random);
+        }
+    }
+
 
     /*
     / Datos de la interfaz con los valores de la pulsera
@@ -398,7 +424,7 @@ public class DatosGSR extends AppCompatActivity {
             if (devices.length == 0) {
                 appendGSRToUI("Band isn't paired with your phone.\n");
                 appendTemperaturaToUI("Band isn't paired with your phone.\n");
-                appendFCToUI("Band isn't paired with your phone.\n");
+                appendFCToUI("Band isn't 'paired with your phone.\n");
                 return false;
             }
             client = BandClientManager.getInstance().create(getBaseContext(), devices[0]);
