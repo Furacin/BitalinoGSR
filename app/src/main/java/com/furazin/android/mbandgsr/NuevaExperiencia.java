@@ -36,7 +36,8 @@ import static com.furazin.android.mbandgsr.MainActivity.EMAIL_USUARIO;
 
 public class NuevaExperiencia extends AppCompatActivity {
 
-    public static String NOMBRE_EXPERIENCIA = "";
+    public static String NOMBRE_EXPERIENCIA;
+    public static String NOMBRE_USUARIO;
 
     Button btn_adduser;
     TextView titulo;
@@ -61,7 +62,7 @@ public class NuevaExperiencia extends AppCompatActivity {
 
         // Instanciamos una referencia al Contexto
         Context context = this.getApplicationContext();
-        //Instanciamos el objeto SharedPrefere  nces y creamos un fichero Privado bajo el
+        //Instanciamos el objeto SharedPreferences y creamos un fichero Privado bajo el
         //nombre definido con la clave preference_file_key en el fichero string.xml
         sharedPref = context.getSharedPreferences(
                 getString(R.string.preference_file_key), Context.MODE_PRIVATE);
@@ -127,6 +128,7 @@ public class NuevaExperiencia extends AppCompatActivity {
                     @Override
                     public void onClick(View view) {
                         String nombre = edit_nombre.getText().toString();
+                        NOMBRE_USUARIO = nombre;
                         String apellidos = edit_apellidos.getText().toString();
                         String fecha_nacimiento = edit_fecha_nacimiento.getText().toString();
                         String sexo = ((RadioButton)dialog.findViewById(radio_sexo.getCheckedRadioButtonId())).getText().toString();

@@ -52,6 +52,7 @@ public class Formulario extends AppCompatActivity{
 
         NOMBRE_EXPERIENCIA = getIntent().getExtras().getString("nombre_experiencia");
 
+
         // Instanciamos una referencia al Contexto
         Context context = this.getApplicationContext();
         //Instanciamos el objeto SharedPrefere  nces y creamos un fichero Privado bajo el
@@ -175,7 +176,7 @@ public class Formulario extends AppCompatActivity{
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     Usuario user = snapshot.getValue(Usuario.class);
-                    System.out.println("HOLA" + titulo.getText().toString());
+//                    System.out.println("HOLA" + titulo.getText().toString());
                     if (user.getEmail().equals(email)) {
                         // Obtenemos la key del usuario logueado
                         String key = snapshot.getKey();

@@ -276,7 +276,7 @@ public class DatosGSR extends AppCompatActivity {
         Uri file = Uri.fromFile(new File(path));
 
         StorageReference archivoRef = mStorageRef.child(EMAIL_USUARIO + "/Vídeos/" + NOMBRE_EXPERIENCIA);
-        System.out.println("HOLA" + file.toString());
+//        System.out.println("HOLA" + file.toString());
 
         archivoRef.putFile(file)
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -567,7 +567,7 @@ public class DatosGSR extends AppCompatActivity {
                             public void run() {
                                 for (int i=0; i<valores_gsr.size(); i++) {
 //                            myRef.child(key).child("Experiencias").child(NOMBRE_EXPERIENCIA).child("Datos Gráficas").child("GSR").child(String.valueOf(i)).child("first").setValue(valores_gsr.get(i).first);
-                                    myRef.child(key).child("Experiencias").child(NOMBRE_EXPERIENCIA).child("Datos Graficas").child("GSR").child(String.valueOf(i)).setValue(valores_gsr.get(i).second);
+                                    myRef.child(key).child("Experiencias").child(NuevaExperiencia.NOMBRE_EXPERIENCIA).child("Datos Graficas").child("GSR").child(String.valueOf(i)).setValue(valores_gsr.get(i).second);
                                 }
                             }
                         }).start();
@@ -576,7 +576,7 @@ public class DatosGSR extends AppCompatActivity {
                             public void run() {
                                 for (int i=0; i<valores_temperatura.size(); i++) {
 //                            myRef.child(key).child("Experiencias").child(NOMBRE_EXPERIENCIA).child("Datos Gráficas").child("Temperatura").child(String.valueOf(i)).child("first").setValue(valores_temperatura.get(i).first);
-                                    myRef.child(key).child("Experiencias").child(NOMBRE_EXPERIENCIA).child("Datos Graficas").child("Temperatura").child(String.valueOf(i)).setValue(valores_temperatura.get(i).second);
+                                    myRef.child(key).child("Experiencias").child(NuevaExperiencia.NOMBRE_EXPERIENCIA).child("Datos Graficas").child("Temperatura").child(String.valueOf(i)).setValue(valores_temperatura.get(i).second);
                                 }
                             }
                         }).start();
@@ -585,7 +585,7 @@ public class DatosGSR extends AppCompatActivity {
                             public void run() {
                                 for (int i=0; i<valores_fc.size(); i++) {
 //                            myRef.child(key).child("Experiencias").child(NOMBRE_EXPERIENCIA).child("Datos Gráficas").child("FC").child(String.valueOf(i)).child("first").setValue(valores_fc.get(i).first);
-                                    myRef.child(key).child("Experiencias").child(NOMBRE_EXPERIENCIA).child("Datos Graficas").child("FC").child(String.valueOf(i)).setValue(valores_fc.get(i).second);
+                                    myRef.child(key).child("Experiencias").child(NuevaExperiencia.NOMBRE_EXPERIENCIA).child("Datos Graficas").child("FC").child(String.valueOf(i)).setValue(valores_fc.get(i).second);
                                 }
                             }
                         }).start();
