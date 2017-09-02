@@ -62,10 +62,12 @@ import java.util.TimerTask;
 
 public class DatosGSR extends AppCompatActivity {
 
-    private String NOMBRE_EXPERIENCIA = Formulario.NOMBRE_EXPERIENCIA;
+    private static final String UPLOAD_FAIL = "UPLOAD FAIL";
+//    private String NOMBRE_EXPERIENCIA = Formulario.NOMBRE_EXPERIENCIA;
     private String EMAIL_USUARIO;
+    private String NOMBRE_USUARIO;
 
-    private static final String UPLOAD_COMPLETE = "UPLOAD";
+    private static final String UPLOAD_COMPLETE = "UPLOAD SUCCES";
     private StorageReference mStorageRef;
 
     private int ACTIVITY_START_CAMERA_APP =0;
@@ -140,6 +142,9 @@ public class DatosGSR extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_datos);
+
+        this.NOMBRE_USUARIO = getIntent().getExtras().getString("id_usuario");
+        System.out.println("HOLA2" + NOMBRE_USUARIO);
 
         timer.schedule(new RandomValues(), 0, 2000);
 
@@ -275,8 +280,8 @@ public class DatosGSR extends AppCompatActivity {
     public void SubirArchivoFirebase(String path) {
         Uri file = Uri.fromFile(new File(path));
 
-        StorageReference archivoRef = mStorageRef.child(EMAIL_USUARIO + "/Vídeos/" + NOMBRE_EXPERIENCIA);
-//        System.out.println("HOLA" + file.toString());
+        StorageReference archivoRef = mStorageRef.child(EMAIL_USUARIO + "/Vídeos/" + NuevaExperiencia.NOMBRE_EXPERIENCIA + "/" + this.NOMBRE_USUARIO + "/video.3gp");
+//        System.out.println("HOLA" + EMAIL_USUARIO + "/Vídeos/" + NuevaExperiencia.NOMBRE_EXPERIENCIA + "/" + this.NOMBRE_USUARIO + "/");
 
         archivoRef.putFile(file)
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -292,6 +297,7 @@ public class DatosGSR extends AppCompatActivity {
                     public void onFailure(@NonNull Exception exception) {
                         // Handle unsuccessful uploads
                         // ...
+                        Log.d(UPLOAD_FAIL,"Fallo al subir");
                     }
                 });
     }

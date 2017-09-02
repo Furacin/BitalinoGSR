@@ -28,7 +28,7 @@ import com.google.firebase.database.ValueEventListener;
 
 public class Formulario extends AppCompatActivity{
 
-    public static String NOMBRE_EXPERIENCIA = "";
+    public static String NOMBRE_EXPERIENCIA;
 
     public static EditText txtDate;
     EditText edit_nombre, edit_apellidos, edit_fecha_nacimiento, edit_descripcion;
