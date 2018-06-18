@@ -68,16 +68,17 @@ public class UsuariosExperiencia extends AppCompatActivity {
                     if (user.getEmail().equals(EMAIL_USUARIO)) {
                         // Obtenemos la key del usuario logueado
                         user_key = snapshot.getKey();
-
+                        System.out.println("HOLA");
                         myRef.child(user_key).child("Experiencias").child(id_experiencia).addValueEventListener(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 for(DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
                                     String nameUsuario = singleSnapshot.getKey();
-//                                    System.out.println("HOLA" + nameUsuario);
-                                    usuarios.add(nameUsuario);
-                                    recyclerViewAdapter = new RecyclerViewAdapterDatosUsuario(UsuariosExperiencia.this, usuarios);
-                                    recyclerView.setAdapter(recyclerViewAdapter);
+//                                        System.out.println("HOLA" + nameUsuario);
+                                        usuarios.add(nameUsuario);
+                                        recyclerViewAdapter = new RecyclerViewAdapterDatosUsuario(UsuariosExperiencia.this, usuarios);
+                                        recyclerView.setAdapter(recyclerViewAdapter);
+
                                 }
                             }
 

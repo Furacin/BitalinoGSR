@@ -18,15 +18,15 @@
         android:textSize="16sp"
         android:textColor="#000000"/>
 
-    <Button
-        android:id="@+id/start_exp"
-        android:layout_width="25dp"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="20dp"
-        android:layout_marginLeft="10dp"
-        android:layout_weight="15"
-        android:contentDescription="@string/app_name"
-        android:drawableRight="@drawable/ic_start_experiencia"
-        android:paddingRight="14dp" />
+    <!--<Button-->
+        <!--android:id="@+id/start_exp"-->
+        <!--android:layout_width="25dp"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginRight="20dp"-->
+        <!--android:layout_marginLeft="10dp"-->
+        <!--android:layout_weight="15"-->
+        <!--android:contentDescription="@string/app_name"-->
+        <!--android:drawableRight="@drawable/ic_start_experiencia"-->
+        <!--android:paddingRight="14dp" />-->
 
 </LinearLayout>

@@ -85,7 +85,8 @@ public class MainActivity extends AppCompatActivity {
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                experiencias.remove(experiencias);
+//                experiencias.remove(experiencias);
+                experiencias.clear();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     Usuario user = snapshot.getValue(Usuario.class);
                     final String user_key;

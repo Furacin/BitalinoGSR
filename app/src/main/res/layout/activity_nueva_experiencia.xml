@@ -27,6 +27,16 @@
         android:layout_centerHorizontal="true"
         android:text="Nueva Experiencia"/>
 
+    <Button
+        android:id="@+id/btn_crearexp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Crear Experiencia"
+        android:layout_below="@+id/btn_nombre_experiencia"
+        android:layout_centerHorizontal="true"
+        android:visibility="invisible"
+        />
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -34,7 +44,7 @@
         android:textSize="18dp"
         android:id="@+id/textview_titulo"
         android:layout_marginTop="30dp"
-        android:layout_below="@+id/btn_nombre_experiencia"
+        android:layout_below="@+id/btn_crearexp"
         android:textStyle="bold"
         android:layout_centerHorizontal="true" />
 
@@ -70,5 +80,10 @@
         android:paddingRight="28dp"
         android:drawableRight="@drawable/ic_adduser"
         android:text="" />
+
+    <TextView
+        android:id="@+id/users"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
 </RelativeLayout>

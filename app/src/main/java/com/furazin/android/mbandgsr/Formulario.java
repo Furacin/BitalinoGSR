@@ -211,18 +211,5 @@ public class Formulario extends AppCompatActivity{
 
         return new Experiencia(nombre,apellidos,fecha_nacimiento, sexo,opcion_multimedia,descripcion);
     }
-//
-//    String getFechaYHora() {
-//        Calendar calendar = Calendar.getInstance();
-//        SimpleDateFormat mdformat = new SimpleDateFormat("yyyyMMdd");
-//        String currentDate = mdformat.format(calendar.getTime());
-//
-//        SimpleDateFormat format = new SimpleDateFormat("HHmm", Locale.US);
-//        String hour = format.format(new Date());
-//
-//        currentDate+=hour;
-//
-//        return currentDate;
-//    }
 
 }

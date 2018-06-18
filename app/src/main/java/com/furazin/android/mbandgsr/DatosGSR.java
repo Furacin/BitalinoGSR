@@ -144,9 +144,7 @@ public class DatosGSR extends AppCompatActivity {
         setContentView(R.layout.activity_datos);
 
         this.NOMBRE_USUARIO = getIntent().getExtras().getString("id_usuario");
-        System.out.println("HOLA2" + NOMBRE_USUARIO);
-
-        timer.schedule(new RandomValues(), 0, 2000);
+//        System.out.println("HOLA2" + NOMBRE_USUARIO);
 
         // Instanciamos una referencia al Contexto
         Context context = this.getApplicationContext();
@@ -184,7 +182,10 @@ public class DatosGSR extends AppCompatActivity {
                 crono.setBase(SystemClock.elapsedRealtime());
                 crono.start();
 
-                new SubscriptionTask().execute();
+//                new SubscriptionTask().execute();
+                // Inicializamos la generación de aleatorios para las gráficas
+                timer.schedule(new RandomValues(), 0, 2000);
+
                 GrabarVideo();
             }
         });
@@ -192,6 +193,7 @@ public class DatosGSR extends AppCompatActivity {
         btnStop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                timer.cancel();
                 crono.stop();
                 graphicGSR();
                 graphicTemperatura();

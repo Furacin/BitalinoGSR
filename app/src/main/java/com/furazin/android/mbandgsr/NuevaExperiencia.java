@@ -25,8 +25,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
 
 import static com.furazin.android.mbandgsr.MainActivity.EMAIL_USUARIO;
 
@@ -44,6 +42,7 @@ public class NuevaExperiencia extends AppCompatActivity {
     View linea;
     Button btn_newuser, btn_nuevaexperiencia;
     EditText edit_nombre_experiencia;
+    Button btn_crearExperiencia;
 
     Dialog dialog;
 
@@ -54,6 +53,14 @@ public class NuevaExperiencia extends AppCompatActivity {
     private RecyclerView recyclerView;
     private LinearLayoutManager linearLayoutManager;
     private RecyclerViewAdapterUsuariosExperiencia recyclerViewAdapter;
+
+    final String[] user_key = new String[1];
+
+    // Write a message to the database
+    FirebaseDatabase database = FirebaseDatabase.getInstance();
+    final DatabaseReference myRef = database.getReference("users");
+
+    private ValueEventListener referenceListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +85,7 @@ public class NuevaExperiencia extends AppCompatActivity {
         linea = findViewById(R.id.line1);
         btn_newuser = (Button) findViewById(R.id.btn_newuser);
         btn_nuevaexperiencia = (Button) findViewById(R.id.btn_nombre_experiencia);
+        btn_crearExperiencia = (Button) findViewById(R.id.btn_crearexp);
         edit_nombre_experiencia = (EditText) findViewById(R.id.edittext_experiencia);
 
         // Cuando el investigador introduce un nombre para la experiencia, se muestra el botón para añadir sujetos de prueba
@@ -87,6 +95,7 @@ public class NuevaExperiencia extends AppCompatActivity {
                 titulo.setVisibility(View.VISIBLE);
                 linea.setVisibility(View.VISIBLE);
                 btn_newuser.setVisibility(View.VISIBLE);
+                btn_crearExperiencia.setVisibility(View.VISIBLE);
 
                 if (!isEmpty(edit_nombre_experiencia)) {
                     NOMBRE_EXPERIENCIA = edit_nombre_experiencia.getText().toString();
@@ -123,6 +132,7 @@ public class NuevaExperiencia extends AppCompatActivity {
                 final RadioGroup radio_sexo = (RadioGroup) dialog.findViewById(R.id.radioGenero);
                 final RadioGroup radio_opcion_multimedia = (RadioGroup) dialog.findViewById(R.id.radioMultimedia);
 
+                // Botón del dialog de creación de usuario
                 Button btn_guardar_datos = (Button) dialog.findViewById(R.id.InicioPrueba_Button);
                 btn_guardar_datos.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -142,8 +152,9 @@ public class NuevaExperiencia extends AppCompatActivity {
 
                         dialog.dismiss();
 
-                        RefreshListaSujetos();
 
+                            ObtenerKey();
+//                        AñadirSujetosRecyclerView();
                     }
                 });
 
@@ -152,14 +163,19 @@ public class NuevaExperiencia extends AppCompatActivity {
             }
         });
 
+        // Como ya hemos creado y guardado los usuarios con el RecyclerViewHolder, cerramos.
+        btn_crearExperiencia.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+
     }
 
-    public void RefreshListaSujetos() {
+    public void ObtenerKey() {
 
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        final DatabaseReference myRef = database.getReference("users");
-        final String[] user_key = new String[1];
-        myRef.addValueEventListener(new ValueEventListener() {
+        referenceListener = myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 //                lista_sujetos.remove(lista_sujetos);
@@ -168,65 +184,63 @@ public class NuevaExperiencia extends AppCompatActivity {
                     if (user.getEmail().equals(EMAIL_USUARIO)) {
                         // Obtenemos la key del usuario logueado
                         user_key[0] = snapshot.getKey();
+                        AñadirSujetosRecyclerView();
                     }
                 }
 
-                myRef.child(user_key[0]).child("Experiencias").child(edit_nombre_experiencia.getText().toString()).addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-//                                System.out.println("HOLAA" + value);
-                        for(DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
-                            String experienciaTitle = singleSnapshot.getKey();
-//                                    System.out.println(singleSnapshot.getValue(HashMap.class));
-                            lista_sujetos.add(experienciaTitle);
-                        }
-//                        System.out.println(lista_sujetos.size());
-                        lista_sujetos = EliminarRepetidos(lista_sujetos);
-                        recyclerViewAdapter = new RecyclerViewAdapterUsuariosExperiencia(NuevaExperiencia.this, lista_sujetos);
-                        recyclerView.setAdapter(recyclerViewAdapter);
-                    }
+//                DatabaseReference ref = myRef.child(user_key[0]).child("Experiencias").child(edit_nombre_experiencia.getText().toString());
+//                ValueEventListener eventListener = new ValueEventListener() {
+//                    @Override
+//                    public void onDataChange(DataSnapshot dataSnapshot) {
+//                        for (DataSnapshot ds : dataSnapshot.getChildren()) {
+//                            String sujeto = ds.child(edit_nombre_experiencia.getText().toString()).getValue(String.class);
+//                            lista_sujetos.add(sujeto);
+//                        }
+//                        for (String sujeto : lista_sujetos) {
+//                            TextView usersTextView = usersTextView = (TextView) findViewById(R.id.users);
+//                            usersTextView.setText(usersTextView.getText().toString() + sujeto + " , ");
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onCancelled(DatabaseError databaseError) {
+//
+//                    }
+//                };
+//                ref.addListenerForSingleValueEvent(eventListener);
 
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
             }
         });
-
     }
 
-    private ArrayList<String> EliminarRepetidos(ArrayList<String> vector) {
-//            String arraycar[]={"4","1","2","6","7","2","2","5","5","6","2","4","2"};
-//            System.out.println(vector);
-//            for(int i=0;i<vector.size();i++){
-//                for(int j=0;j<vector.size()-1;j++){
-//                    if(i!=j){
-//                        if(vector.get(i).equals(vector.get(j))){
-//                            // eliminamos su valor
-//                            vector.remove(i);
-//                        }
-//                    }
-//                }
-//            }
+    public void  AñadirSujetosRecyclerView() {
 
-        ArrayList<String> res = new ArrayList<>();
-        Set<String> hs = new HashSet<>();
-        hs.addAll(vector);
-        res.addAll(hs);
+        if (user_key[0] != null) {
+            referenceListener = myRef.child(user_key[0]).child("Experiencias").child(edit_nombre_experiencia.getText().toString()).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    lista_sujetos.clear();
+                    for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
+                        String experienciaTitle = singleSnapshot.getKey();
+                        lista_sujetos.add(experienciaTitle);
+                    }
+                    //                        System.out.println(lista_sujetos.size());
+                    //                        lista_sujetos = EliminarRepetidos(lista_sujetos);
 
-        return res;
-            // mostramos unicamente los que tienen valor
-//            int n=vector.size();
-//            for (int k=0;k<=n-1;k++){
-//                if(vector.get(k)!=""){
-//                    System.out.println( arraycar[k]);
-//                }
-//            }
+                    recyclerViewAdapter = new RecyclerViewAdapterUsuariosExperiencia(NuevaExperiencia.this, lista_sujetos);
+                    recyclerView.setAdapter(recyclerViewAdapter);
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+        }
     }
 
     private boolean isEmpty(EditText etText) {
@@ -238,11 +252,7 @@ public class NuevaExperiencia extends AppCompatActivity {
         // Obtenemos email del usuario que se ha logueado
         final String email = sharedPref.getString((getString(R.string.email_key)), "");
 
-        // Write a message to the database
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        final DatabaseReference myRef = database.getReference("users");
-
-        myRef.addValueEventListener(new ValueEventListener() {
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
@@ -254,6 +264,7 @@ public class NuevaExperiencia extends AppCompatActivity {
 //                        Experiencia experiencia = ExperienciaFormulario();
                         // Añadimos la informacion del formulario, y en la bd se creara una entrada con la fecha y hora actuales
 //                        NOMBRE_EXPERIENCIA = getFechaYHora();
+                        long i =  dataSnapshot.getChildrenCount();
                         myRef.child(key).child("Experiencias").child(NOMBRE_EXPERIENCIA).child(experiencia.getNombre()).setValue(experiencia);
 //                        myRef.child(key).child("Experiencias").child(NOMBRE_EXPERIENCIA).child("terminada").setValue("no");
                     }
@@ -267,5 +278,13 @@ public class NuevaExperiencia extends AppCompatActivity {
         });
 
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        myRef.removeEventListener(referenceListener);
+        finish();
+    }
+
 
 }
