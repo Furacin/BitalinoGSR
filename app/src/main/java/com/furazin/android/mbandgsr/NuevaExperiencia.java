@@ -282,7 +282,7 @@ public class NuevaExperiencia extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        myRef.removeEventListener(referenceListener);
+        //myRef.removeEventListener(referenceListener);
         finish();
     }
 

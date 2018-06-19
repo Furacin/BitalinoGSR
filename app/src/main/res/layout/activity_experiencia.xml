@@ -116,4 +116,12 @@
         android:textStyle="bold"
         />
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView6"
+        android:id="@+id/btnStartExperiencia"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:text="Iniciar Experiencia"/>
 </RelativeLayout>

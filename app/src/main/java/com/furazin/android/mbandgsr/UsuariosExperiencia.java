@@ -27,7 +27,7 @@ public class UsuariosExperiencia extends AppCompatActivity {
     private SharedPreferences sharedPref;
     public static String EMAIL_USUARIO;
 
-    public static String id_experiencia;
+    public static String NOMBRE_EXPERIENCIA;
     private List<String> usuarios;
     private RecyclerView recyclerView;
     private LinearLayoutManager linearLayoutManager;
@@ -38,7 +38,7 @@ public class UsuariosExperiencia extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lista_usuarios);
 
-        id_experiencia = getIntent().getExtras().getString("id_experiencia");
+        NOMBRE_EXPERIENCIA = getIntent().getExtras().getString("id_experiencia");
 
         // Instanciamos una referencia al Contexto
         Context context = this.getApplicationContext();
@@ -68,8 +68,7 @@ public class UsuariosExperiencia extends AppCompatActivity {
                     if (user.getEmail().equals(EMAIL_USUARIO)) {
                         // Obtenemos la key del usuario logueado
                         user_key = snapshot.getKey();
-                        System.out.println("HOLA");
-                        myRef.child(user_key).child("Experiencias").child(id_experiencia).addValueEventListener(new ValueEventListener() {
+                        myRef.child(user_key).child("Experiencias").child(NOMBRE_EXPERIENCIA).addValueEventListener(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 for(DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {

@@ -1,7 +1,10 @@
 package com.furazin.android.mbandgsr;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.furazin.android.mbandgsr.FirebaseBD.Experiencia;
@@ -21,6 +24,7 @@ public class InfoExperiencia extends AppCompatActivity {
     String id_usuario;
     String EMAIL_USUARIO = MainActivity.EMAIL_USUARIO;
     TextView fecha, nombre, apellidos, sexo, fecha_nacimiento, descripcion;
+    Button btnStartExperiencia;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +37,7 @@ public class InfoExperiencia extends AppCompatActivity {
         sexo = (TextView) findViewById(R.id.sexo);
         fecha_nacimiento = (TextView) findViewById(R.id.fecha_nacimiento);
         descripcion = (TextView) findViewById(R.id.descripcion);
+        btnStartExperiencia = (Button) findViewById(R.id.btnStartExperiencia);
 
         id_usuario = getIntent().getExtras().getString("id_usuario");
         FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -48,7 +53,7 @@ public class InfoExperiencia extends AppCompatActivity {
                     if (user.getEmail().equals(EMAIL_USUARIO)) {
                         // Obtenemos la key del usuario logueado
                         user_key = snapshot.getKey();
-                        myRef.child(user_key).child("Experiencias").child(UsuariosExperiencia.id_experiencia).child(id_usuario).addValueEventListener(new ValueEventListener() {
+                        myRef.child(user_key).child("Experiencias").child(UsuariosExperiencia.NOMBRE_EXPERIENCIA).child(id_usuario).addValueEventListener(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 Experiencia e = dataSnapshot.getValue(Experiencia.class);
@@ -74,6 +79,16 @@ public class InfoExperiencia extends AppCompatActivity {
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
+            }
+        });
+
+        btnStartExperiencia.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                    Intent i = new Intent(getApplicationContext(), DatosGSR.class);
+                    i.putExtra("id_usuario",id_usuario);
+                    startActivity(i);
+                    finish();
             }
         });
 
