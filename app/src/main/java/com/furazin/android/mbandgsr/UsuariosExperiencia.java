@@ -61,7 +61,8 @@ public class UsuariosExperiencia extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 //                System.out.println("HOLA");
-                usuarios.remove(usuarios);
+
+                usuarios.clear();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     Usuario user = snapshot.getValue(Usuario.class);
                     final String user_key;

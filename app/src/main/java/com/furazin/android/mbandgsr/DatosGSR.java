@@ -247,10 +247,17 @@ public class DatosGSR extends AppCompatActivity {
             } catch (InterruptedException e) {
                 // Do nothing as this is happening during destroy
             } catch (BandException e) {
-                // Do nothing as this is happening during destroy
+                // Do nothing as this is happening during destroys
             }
         }
         super.onDestroy();
+    }
+
+    @Override
+    public void onBackPressed() {
+        finish();
+        Intent i = new Intent(DatosGSR.this,MainActivity.class);
+        startActivity(i);
     }
 
     @Override
