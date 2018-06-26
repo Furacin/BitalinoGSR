@@ -23,9 +23,10 @@ public class RecyclerViewAdapterDatosUsuario extends RecyclerView.Adapter<Recycl
     }
     @Override
     public RecyclerViewHoldersDatosUsuario onCreateViewHolder(ViewGroup parent, int viewType) {
+
         RecyclerViewHoldersDatosUsuario viewHolder = null;
         View layoutView = LayoutInflater.from(parent.getContext()).inflate(R.layout.to_do_list, parent, false);
-        viewHolder = new RecyclerViewHoldersDatosUsuario(layoutView, experiencias);
+        viewHolder = new RecyclerViewHoldersDatosUsuario(layoutView, experiencias,context);
         return viewHolder;
     }
 

@@ -33,12 +33,15 @@ public class UsuariosExperiencia extends AppCompatActivity {
     private LinearLayoutManager linearLayoutManager;
     private RecyclerViewAdapterDatosUsuario recyclerViewAdapter;
 
+    public static Context usuariosExperienciaContext;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lista_usuarios);
 
         NOMBRE_EXPERIENCIA = getIntent().getExtras().getString("id_experiencia");
+        usuariosExperienciaContext = this.getApplicationContext();
 
         // Instanciamos una referencia al Contexto
         Context context = this.getApplicationContext();

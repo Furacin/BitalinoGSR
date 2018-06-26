@@ -15,6 +15,7 @@ public class RecyclerViewAdapterListaUsuarios extends RecyclerView.Adapter<Recyc
     public RecyclerViewAdapterListaUsuarios(Context context, List<String> experiencias) {
         this.experiencias = experiencias;
         this.context = context;
+
     }
     @Override
     public RecyclerViewHoldersListaUsuarios onCreateViewHolder(ViewGroup parent, int viewType) {

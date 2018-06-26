@@ -144,7 +144,6 @@ public class DatosGSR extends AppCompatActivity {
         setContentView(R.layout.activity_datos);
 
         this.NOMBRE_USUARIO = getIntent().getExtras().getString("id_usuario");
-//        System.out.println("HOLA2" + NOMBRE_USUARIO);
 
         // Instanciamos una referencia al Contexto
         Context context = this.getApplicationContext();
@@ -256,8 +255,8 @@ public class DatosGSR extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         finish();
-        Intent i = new Intent(DatosGSR.this,MainActivity.class);
-        startActivity(i);
+        //Intent i = new Intent(DatosGSR.this,MainActivity.class);
+        //startActivity(i);
     }
 
     @Override
@@ -289,7 +288,7 @@ public class DatosGSR extends AppCompatActivity {
     public void SubirArchivoFirebase(String path) {
         Uri file = Uri.fromFile(new File(path));
 
-        StorageReference archivoRef = mStorageRef.child(EMAIL_USUARIO + "/Vídeos/" + NuevaExperiencia.NOMBRE_EXPERIENCIA + "/" + this.NOMBRE_USUARIO + "/video.3gp");
+        StorageReference archivoRef = mStorageRef.child(EMAIL_USUARIO + "/Vídeos/" + UsuariosExperiencia.NOMBRE_EXPERIENCIA + "/" + this.NOMBRE_USUARIO + "/video.3gp");
 
         archivoRef.putFile(file)
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {

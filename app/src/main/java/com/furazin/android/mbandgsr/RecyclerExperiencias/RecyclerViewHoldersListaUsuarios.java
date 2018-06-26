@@ -24,6 +24,7 @@ public class RecyclerViewHoldersListaUsuarios extends RecyclerView.ViewHolder{
             @Override
             public void onClick(View view) {
 //                System.out.println("HOLA" + Name.getText());
+
                 Intent i = new Intent(itemView.getContext(), UsuariosExperiencia.class);
 //                System.out.println("HOLA2 " + Name.getText());
                 i.putExtra("id_experiencia",Name.getText());
