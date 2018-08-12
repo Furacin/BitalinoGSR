@@ -123,5 +123,5 @@
         android:id="@+id/btnStartExperiencia"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
-        android:text="Iniciar Experiencia"/>
+        android:text="Iniciar Prueba"/>
 </RelativeLayout>

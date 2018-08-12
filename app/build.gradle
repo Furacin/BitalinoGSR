@@ -5,7 +5,7 @@ android {
     buildToolsVersion '27.0.3'
     defaultConfig {
         applicationId "com.furazin.android.mbandgsr"
-        minSdkVersion 19
+        minSdkVersion 18
         targetSdkVersion 22
         versionCode 1
         versionName "1.0"
@@ -48,5 +48,6 @@ dependencies {
     compile 'com.google.firebase:firebase-database:10.0.1'
     compile 'com.google.firebase:firebase-storage:10.0.1'
     testImplementation'junit:junit:4.12'
+    compile project(path: ':api')
 }
 apply plugin: 'com.google.gms.google-services'

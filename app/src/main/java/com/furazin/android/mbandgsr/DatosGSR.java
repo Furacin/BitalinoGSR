@@ -1,5 +1,6 @@
 package com.furazin.android.mbandgsr;
 
+import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -62,6 +63,9 @@ import java.util.TimerTask;
 
 public class DatosGSR extends AppCompatActivity {
 
+    public final static String EXTRA_DEVICE = "com.furazin.android.mbandgsr.DatosGSR.EXTRA_DEVICE";
+    private BluetoothDevice bluetoothDevice;
+
     private static final String UPLOAD_FAIL = "UPLOAD FAIL";
 //    private String NOMBRE_EXPERIENCIA = Formulario.NOMBRE_EXPERIENCIA;
     private String EMAIL_USUARIO;
@@ -74,8 +78,10 @@ public class DatosGSR extends AppCompatActivity {
     static final int REQUEST_VIDEO_CAPTURE = 1;
 
     private BandClient client = null;
-    private Button btnStart, btnStop;
+    private Button btnStart, btnStop, btnBluetooth;
     private TextView txtGSR, txtTemperatura, txtFC;
+    private TextView nameTextView;
+    private TextView addressTextView;
     VideoView video_record;
     private String videoPath = "";
 
@@ -140,8 +146,16 @@ public class DatosGSR extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_datos);
+
+        // Comprobamos que está emparejado un dispositvo bluetooth Bitalino y obtenemos sus datos
+        if(getIntent().hasExtra(EXTRA_DEVICE)){
+            bluetoothDevice = getIntent().getParcelableExtra(EXTRA_DEVICE);
+            iniciarUIBluetooth();
+            setUIBluetooth();
+        }
 
         this.NOMBRE_USUARIO = getIntent().getExtras().getString("id_usuario");
 
@@ -165,6 +179,15 @@ public class DatosGSR extends AppCompatActivity {
 
         btnStart = (Button) findViewById(R.id.btnStart);
         btnStop = (Button) findViewById(R.id.btnStop);
+        btnBluetooth = (Button) findViewById(R.id.btnEmparejarBluetooth);
+
+        btnBluetooth.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(getApplicationContext(),ScanActivity.class);
+                startActivity(i);
+            }
+        });
 
         btnStart.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -223,6 +246,21 @@ public class DatosGSR extends AppCompatActivity {
         txtTemperatura.setText("");
         txtFC.setText("");
     }
+
+    private void iniciarUIBluetooth() {
+        nameTextView = findViewById(R.id.device_name_text_view);
+        addressTextView = findViewById(R.id.mac_address_text_view);
+    }
+
+    private void setUIBluetooth() {
+        if (bluetoothDevice.getName() == null) {
+            nameTextView.setText("BITalino");
+        } else {
+            nameTextView.setText(bluetoothDevice.getName());
+            addressTextView.setText(bluetoothDevice.getAddress());
+        }
+    }
+
 
     @Override
     protected void onPause() {
@@ -560,7 +598,7 @@ public class DatosGSR extends AppCompatActivity {
             valores_fc.add(new Pair<String, String>(String.valueOf(x),String.valueOf(y)));
         }
 
-        // Write a message to the database
+        // Escritura de datos en la base de datos
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         final DatabaseReference myRef = database.getReference("users");
 
@@ -572,37 +610,16 @@ public class DatosGSR extends AppCompatActivity {
                     if (user.getEmail().equals(EMAIL_USUARIO)) {
                         // Obtenemos la key del usuario logueado
                         final String key = snapshot.getKey();
-                        // Creamos una experiencia con los datos del formulario para ser almacenada en la base de datos en firabase
-//                        ValoresGraficas valores_graficas = new ValoresGraficas(valores_gsr, valores_temperatura, valores_fc);
-                        // Añadimos la informacion del formulario, y en la bd se creara una entrada con la fecha y hora actuales
 
-                        //new Thread(new Runnable() {
-                          //  public void run() {
-                                for (int i=0; i<valores_gsr.size(); i++) {
-//                            myRef.child(key).child("Experiencias").child(NOMBRE_EXPERIENCIA).child("Datos Gráficas").child("GSR").child(String.valueOf(i)).child("first").setValue(valores_gsr.get(i).first);
-                                    myRef.child(key).child("Experiencias").child(UsuariosExperiencia.NOMBRE_EXPERIENCIA).child(NOMBRE_USUARIO).child("Datos Graficas").child("GSR").child(String.valueOf(i)).setValue(valores_gsr.get(i).second);
-                                }
-                            //}
-                        //}).start();
-
-                        //new Thread(new Runnable() {
-                          //  public void run() {
-                                for (int i=0; i<valores_temperatura.size(); i++) {
-//                            myRef.child(key).child("Experiencias").child(NOMBRE_EXPERIENCIA).child("Datos Gráficas").child("Temperatura").child(String.valueOf(i)).child("first").setValue(valores_temperatura.get(i).first);
-                                    myRef.child(key).child("Experiencias").child(UsuariosExperiencia.NOMBRE_EXPERIENCIA).child(NOMBRE_USUARIO).child("Datos Graficas").child("Temperatura").child(String.valueOf(i)).setValue(valores_temperatura.get(i).second);
-                                }
-                            //}
-                        //}).start();
-
-                        //new Thread(new Runnable() {
-                          //  public void run() {
-                                for (int i=0; i<valores_fc.size(); i++) {
-//                            myRef.child(key).child("Experiencias").child(NOMBRE_EXPERIENCIA).child("Datos Gráficas").child("FC").child(String.valueOf(i)).child("first").setValue(valores_fc.get(i).first);
-                                    myRef.child(key).child("Experiencias").child(UsuariosExperiencia.NOMBRE_EXPERIENCIA).child(NOMBRE_USUARIO).child("Datos Graficas").child("FC").child(String.valueOf(i)).setValue(valores_fc.get(i).second);
-                                }
-                            //}
-                        //}).start();
-
+                            for (int i=0; i<valores_gsr.size(); i++) {
+                                myRef.child(key).child("Experiencias").child(UsuariosExperiencia.NOMBRE_EXPERIENCIA).child(NOMBRE_USUARIO).child("Datos Graficas").child("GSR").child(String.valueOf(i)).setValue(valores_gsr.get(i).second);
+                            }
+                            for (int i=0; i<valores_temperatura.size(); i++) {
+                                myRef.child(key).child("Experiencias").child(UsuariosExperiencia.NOMBRE_EXPERIENCIA).child(NOMBRE_USUARIO).child("Datos Graficas").child("Temperatura").child(String.valueOf(i)).setValue(valores_temperatura.get(i).second);
+                            }
+                            for (int i=0; i<valores_fc.size(); i++) {
+                                myRef.child(key).child("Experiencias").child(UsuariosExperiencia.NOMBRE_EXPERIENCIA).child(NOMBRE_USUARIO).child("Datos Graficas").child("FC").child(String.valueOf(i)).setValue(valores_fc.get(i).second);
+                            }
                     }
                 }
             }

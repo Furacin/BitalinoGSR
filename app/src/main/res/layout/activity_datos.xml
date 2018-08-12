@@ -13,11 +13,49 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="Name:"
+                    android:id="@+id/lblName" android:layout_weight="1" android:textSize="16dp"
+                    android:gravity="center_vertical" android:paddingLeft="10dp" android:textColor="@android:color/black"
+                    android:textStyle="bold"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="name"
+                    android:id="@+id/device_name_text_view" android:layout_weight="1" android:textSize="16dp"
+                    android:gravity="center_vertical" android:paddingLeft="10dp"
+                    android:textColor="@color/material_grey_600" android:textStyle="italic"
+                    android:layout_below="@+id/lblName"/>
+
+                <TextView android:layout_width="match_parent" android:layout_height="match_parent" android:text="MAC address:"
+                    android:id="@+id/lblMac" android:layout_weight="1" android:textSize="16dp"
+                    android:gravity="center_vertical" android:paddingLeft="10dp" android:textColor="@android:color/black"
+                    android:textStyle="bold"
+                    android:layout_below="@+id/device_name_text_view"/>
+                <TextView android:layout_width="match_parent" android:layout_height="match_parent" android:text="00:00:00:00:00:00"
+                    android:id="@+id/mac_address_text_view" android:layout_weight="1" android:textSize="16dp"
+                    android:gravity="center_vertical" android:paddingLeft="10dp"
+                    android:textColor="@color/material_grey_600" android:textStyle="italic"
+                    android:layout_below="@+id/lblMac"/>
+                <Button
+                    android:id="@+id/btnEmparejarBluetooth"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Emparejar Bluetooth"
+                    android:layout_marginTop="10dp"
+                    android:layout_below="@+id/mac_address_text_view"
+                  />
+
+
+
             <TextView
-                android:id="@+id/txtStep"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/steps" />
+            android:id="@+id/txtStep"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/steps"
+            android:layout_below="@+id/btnEmparejarBluetooth"/>
 
             <Button
                 android:id="@+id/btnStart"
