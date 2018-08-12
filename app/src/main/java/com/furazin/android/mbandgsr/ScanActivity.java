@@ -190,6 +190,7 @@ public class ScanActivity extends ListActivity {
             mScanning = false;
         }
         startActivity(intent);
+        finish();
     }
 
     private void scanDevice(final boolean enable) {

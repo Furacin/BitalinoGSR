@@ -47,7 +47,25 @@
                     android:layout_marginTop="10dp"
                     android:layout_below="@+id/mac_address_text_view"
                   />
-
+                <Button
+                    android:id="@+id/btnConectarBitalino"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Conectar Bitalino"
+                    android:layout_marginTop="10dp"
+                    android:layout_below="@+id/btnEmparejarBluetooth"
+                    />
+                <TextView android:layout_width="match_parent" android:layout_height="match_parent" android:text="Results:"
+                    android:id="@+id/lbl_text_view"
+                    android:layout_weight="1" android:textSize="16dp"
+                    android:gravity="center_vertical" android:paddingLeft="10dp" android:textColor="@android:color/black"
+                    android:layout_below="@+id/btnConectarBitalino"
+                    android:textStyle="bold"/>
+                <TextView android:layout_width="match_parent" android:layout_height="match_parent" android:text="..."
+                    android:id="@+id/results_text_view" android:layout_weight="1" android:textSize="16dp"
+                    android:gravity="center_vertical" android:paddingLeft="10dp"
+                    android:layout_below="@+id/lbl_text_view"
+                    android:textColor="@color/material_grey_600" android:textStyle="italic"/>
 
 
             <TextView
@@ -55,7 +73,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/steps"
-            android:layout_below="@+id/btnEmparejarBluetooth"/>
+            android:layout_below="@+id/results_text_view"/>
 
             <Button
                 android:id="@+id/btnStart"

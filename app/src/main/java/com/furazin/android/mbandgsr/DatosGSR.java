@@ -1,18 +1,22 @@
 package com.furazin.android.mbandgsr;
 
+import android.app.Activity;
 import android.bluetooth.BluetoothDevice;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.SystemClock;
+import android.os.Handler;
+import android.os.Message;
+import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.Pair;
 import android.view.View;
@@ -21,6 +25,14 @@ import android.widget.Chronometer;
 import android.widget.TextView;
 import android.widget.VideoView;
 
+import com.furazin.android.api.Communication;
+import com.furazin.android.api.bitalino.BITalinoCommunication;
+import com.furazin.android.api.bitalino.BITalinoCommunicationFactory;
+import com.furazin.android.api.bitalino.BITalinoDescription;
+import com.furazin.android.api.bitalino.BITalinoException;
+import com.furazin.android.api.bitalino.BITalinoFrame;
+import com.furazin.android.api.bitalino.BITalinoState;
+import com.furazin.android.api.bitalino.bth.OnBITalinoDataAvailable;
 import com.furazin.android.mbandgsr.FirebaseBD.Usuario;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -40,12 +52,6 @@ import com.microsoft.band.BandClientManager;
 import com.microsoft.band.BandException;
 import com.microsoft.band.BandInfo;
 import com.microsoft.band.ConnectionState;
-import com.microsoft.band.sensors.BandBarometerEvent;
-import com.microsoft.band.sensors.BandBarometerEventListener;
-import com.microsoft.band.sensors.BandGsrEvent;
-import com.microsoft.band.sensors.BandGsrEventListener;
-import com.microsoft.band.sensors.BandHeartRateEvent;
-import com.microsoft.band.sensors.BandHeartRateEventListener;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -57,14 +63,31 @@ import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import static com.furazin.android.api.Constants.ACTION_COMMAND_REPLY;
+import static com.furazin.android.api.Constants.ACTION_DATA_AVAILABLE;
+import static com.furazin.android.api.Constants.ACTION_DEVICE_READY;
+import static com.furazin.android.api.Constants.ACTION_EVENT_AVAILABLE;
+import static com.furazin.android.api.Constants.ACTION_STATE_CHANGED;
+import static com.furazin.android.api.Constants.EXTRA_COMMAND_REPLY;
+import static com.furazin.android.api.Constants.EXTRA_DATA;
+import static com.furazin.android.api.Constants.EXTRA_STATE_CHANGED;
+import static com.furazin.android.api.Constants.IDENTIFIER;
+import static com.furazin.android.api.Constants.States;
+
 /**
  * Created by manza on 15/05/2017.
  */
 
-public class DatosGSR extends AppCompatActivity {
+public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
+
+    private Handler handler;
 
     public final static String EXTRA_DEVICE = "com.furazin.android.mbandgsr.DatosGSR.EXTRA_DEVICE";
+    public final static String FRAME = "com.furazin.android.mbandgsr.DeviceActivity.Frame";
     private BluetoothDevice bluetoothDevice;
+    private BITalinoCommunication bitalino;
+    private boolean isBITalino2 = false;
+    private boolean isUpdateReceiverRegistered = false;
 
     private static final String UPLOAD_FAIL = "UPLOAD FAIL";
 //    private String NOMBRE_EXPERIENCIA = Formulario.NOMBRE_EXPERIENCIA;
@@ -78,10 +101,12 @@ public class DatosGSR extends AppCompatActivity {
     static final int REQUEST_VIDEO_CAPTURE = 1;
 
     private BandClient client = null;
-    private Button btnStart, btnStop, btnBluetooth;
+    private Button btnStart, btnStop, btnBluetooth, btnConectarBitalino;
     private TextView txtGSR, txtTemperatura, txtFC;
     private TextView nameTextView;
     private TextView addressTextView;
+    private TextView resultsTextView;
+    private final String TAG = this.getClass().getSimpleName();
     VideoView video_record;
     private String videoPath = "";
 
@@ -104,45 +129,45 @@ public class DatosGSR extends AppCompatActivity {
 
     Timer timer = new Timer();
 
-    private BandGsrEventListener mGsrEventListener = new BandGsrEventListener() {
-        @Override
-        public void onBandGsrChanged(final BandGsrEvent event) {
-            if (event != null) {
-                appendGSRToUI(String.format("GSR = %d kOhms\n", event.getResistance()));
-                nuevoDatoGSR(event.getResistance());
-            }
-        }
-    };
+//    private BandGsrEventListener mGsrEventListener = new BandGsrEventListener() {
+//        @Override
+//        public void onBandGsrChanged(final BandGsrEvent event) {
+//            if (event != null) {
+//                appendGSRToUI(String.format("GSR = %d kOhms\n", event.getResistance()));
+//                nuevoDatoGSR(event.getResistance());
+//            }
+//        }
+//    };
 
-    private BandBarometerEventListener mBarometerEventListener = new BandBarometerEventListener() {
-        @Override
-        public void onBandBarometerChanged(final BandBarometerEvent event) {
-            if (event != null) {
-                appendTemperaturaToUI(String.format("Temperatura = %.2f degrees Celsius", event.getTemperature()));
-                nuevoDatoTemperatura(event.getTemperature());
-//                try {
-//                    Thread.sleep(2500);
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-            }
-        }
-    };
+//    private BandBarometerEventListener mBarometerEventListener = new BandBarometerEventListener() {
+//        @Override
+//        public void onBandBarometerChanged(final BandBarometerEvent event) {
+//            if (event != null) {
+//                appendTemperaturaToUI(String.format("Temperatura = %.2f degrees Celsius", event.getTemperature()));
+//                nuevoDatoTemperatura(event.getTemperature());
+////                try {
+////                    Thread.sleep(2500);
+////                } catch (InterruptedException e) {
+////                    e.printStackTrace();
+////                }
+//            }
+//        }
+//    };
 
-    private BandHeartRateEventListener mHeartRateEventListener = new BandHeartRateEventListener() {
-        @Override
-        public void onBandHeartRateChanged(final BandHeartRateEvent event) {
-            if (event != null) {
-                appendFCToUI(String.format("Frecuencia cardiaca = %d beats per minute\n", event.getHeartRate()));
-                nuevoDatoFC(event.getHeartRate());
-//                try {
-//                    Thread.sleep(2500);
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-            }
-        }
-    };
+//    private BandHeartRateEventListener mHeartRateEventListener = new BandHeartRateEventListener() {
+//        @Override
+//        public void onBandHeartRateChanged(final BandHeartRateEvent event) {
+//            if (event != null) {
+//                appendFCToUI(String.format("Frecuencia cardiaca = %d beats per minute\n", event.getHeartRate()));
+//                nuevoDatoFC(event.getHeartRate());
+////                try {
+////                    Thread.sleep(2500);
+////                } catch (InterruptedException e) {
+////                    e.printStackTrace();
+////                }
+//            }
+//        }
+//    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -156,6 +181,20 @@ public class DatosGSR extends AppCompatActivity {
             iniciarUIBluetooth();
             setUIBluetooth();
         }
+
+        handler = new Handler(getMainLooper()){
+            @Override
+            public void handleMessage(Message msg) {
+                Bundle bundle = msg.getData();
+                BITalinoFrame frame = bundle.getParcelable(FRAME);
+
+                Log.d(TAG, frame.toString());
+
+                if(frame != null){ //BITalino
+                    resultsTextView.setText(frame.toString());
+                }
+            }
+        };
 
         this.NOMBRE_USUARIO = getIntent().getExtras().getString("id_usuario");
 
@@ -180,6 +219,9 @@ public class DatosGSR extends AppCompatActivity {
         btnStart = (Button) findViewById(R.id.btnStart);
         btnStop = (Button) findViewById(R.id.btnStop);
         btnBluetooth = (Button) findViewById(R.id.btnEmparejarBluetooth);
+        btnConectarBitalino = (Button) findViewById(R.id.btnConectarBitalino);
+
+        resultsTextView = (TextView) findViewById(R.id.results_text_view);
 
         btnBluetooth.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -189,26 +231,45 @@ public class DatosGSR extends AppCompatActivity {
             }
         });
 
-        btnStart.setOnClickListener(new View.OnClickListener() {
+        btnConectarBitalino.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                btnStop.setVisibility(View.VISIBLE);
-                txtGSR.setText("");
-                txtTemperatura.setText("");
-                txtFC.setText("");
+                //btnStop.setVisibility(View.VISIBLE);
+//                txtGSR.setText("");
+//                txtTemperatura.setText("");
+//                txtFC.setText("");
 
-                // Permitir monitorizar la Frecuencia Cardiaca
+                 //Permitir monitorizar la Frecuencia Cardiaca
 //                new HeartRateConsentTask().execute(reference);
-
-                crono.setVisibility(View.VISIBLE);
-                crono.setBase(SystemClock.elapsedRealtime());
-                crono.start();
-
+//
+//                crono.setVisibility(View.VISIBLE);
+//                crono.setBase(SystemClock.elapsedRealtime());
+//                crono.start();
+//
 //                new SubscriptionTask().execute();
-                // Inicializamos la generación de aleatorios para las gráficas
-                timer.schedule(new RandomValues(), 0, 2000);
+//                 Inicializamos la generación de aleatorios para las gráficas
+//                timer.schedule(new RandomValues(), 0, 2000);
+//
+//                startBitalino();
+//                GrabarVideo();
 
-                GrabarVideo();
+                try {
+                    bitalino.connect(bluetoothDevice.getAddress());
+                } catch (BITalinoException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        btnStart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                boolean digital1 = true;
+                try {
+                    bitalino.start(new int[]{0,1,2,3,4,5}, 1);
+                } catch (BITalinoException e) {
+                    e.printStackTrace();
+                }
             }
         });
 
@@ -242,9 +303,29 @@ public class DatosGSR extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
+        registerReceiver(updateReceiver, makeUpdateIntentFilter());
+        isUpdateReceiverRegistered = true;
+
         txtGSR.setText("");
         txtTemperatura.setText("");
         txtFC.setText("");
+    }
+
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * BITALINO
+     */
+
+    @Override
+    public void onBITalinoDataAvailable(BITalinoFrame bitalinoFrame) {
+        Message message = handler.obtainMessage();
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(FRAME, bitalinoFrame);
+        message.setData(bundle);
+        handler.sendMessage(message);
     }
 
     private void iniciarUIBluetooth() {
@@ -259,7 +340,109 @@ public class DatosGSR extends AppCompatActivity {
             nameTextView.setText(bluetoothDevice.getName());
             addressTextView.setText(bluetoothDevice.getAddress());
         }
+
+        Communication communication = Communication.getById(bluetoothDevice.getType());
+        Log.d(TAG, "Communication: " + communication.name());
+        if(communication.equals(Communication.DUAL)){
+            communication = Communication.BLE;
+        }
+
+        bitalino = new BITalinoCommunicationFactory().getCommunication(communication,this, this);
     }
+
+    private final BroadcastReceiver updateReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            final String action = intent.getAction();
+            if(ACTION_STATE_CHANGED.equals(action)){
+                String identifier = intent.getStringExtra(IDENTIFIER);
+                States state = States.getStates(intent.getIntExtra(EXTRA_STATE_CHANGED, 0));
+
+                //stateTextView.setText(state.name());
+
+                switch (state){
+                    case NO_CONNECTION:
+                        break;
+                    case LISTEN:
+                        break;
+                    case CONNECTING:
+                        break;
+                    case CONNECTED:
+                        break;
+                    case ACQUISITION_TRYING:
+                        break;
+                    case ACQUISITION_OK:
+                        break;
+                    case ACQUISITION_STOPPING:
+                        break;
+                    case DISCONNECTED:
+                        break;
+                    case ENDED:
+                        break;
+
+                }
+            }
+            else if(ACTION_DATA_AVAILABLE.equals(action)){
+                if(intent.hasExtra(EXTRA_DATA)){
+                    Parcelable parcelable = intent.getParcelableExtra(EXTRA_DATA);
+                    if(parcelable.getClass().equals(BITalinoFrame.class)){ //BITalino
+                        BITalinoFrame frame = (BITalinoFrame) parcelable;
+                        resultsTextView.setText(frame.toString());
+                    }
+                }
+            }
+            else if(ACTION_COMMAND_REPLY.equals(action)){
+                String identifier = intent.getStringExtra(IDENTIFIER);
+
+                if(intent.hasExtra(EXTRA_COMMAND_REPLY) && (intent.getParcelableExtra(EXTRA_COMMAND_REPLY) != null)){
+                    Parcelable parcelable = intent.getParcelableExtra(EXTRA_COMMAND_REPLY);
+                    if(parcelable.getClass().equals(BITalinoState.class)){ //BITalino
+                        Log.d(TAG, ((BITalinoState)parcelable).toString());
+                        resultsTextView.setText(parcelable.toString());
+                    }
+                    else if(parcelable.getClass().equals(BITalinoDescription.class)){ //BITalino
+                        isBITalino2 = ((BITalinoDescription)parcelable).isBITalino2();
+                        resultsTextView.setText("isBITalino2: " + isBITalino2 + "; FwVersion: " + String.valueOf(((BITalinoDescription)parcelable).getFwVersion()));
+
+//                        if(identifier.equals(identifierBITalino2) && bitalino2 != null){
+//                            try {
+//                                bitalino2.start(new int[]{0,1,2,3,4,5}, 1);
+//                            } catch (BITalinoException e) {
+//                                e.printStackTrace();
+//                            }
+//                        }
+                    }
+                }
+            }
+        }
+    };
+
+    private IntentFilter makeUpdateIntentFilter() {
+        final IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(ACTION_STATE_CHANGED);
+        intentFilter.addAction(ACTION_DATA_AVAILABLE);
+        intentFilter.addAction(ACTION_EVENT_AVAILABLE);
+        intentFilter.addAction(ACTION_DEVICE_READY);
+        intentFilter.addAction(ACTION_COMMAND_REPLY);
+        return intentFilter;
+    }
+
+    private void startBitalino() {
+        // Una vez tenemos emparejado, conectamos con el dispositivo
+        try {
+            bitalino.connect(bluetoothDevice.getAddress());
+        } catch (BITalinoException e) {
+            e.printStackTrace();
+        }
+        boolean digital1 = true;
+        try {
+            bitalino.start(new int[]{0,1,2,3,4,5}, 1);
+        } catch (BITalinoException e) {
+            e.printStackTrace();
+        }
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
     @Override
@@ -278,16 +461,29 @@ public class DatosGSR extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        if (client != null) {
+//        if (client != null) {
+//            try {
+//                client.disconnect().await();
+//            } catch (InterruptedException e) {
+//                // Do nothing as this is happening during destroy
+//            } catch (BandException e) {
+//                // Do nothing as this is happening during destroys
+//            }
+//        }
+        super.onDestroy();
+        if(isUpdateReceiverRegistered) {
+            unregisterReceiver(updateReceiver);
+            isUpdateReceiverRegistered = false;
+        }
+
+        if(bitalino != null){
+            bitalino.closeReceivers();
             try {
-                client.disconnect().await();
-            } catch (InterruptedException e) {
-                // Do nothing as this is happening during destroy
-            } catch (BandException e) {
-                // Do nothing as this is happening during destroys
+                bitalino.disconnect();
+            } catch (BITalinoException e) {
+                e.printStackTrace();
             }
         }
-        super.onDestroy();
     }
 
     @Override
