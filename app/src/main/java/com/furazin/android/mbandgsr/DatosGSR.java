@@ -234,10 +234,10 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
         btnConectarBitalino.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //btnStop.setVisibility(View.VISIBLE);
-//                txtGSR.setText("");
-//                txtTemperatura.setText("");
-//                txtFC.setText("");
+
+                txtGSR.setText("");
+                txtTemperatura.setText("");
+                txtFC.setText("");
 
                  //Permitir monitorizar la Frecuencia Cardiaca
 //                new HeartRateConsentTask().execute(reference);
@@ -251,7 +251,6 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
 //                timer.schedule(new RandomValues(), 0, 2000);
 //
 //                startBitalino();
-//                GrabarVideo();
 
                 try {
                     bitalino.connect(bluetoothDevice.getAddress());
@@ -264,23 +263,30 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
         btnStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                btnStop.setVisibility(View.VISIBLE);
                 boolean digital1 = true;
                 try {
                     bitalino.start(new int[]{0,1,2,3,4,5}, 1);
                 } catch (BITalinoException e) {
                     e.printStackTrace();
                 }
+                //GrabarVideo();
             }
         });
 
         btnStop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                timer.cancel();
-                crono.stop();
+                try {
+                    bitalino.stop();
+                } catch (BITalinoException e) {
+                    e.printStackTrace();
+                }
+                //timer.cancel();
+                //crono.stop();
                 graphicGSR();
-                graphicTemperatura();
-                graphicFC();
+                //graphicTemperatura();
+                //graphicFC();
                 WriteDatosGraficaFirebase(gsrValues, temperaturaValues, fcValues);
             }
         });
@@ -326,6 +332,10 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
         bundle.putParcelable(FRAME, bitalinoFrame);
         message.setData(bundle);
         handler.sendMessage(message);
+
+        double gsr = getConvertedGSR(bitalinoFrame.getAnalog(2));
+        System.out.println("GSR ANALOG ---> " + gsr);
+        nuevoDatoGSR(gsr);
     }
 
     private void iniciarUIBluetooth() {
@@ -554,7 +564,7 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
         return cursor.getString(column_index);
     }
 
-    String getFechaYHora() {
+    public String getFechaYHora() {
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat mdformat = new SimpleDateFormat("yyyyMMdd");
         String currentDate = mdformat.format(calendar.getTime());
@@ -565,6 +575,16 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
         currentDate+=hour;
 
         return currentDate;
+    }
+
+    /*
+    * Función que transforma los valores de la GSR obtenidos directamente de Bitalino en microSiemens
+    */
+    private double getConvertedGSR(int gsr) {
+        double VCC = 3.3;
+        double gsrConverted_micro = ((gsr/Math.pow(2,10))*VCC)/0.132;
+
+        return gsrConverted_micro;
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -691,7 +711,7 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
     / Gráfica con los valores de los sensores
      */
 
-    public void nuevoDatoGSR(int res) {
+    public void nuevoDatoGSR(double res) {
         try {
             Thread.sleep(500);
         } catch (InterruptedException e) {
@@ -726,8 +746,8 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
         DataPoint[] points = new DataPoint[100000];
 
         for (int i=0; i<gsrValues.size(); i++) {
-            int x = (int)gsrValues.get(i).getX();
-            int y = (int)gsrValues.get(i).getY();
+            double x = gsrValues.get(i).getX();
+            double y = gsrValues.get(i).getY();
             points[i] = new DataPoint(x,y);
             series.appendData(new DataPoint(x,y),true,50000);
         }
@@ -810,12 +830,12 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
                             for (int i=0; i<valores_gsr.size(); i++) {
                                 myRef.child(key).child("Experiencias").child(UsuariosExperiencia.NOMBRE_EXPERIENCIA).child(NOMBRE_USUARIO).child("Datos Graficas").child("GSR").child(String.valueOf(i)).setValue(valores_gsr.get(i).second);
                             }
-                            for (int i=0; i<valores_temperatura.size(); i++) {
-                                myRef.child(key).child("Experiencias").child(UsuariosExperiencia.NOMBRE_EXPERIENCIA).child(NOMBRE_USUARIO).child("Datos Graficas").child("Temperatura").child(String.valueOf(i)).setValue(valores_temperatura.get(i).second);
-                            }
-                            for (int i=0; i<valores_fc.size(); i++) {
-                                myRef.child(key).child("Experiencias").child(UsuariosExperiencia.NOMBRE_EXPERIENCIA).child(NOMBRE_USUARIO).child("Datos Graficas").child("FC").child(String.valueOf(i)).setValue(valores_fc.get(i).second);
-                            }
+//                            for (int i=0; i<valores_temperatura.size(); i++) {
+//                                myRef.child(key).child("Experiencias").child(UsuariosExperiencia.NOMBRE_EXPERIENCIA).child(NOMBRE_USUARIO).child("Datos Graficas").child("Temperatura").child(String.valueOf(i)).setValue(valores_temperatura.get(i).second);
+//                            }
+//                            for (int i=0; i<valores_fc.size(); i++) {
+//                                myRef.child(key).child("Experiencias").child(UsuariosExperiencia.NOMBRE_EXPERIENCIA).child(NOMBRE_USUARIO).child("Datos Graficas").child("FC").child(String.valueOf(i)).setValue(valores_fc.get(i).second);
+//                            }
                     }
                 }
             }
