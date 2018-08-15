@@ -23,6 +23,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.VideoView;
 
 import com.furazin.android.api.Communication;
@@ -175,6 +176,9 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_datos);
 
+        nameTextView = findViewById(R.id.device_name_text_view);
+        addressTextView = findViewById(R.id.mac_address_text_view);
+
         // Comprobamos que está emparejado un dispositvo bluetooth Bitalino y obtenemos sus datos
         if(getIntent().hasExtra(EXTRA_DEVICE)){
             bluetoothDevice = getIntent().getParcelableExtra(EXTRA_DEVICE);
@@ -235,9 +239,9 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
             @Override
             public void onClick(View v) {
 
-                txtGSR.setText("");
-                txtTemperatura.setText("");
-                txtFC.setText("");
+                //txtGSR.setText("");
+                //txtTemperatura.setText("");
+                //txtFC.setText("");
 
                  //Permitir monitorizar la Frecuencia Cardiaca
 //                new HeartRateConsentTask().execute(reference);
@@ -250,27 +254,39 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
 //                 Inicializamos la generación de aleatorios para las gráficas
 //                timer.schedule(new RandomValues(), 0, 2000);
 //
-//                startBitalino();
-
-                try {
-                    bitalino.connect(bluetoothDevice.getAddress());
-                } catch (BITalinoException e) {
-                    e.printStackTrace();
+                if (addressTextView.getText().toString().equals("00:00:00:00:00:00")) {
+                    Toast toast1 = Toast.makeText(getApplicationContext(), "Antes de conectar debe de estar emparejado por Bluetooth con Bitalino", Toast.LENGTH_SHORT);
+                    toast1.show();
                 }
+                else {
+                    try {
+                        bitalino.connect(bluetoothDevice.getAddress());
+                    } catch (BITalinoException e) {
+                        e.printStackTrace();
+                    }
+                }
+
             }
         });
 
         btnStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                btnStop.setVisibility(View.VISIBLE);
-                boolean digital1 = true;
-                try {
-                    bitalino.start(new int[]{0,1,2,3,4,5}, 1);
-                } catch (BITalinoException e) {
-                    e.printStackTrace();
+                if (addressTextView.getText().toString().equals("00:00:00:00:00:00") || resultsTextView.getText().toString().equals("...")) {
+                    Toast toast1 = Toast.makeText(getApplicationContext(), "Conectar previamente con Bitalino", Toast.LENGTH_SHORT);
+                    toast1.show();
                 }
-                //GrabarVideo();
+                else {
+                    limpiarGraphicGSR();
+                    btnStop.setVisibility(View.VISIBLE);
+                    boolean digital1 = true;
+                    try {
+                        bitalino.start(new int[]{0,1,2,3,4,5}, 1);
+                    } catch (BITalinoException e) {
+                        e.printStackTrace();
+                    }
+                    //GrabarVideo();
+                }
             }
         });
 
@@ -285,9 +301,10 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
                 //timer.cancel();
                 //crono.stop();
                 graphicGSR();
+                //limpiarGraphicGSR();
                 //graphicTemperatura();
                 //graphicFC();
-                WriteDatosGraficaFirebase(gsrValues, temperaturaValues, fcValues);
+                //WriteDatosGraficaFirebase(gsrValues, temperaturaValues, fcValues);
             }
         });
 
@@ -435,21 +452,6 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
         intentFilter.addAction(ACTION_DEVICE_READY);
         intentFilter.addAction(ACTION_COMMAND_REPLY);
         return intentFilter;
-    }
-
-    private void startBitalino() {
-        // Una vez tenemos emparejado, conectamos con el dispositivo
-        try {
-            bitalino.connect(bluetoothDevice.getAddress());
-        } catch (BITalinoException e) {
-            e.printStackTrace();
-        }
-        boolean digital1 = true;
-        try {
-            bitalino.start(new int[]{0,1,2,3,4,5}, 1);
-        } catch (BITalinoException e) {
-            e.printStackTrace();
-        }
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -739,6 +741,12 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
         }
         fcValues.add(new DataPoint(contador_fc,res));
         contador_fc ++;
+    }
+
+    public void limpiarGraphicGSR() {
+        gsrValues.clear();
+        graphGSR.removeAllSeries();
+        contador_gsr = 0;
     }
 
     public void graphicGSR() {
