@@ -10,7 +10,6 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -43,23 +42,16 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 import com.microsoft.band.BandClient;
-import com.microsoft.band.BandClientManager;
-import com.microsoft.band.BandException;
-import com.microsoft.band.BandInfo;
-import com.microsoft.band.ConnectionState;
 
 import java.io.File;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Locale;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -89,6 +81,8 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
     private BITalinoCommunication bitalino;
     private boolean isBITalino2 = false;
     private boolean isUpdateReceiverRegistered = false;
+
+    Intent VideoData;
 
     private static final String UPLOAD_FAIL = "UPLOAD FAIL";
 //    private String NOMBRE_EXPERIENCIA = Formulario.NOMBRE_EXPERIENCIA;
@@ -181,6 +175,10 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
 
         // Comprobamos que está emparejado un dispositvo bluetooth Bitalino y obtenemos sus datos
         if(getIntent().hasExtra(EXTRA_DEVICE)){
+            this.NOMBRE_USUARIO = InfoExperiencia.id_usuario;
+            // Obtenemos email del usuario que se ha logueado
+            this.EMAIL_USUARIO = MainActivity.EMAIL_USUARIO;
+
             bluetoothDevice = getIntent().getParcelableExtra(EXTRA_DEVICE);
             iniciarUIBluetooth();
             setUIBluetooth();
@@ -200,18 +198,6 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
             }
         };
 
-        this.NOMBRE_USUARIO = getIntent().getExtras().getString("id_usuario");
-
-        // Instanciamos una referencia al Contexto
-        Context context = this.getApplicationContext();
-        //Instanciamos el objeto SharedPrefere  nces y creamos un fichero Privado bajo el
-        //nombre definido con la clave preference_file_key en el fichero string.xml
-        sharedPref = context.getSharedPreferences(
-                getString(R.string.preference_file_key), Context.MODE_PRIVATE);
-
-        // Obtenemos email del usuario que se ha logueado
-        EMAIL_USUARIO = sharedPref.getString((getString(R.string.email_key)), "");
-
         // Variable de Firebase para gestionar el almacenamiento de archivos
         mStorageRef = FirebaseStorage.getInstance().getReference();
 
@@ -226,6 +212,20 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
         btnConectarBitalino = (Button) findViewById(R.id.btnConectarBitalino);
 
         resultsTextView = (TextView) findViewById(R.id.results_text_view);
+
+        // Cronómetro
+        crono = (Chronometer) findViewById(R.id.chronometer3);
+
+//        // Gráfica
+        graphGSR = (GraphView) findViewById(R.id.graph_GSR);
+        graphTemperatura = (GraphView) findViewById(R.id.graph_Temperatura);
+        graphFC = (GraphView) findViewById(R.id.graph_FC);
+        gsrValues = new ArrayList<>();
+        temperaturaValues = new ArrayList<>();
+        fcValues = new ArrayList<>();
+        contador_gsr = 0;
+        contador_temp = 0;
+        contador_fc = 0;
 
         btnBluetooth.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -252,7 +252,7 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
 //
 //                new SubscriptionTask().execute();
 //                 Inicializamos la generación de aleatorios para las gráficas
-//                timer.schedule(new RandomValues(), 0, 2000);
+                timer.schedule(new RandomValues(), 0, 2000);
 //
                 if (addressTextView.getText().toString().equals("00:00:00:00:00:00")) {
                     Toast toast1 = Toast.makeText(getApplicationContext(), "Antes de conectar debe de estar emparejado por Bluetooth con Bitalino", Toast.LENGTH_SHORT);
@@ -285,7 +285,7 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
                     } catch (BITalinoException e) {
                         e.printStackTrace();
                     }
-                    //GrabarVideo();
+                    GrabarVideo();
                 }
             }
         });
@@ -301,26 +301,11 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
                 //timer.cancel();
                 //crono.stop();
                 graphicGSR();
-                //limpiarGraphicGSR();
-                //graphicTemperatura();
-                //graphicFC();
-                //WriteDatosGraficaFirebase(gsrValues, temperaturaValues, fcValues);
+                graphicTemperatura();
+                graphicFC();
+                WriteDatosGraficaFirebase(gsrValues, temperaturaValues, fcValues);
             }
         });
-
-        // Cronómetro
-        crono = (Chronometer) findViewById(R.id.chronometer3);
-
-//        // Gráfica
-        graphGSR = (GraphView) findViewById(R.id.graph_GSR);
-        graphTemperatura = (GraphView) findViewById(R.id.graph_Temperatura);
-        graphFC = (GraphView) findViewById(R.id.graph_FC);
-        gsrValues = new ArrayList<>();
-        temperaturaValues = new ArrayList<>();
-        fcValues = new ArrayList<>();
-        contador_gsr = 0;
-        contador_temp = 0;
-        contador_fc = 0;
     }
 
     @Override
@@ -351,8 +336,10 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
         handler.sendMessage(message);
 
         double gsr = getConvertedGSR(bitalinoFrame.getAnalog(2));
-        System.out.println("GSR ANALOG ---> " + gsr);
-        nuevoDatoGSR(gsr);
+        if (String.valueOf(gsr) != "Infinity" || gsr != 0) {
+            System.out.println("GSR ANALOG ---> " + gsr);
+            nuevoDatoGSR(gsr);
+        }
     }
 
     private void iniciarUIBluetooth() {
@@ -430,14 +417,6 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
                     else if(parcelable.getClass().equals(BITalinoDescription.class)){ //BITalino
                         isBITalino2 = ((BITalinoDescription)parcelable).isBITalino2();
                         resultsTextView.setText("isBITalino2: " + isBITalino2 + "; FwVersion: " + String.valueOf(((BITalinoDescription)parcelable).getFwVersion()));
-
-//                        if(identifier.equals(identifierBITalino2) && bitalino2 != null){
-//                            try {
-//                                bitalino2.start(new int[]{0,1,2,3,4,5}, 1);
-//                            } catch (BITalinoException e) {
-//                                e.printStackTrace();
-//                            }
-//                        }
                     }
                 }
             }
@@ -552,7 +531,13 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
                         // ...
                         Log.d(UPLOAD_FAIL,"Fallo al subir");
                     }
-                });
+                }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                Log.i(TAG, String.format("onProgress: %5.2f MB transferred",
+                        taskSnapshot.getBytesTransferred()/1024.0/1024.0));
+            }
+        });
     }
 
     /*
@@ -566,18 +551,18 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
         return cursor.getString(column_index);
     }
 
-    public String getFechaYHora() {
-        Calendar calendar = Calendar.getInstance();
-        SimpleDateFormat mdformat = new SimpleDateFormat("yyyyMMdd");
-        String currentDate = mdformat.format(calendar.getTime());
-
-        SimpleDateFormat format = new SimpleDateFormat("HHmm", Locale.US);
-        String hour = format.format(new Date());
-
-        currentDate+=hour;
-
-        return currentDate;
-    }
+//    public String getFechaYHora() {
+//        Calendar calendar = Calendar.getInstance();
+//        SimpleDateFormat mdformat = new SimpleDateFormat("yyyyMMdd");
+//        String currentDate = mdformat.format(calendar.getTime());
+//
+//        SimpleDateFormat format = new SimpleDateFormat("HHmm", Locale.US);
+//        String hour = format.format(new Date());
+//
+//        currentDate+=hour;
+//
+//        return currentDate;
+//    }
 
     /*
     * Función que transforma los valores de la GSR obtenidos directamente de Bitalino en microSiemens
@@ -585,6 +570,7 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
     private double getConvertedGSR(int gsr) {
         double VCC = 3.3;
         double gsrConverted_micro = ((gsr/Math.pow(2,10))*VCC)/0.132;
+        gsrConverted_micro = Math.pow(gsrConverted_micro*Math.pow(10,-6),-1);
 
         return gsrConverted_micro;
     }
@@ -594,9 +580,9 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
     /*
     / Método para mostrar los datos de la GSR en tiempo real
      */
-    private class SubscriptionTask extends AsyncTask<Void, Void, Void> {
-        @Override
-        protected Void doInBackground(Void... params) {
+//    private class SubscriptionTask extends AsyncTask<Void, Void, Void> {
+//        @Override
+//        protected Void doInBackground(Void... params) {
 //            try {
 //                if (getConnectedBandClient()) {
 //                    int hardwareVersion = Integer.parseInt(client.getHardwareVersion().await());
@@ -633,25 +619,25 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
 //                appendGSRToUI(e.getMessage());
 //            }
 
-            return null;
-        }
-    }
+//            return null;
+//        }
+//    }
 
     private class RandomValues extends TimerTask {
         public void run() {
             Random rnd = new Random();
             int valor_random = (int)(rnd.nextDouble() * 350000 + 0);
-            appendGSRToUI(String.format("GSR = %d kOhms\n", valor_random));
-            nuevoDatoGSR(valor_random);
+//            appendGSRToUI(String.format("GSR = %d kOhms\n", valor_random));
+//            nuevoDatoGSR(valor_random);
 
             Random rnd2 = new Random();
             valor_random = (int)(rnd2.nextDouble() * 36 + 35);
-            appendTemperaturaToUI(String.format("Temperatura = %d degrees Celsius", valor_random));
+            //appendTemperaturaToUI(String.format("Temperatura = %d degrees Celsius", valor_random));
             nuevoDatoTemperatura(valor_random);
 
             Random rnd3 = new Random();
             valor_random = (int)(rnd3.nextDouble() * 110 + 60);
-            appendFCToUI(String.format("Frecuencia cardiaca = %d beats per minute\n", valor_random));
+            //appendFCToUI(String.format("Frecuencia cardiaca = %d beats per minute\n", valor_random));
             nuevoDatoFC(valor_random);
         }
     }
@@ -660,52 +646,52 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
     /*
     / Datos de la interfaz con los valores de la pulsera
      */
-    private void appendGSRToUI(final String string) {
-        this.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                txtGSR.setText(string);
-            }
-        });
-    }
+//    private void appendGSRToUI(final String string) {
+//        this.runOnUiThread(new Runnable() {
+//            @Override
+//            public void run() {
+//                txtGSR.setText(string);
+//            }
+//        });
+//    }
+//
+//    private void appendTemperaturaToUI(final String string) {
+//        this.runOnUiThread(new Runnable() {
+//            @Override
+//            public void run() {
+//                txtTemperatura.setText(string);
+//            }
+//        });
+//    }
+//
+//    private void appendFCToUI(final String string) {
+//        this.runOnUiThread(new Runnable() {
+//            @Override
+//            public void run() {
+//                txtFC.setText(string);
+//            }
+//        });
+//    }
 
-    private void appendTemperaturaToUI(final String string) {
-        this.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                txtTemperatura.setText(string);
-            }
-        });
-    }
-
-    private void appendFCToUI(final String string) {
-        this.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                txtFC.setText(string);
-            }
-        });
-    }
-
-    private boolean getConnectedBandClient() throws InterruptedException, BandException {
-        if (client == null) {
-            BandInfo[] devices = BandClientManager.getInstance().getPairedBands();
-            if (devices.length == 0) {
-                appendGSRToUI("Band isn't paired with your phone.\n");
-                appendTemperaturaToUI("Band isn't paired with your phone.\n");
-                appendFCToUI("Band isn't 'paired with your phone.\n");
-                return false;
-            }
-            client = BandClientManager.getInstance().create(getBaseContext(), devices[0]);
-        } else if (ConnectionState.CONNECTED == client.getConnectionState()) {
-            return true;
-        }
-
-        appendGSRToUI("Conectando con Microsoft Band...\n");
-        appendTemperaturaToUI("Conectando con Microsoft Band...\n");
-        appendFCToUI("Conectando con Microsoft Band...\n");
-        return ConnectionState.CONNECTED == client.connect().await();
-    }
+//    private boolean getConnectedBandClient() throws InterruptedException, BandException {
+//        if (client == null) {
+//            BandInfo[] devices = BandClientManager.getInstance().getPairedBands();
+//            if (devices.length == 0) {
+//                appendGSRToUI("Band isn't paired with your phone.\n");
+//                appendTemperaturaToUI("Band isn't paired with your phone.\n");
+//                appendFCToUI("Band isn't 'paired with your phone.\n");
+//                return false;
+//            }
+//            client = BandClientManager.getInstance().create(getBaseContext(), devices[0]);
+//        } else if (ConnectionState.CONNECTED == client.getConnectionState()) {
+//            return true;
+//        }
+//
+//        appendGSRToUI("Conectando con Microsoft Band...\n");
+//        appendTemperaturaToUI("Conectando con Microsoft Band...\n");
+//        appendFCToUI("Conectando con Microsoft Band...\n");
+//        return ConnectionState.CONNECTED == client.connect().await();
+//    }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -804,23 +790,27 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
             valores_gsr.add(new Pair<String, String>(String.valueOf(x),String.valueOf(y)));
         }
 
-        final ArrayList<Pair<String,String>> valores_temperatura = new ArrayList<>();
+        //if (datos_temperatura.size() != 0) {
+            final ArrayList<Pair<String, String>> valores_temperatura = new ArrayList<>();
 
-        for (int i=0; i<datos_temperatura.size(); i++) {
-            int x = (int)datos_temperatura.get(i).getX();
-            int y = (int)datos_temperatura.get(i).getY();
+            for (int i = 0; i < datos_temperatura.size(); i++) {
+                int x = (int) datos_temperatura.get(i).getX();
+                int y = (int) datos_temperatura.get(i).getY();
 
-            valores_temperatura.add(new Pair<String, String>(String.valueOf(x),String.valueOf(y)));
-        }
+                valores_temperatura.add(new Pair<String, String>(String.valueOf(x), String.valueOf(y)));
+            }
+        //}
 
-        final ArrayList<Pair<String,String>> valores_fc = new ArrayList<>();
+        //if (datos_fc.size()!=0 ) {
+            final ArrayList<Pair<String, String>> valores_fc = new ArrayList<>();
 
-        for (int i=0; i<datos_fc.size(); i++) {
-            int x = (int)datos_fc.get(i).getX();
-            int y = (int)datos_fc.get(i).getY();
+            for (int i = 0; i < datos_fc.size(); i++) {
+                int x = (int) datos_fc.get(i).getX();
+                int y = (int) datos_fc.get(i).getY();
 
-            valores_fc.add(new Pair<String, String>(String.valueOf(x),String.valueOf(y)));
-        }
+                valores_fc.add(new Pair<String, String>(String.valueOf(x), String.valueOf(y)));
+            }
+        //}
 
         // Escritura de datos en la base de datos
         FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -830,7 +820,7 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    Usuario user = snapshot.getValue(Usuario.class);
+                        Usuario user = snapshot.getValue(Usuario.class);
                     if (user.getEmail().equals(EMAIL_USUARIO)) {
                         // Obtenemos la key del usuario logueado
                         final String key = snapshot.getKey();
@@ -838,12 +828,12 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
                             for (int i=0; i<valores_gsr.size(); i++) {
                                 myRef.child(key).child("Experiencias").child(UsuariosExperiencia.NOMBRE_EXPERIENCIA).child(NOMBRE_USUARIO).child("Datos Graficas").child("GSR").child(String.valueOf(i)).setValue(valores_gsr.get(i).second);
                             }
-//                            for (int i=0; i<valores_temperatura.size(); i++) {
-//                                myRef.child(key).child("Experiencias").child(UsuariosExperiencia.NOMBRE_EXPERIENCIA).child(NOMBRE_USUARIO).child("Datos Graficas").child("Temperatura").child(String.valueOf(i)).setValue(valores_temperatura.get(i).second);
-//                            }
-//                            for (int i=0; i<valores_fc.size(); i++) {
-//                                myRef.child(key).child("Experiencias").child(UsuariosExperiencia.NOMBRE_EXPERIENCIA).child(NOMBRE_USUARIO).child("Datos Graficas").child("FC").child(String.valueOf(i)).setValue(valores_fc.get(i).second);
-//                            }
+                            for (int i=0; i<valores_temperatura.size(); i++) {
+                                myRef.child(key).child("Experiencias").child(UsuariosExperiencia.NOMBRE_EXPERIENCIA).child(NOMBRE_USUARIO).child("Datos Graficas").child("Temperatura").child(String.valueOf(i)).setValue(valores_temperatura.get(i).second);
+                            }
+                            for (int i=0; i<valores_fc.size(); i++) {
+                                myRef.child(key).child("Experiencias").child(UsuariosExperiencia.NOMBRE_EXPERIENCIA).child(NOMBRE_USUARIO).child("Datos Graficas").child("FC").child(String.valueOf(i)).setValue(valores_fc.get(i).second);
+                            }
                     }
                 }
             }

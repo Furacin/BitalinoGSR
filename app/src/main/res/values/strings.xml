@@ -12,6 +12,7 @@
     <string name="password_key" />
     <string name="email_key" />
     <string name="preference_file_key" />
+    <string name="usuario_experiencia_a_realizar"></string>
 
     <!-- permission check dialog -->
     <string name="permission_check_dialog_title">This app needs location access</string>

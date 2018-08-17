@@ -21,7 +21,7 @@ import com.google.firebase.database.ValueEventListener;
 
 public class InfoExperiencia extends AppCompatActivity {
 
-    String id_usuario;
+    public static String id_usuario;
     String EMAIL_USUARIO = MainActivity.EMAIL_USUARIO;
     TextView fecha, nombre, apellidos, sexo, fecha_nacimiento, descripcion;
     Button btnStartExperiencia;
