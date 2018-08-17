@@ -17,10 +17,9 @@ import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.util.Log;
-import android.util.Pair;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Chronometer;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
@@ -101,6 +100,9 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
     private TextView nameTextView;
     private TextView addressTextView;
     private TextView resultsTextView;
+    private TextView txtSubidaVideo;
+    private TextView txtlblSubidaVideo;
+    private TextView txtVideoSubidoExito;
     private final String TAG = this.getClass().getSimpleName();
     VideoView video_record;
     private String videoPath = "";
@@ -120,9 +122,12 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
     ArrayList<DataPoint> fcValues; // Array con los distintos valores de la GSR
 
     // Cronómetro
-    Chronometer crono;
+    //Chronometer crono;
 
     Timer timer = new Timer();
+
+    private ProgressBar progressBar;
+    Integer counter = 1;
 
 //    private BandGsrEventListener mGsrEventListener = new BandGsrEventListener() {
 //        @Override
@@ -172,6 +177,11 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
 
         nameTextView = findViewById(R.id.device_name_text_view);
         addressTextView = findViewById(R.id.mac_address_text_view);
+        txtSubidaVideo = findViewById(R.id.txtSubidaVideo);
+        txtlblSubidaVideo = findViewById(R.id.textoLblSubirVideo);
+        txtVideoSubidoExito = findViewById(R.id.txtVideoSubidoExito);
+
+        progressBar = (ProgressBar) findViewById(R.id.progressBar);
 
         // Comprobamos que está emparejado un dispositvo bluetooth Bitalino y obtenemos sus datos
         if(getIntent().hasExtra(EXTRA_DEVICE)){
@@ -214,7 +224,7 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
         resultsTextView = (TextView) findViewById(R.id.results_text_view);
 
         // Cronómetro
-        crono = (Chronometer) findViewById(R.id.chronometer3);
+//        crono = (Chronometer) findViewById(R.id.chronometer3);
 
 //        // Gráfica
         graphGSR = (GraphView) findViewById(R.id.graph_GSR);
@@ -304,6 +314,7 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
                 graphicTemperatura();
                 graphicFC();
                 WriteDatosGraficaFirebase(gsrValues, temperaturaValues, fcValues);
+                SubirArchivoFirebase(videoPath);
             }
         });
     }
@@ -492,7 +503,6 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
         {
             Uri vid = data.getData();
             videoPath = getRealPathFromURI(vid);
-            SubirArchivoFirebase(videoPath);
         }
 
     }
@@ -511,6 +521,9 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
     / Método para subir un archivo a Firebase
      */
     public void SubirArchivoFirebase(String path) {
+
+        progressBar.setVisibility(View.VISIBLE);
+        txtlblSubidaVideo.setVisibility(View.VISIBLE);
         Uri file = Uri.fromFile(new File(path));
 
         StorageReference archivoRef = mStorageRef.child(EMAIL_USUARIO + "/Vídeos/" + UsuariosExperiencia.NOMBRE_EXPERIENCIA + "/" + this.NOMBRE_USUARIO + "/video.3gp");
@@ -522,6 +535,8 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
                         // Get a URL to the uploaded content
 //                        Uri downloadUrl = taskSnapshot.getDownloadUrl()
                         Log.d(UPLOAD_COMPLETE,"Archivo subido con éxito");
+                        txtVideoSubidoExito.setVisibility(View.VISIBLE);
+                        txtVideoSubidoExito.setText("¡Archivo subido con éxito!");
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -530,11 +545,18 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
                         // Handle unsuccessful uploads
                         // ...
                         Log.d(UPLOAD_FAIL,"Fallo al subir");
+                        txtVideoSubidoExito.setVisibility(View.VISIBLE);
+                        txtVideoSubidoExito.setText("Error al realizar la subida del archivo");
                     }
                 }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
                 Log.i(TAG, String.format("onProgress: %5.2f MB transferred",
+                        taskSnapshot.getBytesTransferred()/1024.0/1024.0));
+
+                double progress = (100.0*taskSnapshot.getBytesTransferred())/taskSnapshot.getTotalByteCount();
+                progressBar.setProgress((int)progress);
+                txtSubidaVideo.setText(String.format("%5.2f MB",
                         taskSnapshot.getBytesTransferred()/1024.0/1024.0));
             }
         });
@@ -781,34 +803,34 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
 
     public void WriteDatosGraficaFirebase(ArrayList<DataPoint> datos_gsr, ArrayList<DataPoint> datos_temperatura, ArrayList<DataPoint> datos_fc) {
 
-        final ArrayList<Pair<String,String>> valores_gsr = new ArrayList<>();
+        final ArrayList<String> valores_gsr = new ArrayList<>();
 
         for (int i=0; i<datos_gsr.size(); i++) {
-            int x = (int)datos_gsr.get(i).getX();
+            //int x = (int)datos_gsr.get(i).getX();
             int y = (int)datos_gsr.get(i).getY();
 
-            valores_gsr.add(new Pair<String, String>(String.valueOf(x),String.valueOf(y)));
+            valores_gsr.add(String.valueOf(y));
         }
 
         //if (datos_temperatura.size() != 0) {
-            final ArrayList<Pair<String, String>> valores_temperatura = new ArrayList<>();
+        final ArrayList<String> valores_temperatura = new ArrayList<>();
 
             for (int i = 0; i < datos_temperatura.size(); i++) {
-                int x = (int) datos_temperatura.get(i).getX();
+                //int x = (int) datos_temperatura.get(i).getX();
                 int y = (int) datos_temperatura.get(i).getY();
 
-                valores_temperatura.add(new Pair<String, String>(String.valueOf(x), String.valueOf(y)));
+                valores_temperatura.add((String.valueOf(y)));
             }
         //}
 
         //if (datos_fc.size()!=0 ) {
-            final ArrayList<Pair<String, String>> valores_fc = new ArrayList<>();
+        final ArrayList<String> valores_fc = new ArrayList<>();
 
             for (int i = 0; i < datos_fc.size(); i++) {
-                int x = (int) datos_fc.get(i).getX();
+                //int x = (int) datos_fc.get(i).getX();
                 int y = (int) datos_fc.get(i).getY();
 
-                valores_fc.add(new Pair<String, String>(String.valueOf(x), String.valueOf(y)));
+                valores_fc.add((String.valueOf(y)));
             }
         //}
 
@@ -825,15 +847,20 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
                         // Obtenemos la key del usuario logueado
                         final String key = snapshot.getKey();
 
-                            for (int i=0; i<valores_gsr.size(); i++) {
-                                myRef.child(key).child("Experiencias").child(UsuariosExperiencia.NOMBRE_EXPERIENCIA).child(NOMBRE_USUARIO).child("Datos Graficas").child("GSR").child(String.valueOf(i)).setValue(valores_gsr.get(i).second);
-                            }
-                            for (int i=0; i<valores_temperatura.size(); i++) {
-                                myRef.child(key).child("Experiencias").child(UsuariosExperiencia.NOMBRE_EXPERIENCIA).child(NOMBRE_USUARIO).child("Datos Graficas").child("Temperatura").child(String.valueOf(i)).setValue(valores_temperatura.get(i).second);
-                            }
-                            for (int i=0; i<valores_fc.size(); i++) {
-                                myRef.child(key).child("Experiencias").child(UsuariosExperiencia.NOMBRE_EXPERIENCIA).child(NOMBRE_USUARIO).child("Datos Graficas").child("FC").child(String.valueOf(i)).setValue(valores_fc.get(i).second);
-                            }
+                        myRef.child(key).child("Experiencias").child(UsuariosExperiencia.NOMBRE_EXPERIENCIA).child(NOMBRE_USUARIO).child("Datos Graficas").child("GSR").setValue(valores_gsr);
+                        myRef.child(key).child("Experiencias").child(UsuariosExperiencia.NOMBRE_EXPERIENCIA).child(NOMBRE_USUARIO).child("Datos Graficas").child("Temperatura").setValue(valores_temperatura);
+                        myRef.child(key).child("Experiencias").child(UsuariosExperiencia.NOMBRE_EXPERIENCIA).child(NOMBRE_USUARIO).child("Datos Graficas").child("FC").setValue(valores_fc);
+
+
+//                            for (int i=0; i<valores_gsr.size(); i++) {
+//                                myRef.child(key).child("Experiencias").child(UsuariosExperiencia.NOMBRE_EXPERIENCIA).child(NOMBRE_USUARIO).child("Datos Graficas").child("GSR").child(String.valueOf(i)).setValue(valores_gsr.get(i).second);
+//                            }
+//                            for (int i=0; i<valores_temperatura.size(); i++) {
+//                                myRef.child(key).child("Experiencias").child(UsuariosExperiencia.NOMBRE_EXPERIENCIA).child(NOMBRE_USUARIO).child("Datos Graficas").child("Temperatura").child(String.valueOf(i)).setValue(valores_temperatura.get(i).second);
+//                            }
+//                            for (int i=0; i<valores_fc.size(); i++) {
+//                                myRef.child(key).child("Experiencias").child(UsuariosExperiencia.NOMBRE_EXPERIENCIA).child(NOMBRE_USUARIO).child("Datos Graficas").child("FC").child(String.valueOf(i)).setValue(valores_fc.get(i).second);
+//                            }
                     }
                 }
             }
@@ -844,5 +871,31 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
             }
         });
     }
+
+//    class MyAsyncTask extends AsyncTask<Integer, Integer, String> {
+//        @Override
+//        protected String doInBackground(Integer... params) {
+//            for (; counter <= params[0]; counter++) {
+//                try {
+//                    Thread.sleep(1000);
+//                    publishProgress(counter);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//            return "Tarea completa!. =)";
+//        }
+//        @Override
+//        protected void onPostExecute(String result) {
+//            progressBar.setVisibility(View.GONE);
+//        }
+//        @Override
+//        protected void onPreExecute() {
+//        }
+//        @Override
+//        protected void onProgressUpdate(Integer... values) {
+//            progressBar.setProgress(values[0]);
+//        }
+//    }
 
 }
