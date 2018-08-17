@@ -242,6 +242,7 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
             public void onClick(View view) {
                 Intent i = new Intent(getApplicationContext(),ScanActivity.class);
                 startActivity(i);
+                finish();
             }
         });
 
@@ -347,7 +348,7 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
         handler.sendMessage(message);
 
         double gsr = getConvertedGSR(bitalinoFrame.getAnalog(2));
-        if (String.valueOf(gsr) != "Infinity" || gsr != 0) {
+        if (String.valueOf(gsr) != "Infinity" && gsr > 10000) {
             System.out.println("GSR ANALOG ---> " + gsr);
             nuevoDatoGSR(gsr);
         }
