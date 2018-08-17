@@ -124,4 +124,19 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
         android:text="Iniciar Prueba"/>
+
+    <TextView
+        android:layout_below="@+id/btnStartExperiencia"
+        android:id="@+id/experienciaTerminada"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="30dp"
+        android:text="El sujeto ya ha realizado la experiencia. Consultar los datos en Web."
+        android:textColor="@color/colorAccent"
+        android:layout_marginTop="10dp"
+        android:textSize="20dp"
+        android:visibility="gone"
+        android:textStyle="bold"
+        />
+
 </RelativeLayout>

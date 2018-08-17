@@ -16,7 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.furazin.android.mbandgsr.FirebaseBD.Usuario;
-import com.furazin.android.mbandgsr.RecyclerExperiencias.RecyclerViewAdapterListaUsuarios;
+import com.furazin.android.mbandgsr.RecyclerExperiencias.RecyclerViewAdapterListaSujetos;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
     private List<String> experiencias;
     private RecyclerView recyclerView;
     private LinearLayoutManager linearLayoutManager;
-    private RecyclerViewAdapterListaUsuarios recyclerViewAdapter;
+    private RecyclerViewAdapterListaSujetos recyclerViewAdapter;
 
 
     @Override
@@ -102,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
                                     String experienciaTitle = singleSnapshot.getKey();
 //                                    System.out.println(experienciaTitle);
                                     experiencias.add(experienciaTitle);
-                                    recyclerViewAdapter = new RecyclerViewAdapterListaUsuarios(MainActivity.this, experiencias);
+                                    recyclerViewAdapter = new RecyclerViewAdapterListaSujetos(MainActivity.this, experiencias);
                                     recyclerView.setAdapter(recyclerViewAdapter);
                                 }
                             }

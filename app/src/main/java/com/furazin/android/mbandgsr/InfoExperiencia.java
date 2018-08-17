@@ -23,7 +23,7 @@ public class InfoExperiencia extends AppCompatActivity {
 
     public static String id_usuario;
     String EMAIL_USUARIO = MainActivity.EMAIL_USUARIO;
-    TextView fecha, nombre, apellidos, sexo, fecha_nacimiento, descripcion;
+    TextView fecha, nombre, apellidos, sexo, fecha_nacimiento, descripcion, txtTerminada;
     Button btnStartExperiencia;
 
     @Override
@@ -38,6 +38,7 @@ public class InfoExperiencia extends AppCompatActivity {
         fecha_nacimiento = (TextView) findViewById(R.id.fecha_nacimiento);
         descripcion = (TextView) findViewById(R.id.descripcion);
         btnStartExperiencia = (Button) findViewById(R.id.btnStartExperiencia);
+        txtTerminada = (TextView) findViewById(R.id.experienciaTerminada);
 
         id_usuario = getIntent().getExtras().getString("id_usuario");
         FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -65,6 +66,11 @@ public class InfoExperiencia extends AppCompatActivity {
                                 sexo.setText("Sexo: " + e.getSexo());
                                 fecha_nacimiento.setText("Fecha de nacimiento: " + e.getFecha_nacimiento());
                                 descripcion.setText("Descripción: " + e.getDescripcion());
+
+                                if (e.getTerminada().equals("si")) {
+                                    txtTerminada.setVisibility(View.VISIBLE);
+                                    btnStartExperiencia.setEnabled(false);
+                                }
                             }
 
                             @Override

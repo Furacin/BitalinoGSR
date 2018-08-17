@@ -10,13 +10,13 @@ import com.furazin.android.mbandgsr.UsuariosExperiencia;
 
 import java.util.List;
 
-public class RecyclerViewHoldersListaUsuarios extends RecyclerView.ViewHolder{
-    private static final String TAG = RecyclerViewHoldersListaUsuarios.class.getSimpleName();
+public class RecyclerViewHoldersListaSujetos extends RecyclerView.ViewHolder{
+    private static final String TAG = RecyclerViewHoldersListaSujetos.class.getSimpleName();
 //    public ImageView markIcon;
     public Button Name;
 //    public ImageView deleteIcon;
     private List<String> experienciasObject;
-    public RecyclerViewHoldersListaUsuarios(final View itemView, final List<String> experienciasObject) {
+    public RecyclerViewHoldersListaSujetos(final View itemView, final List<String> experienciasObject) {
         super(itemView);
         this.experienciasObject = experienciasObject;
         Name = (Button)itemView.findViewById(R.id.experiencia_title);

@@ -17,7 +17,7 @@ import java.util.List;
  */
 
 public class RecyclerViewHoldersDatosUsuario extends RecyclerView.ViewHolder {
-    private static final String TAG = RecyclerViewHoldersListaUsuarios.class.getSimpleName();
+    private static final String TAG = RecyclerViewHoldersListaSujetos.class.getSimpleName();
     //    public ImageView markIcon;
     public Button Name;
     //    public ImageView deleteIcon;
