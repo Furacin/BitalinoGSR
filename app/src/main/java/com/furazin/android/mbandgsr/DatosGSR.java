@@ -72,6 +72,10 @@ import static com.furazin.android.api.Constants.States;
 
 public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
 
+    // Variables de Firebase
+    FirebaseDatabase database = FirebaseDatabase.getInstance();
+    final DatabaseReference myRef = database.getReference("users");
+
     private Handler handler;
 
     public final static String EXTRA_DEVICE = "com.furazin.android.mbandgsr.DatosGSR.EXTRA_DEVICE";
@@ -574,19 +578,6 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
         return cursor.getString(column_index);
     }
 
-//    public String getFechaYHora() {
-//        Calendar calendar = Calendar.getInstance();
-//        SimpleDateFormat mdformat = new SimpleDateFormat("yyyyMMdd");
-//        String currentDate = mdformat.format(calendar.getTime());
-//
-//        SimpleDateFormat format = new SimpleDateFormat("HHmm", Locale.US);
-//        String hour = format.format(new Date());
-//
-//        currentDate+=hour;
-//
-//        return currentDate;
-//    }
-
     /*
     * Función que transforma los valores de la GSR obtenidos directamente de Bitalino en microSiemens
     */
@@ -835,10 +826,6 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
             }
         //}
 
-        // Escritura de datos en la base de datos
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        final DatabaseReference myRef = database.getReference("users");
-
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -852,16 +839,8 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
                         myRef.child(key).child("Experiencias").child(UsuariosExperiencia.NOMBRE_EXPERIENCIA).child(NOMBRE_USUARIO).child("Datos Graficas").child("Temperatura").setValue(valores_temperatura);
                         myRef.child(key).child("Experiencias").child(UsuariosExperiencia.NOMBRE_EXPERIENCIA).child(NOMBRE_USUARIO).child("Datos Graficas").child("FC").setValue(valores_fc);
 
-
-//                            for (int i=0; i<valores_gsr.size(); i++) {
-//                                myRef.child(key).child("Experiencias").child(UsuariosExperiencia.NOMBRE_EXPERIENCIA).child(NOMBRE_USUARIO).child("Datos Graficas").child("GSR").child(String.valueOf(i)).setValue(valores_gsr.get(i).second);
-//                            }
-//                            for (int i=0; i<valores_temperatura.size(); i++) {
-//                                myRef.child(key).child("Experiencias").child(UsuariosExperiencia.NOMBRE_EXPERIENCIA).child(NOMBRE_USUARIO).child("Datos Graficas").child("Temperatura").child(String.valueOf(i)).setValue(valores_temperatura.get(i).second);
-//                            }
-//                            for (int i=0; i<valores_fc.size(); i++) {
-//                                myRef.child(key).child("Experiencias").child(UsuariosExperiencia.NOMBRE_EXPERIENCIA).child(NOMBRE_USUARIO).child("Datos Graficas").child("FC").child(String.valueOf(i)).setValue(valores_fc.get(i).second);
-//                            }
+                        // Marcamos experiencia como terminada
+                        myRef.child(key).child("Experiencias").child(UsuariosExperiencia.NOMBRE_EXPERIENCIA).child(NOMBRE_USUARIO).child("terminada").setValue("si");
                     }
                 }
             }
@@ -872,31 +851,5 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
             }
         });
     }
-
-//    class MyAsyncTask extends AsyncTask<Integer, Integer, String> {
-//        @Override
-//        protected String doInBackground(Integer... params) {
-//            for (; counter <= params[0]; counter++) {
-//                try {
-//                    Thread.sleep(1000);
-//                    publishProgress(counter);
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//            return "Tarea completa!. =)";
-//        }
-//        @Override
-//        protected void onPostExecute(String result) {
-//            progressBar.setVisibility(View.GONE);
-//        }
-//        @Override
-//        protected void onPreExecute() {
-//        }
-//        @Override
-//        protected void onProgressUpdate(Integer... values) {
-//            progressBar.setProgress(values[0]);
-//        }
-//    }
 
 }
