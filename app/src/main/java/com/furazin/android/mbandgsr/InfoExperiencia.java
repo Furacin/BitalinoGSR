@@ -91,10 +91,11 @@ public class InfoExperiencia extends AppCompatActivity {
         btnStartExperiencia.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                    Intent i = new Intent(getApplicationContext(), DatosGSR.class);
-                    i.putExtra("id_usuario",id_usuario);
-                    startActivity(i);
-                    finish();
+                MainActivity.activity.finish();
+                Intent i = new Intent(getApplicationContext(), DatosGSR.class);
+                i.putExtra("id_usuario",id_usuario);
+                startActivity(i);
+                finish();
             }
         });
 

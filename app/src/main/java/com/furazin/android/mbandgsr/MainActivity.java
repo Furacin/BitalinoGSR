@@ -1,5 +1,6 @@
 package com.furazin.android.mbandgsr;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -24,7 +25,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -36,16 +36,22 @@ public class MainActivity extends AppCompatActivity {
     // DrawerLayout
     private DrawerLayout mDrawerLayout;
 
-    private List<String> experiencias;
+//    private List<String> experiencias;
     private RecyclerView recyclerView;
     private LinearLayoutManager linearLayoutManager;
     private RecyclerViewAdapterListaSujetos recyclerViewAdapter;
 
+    private ArrayList<ArrayList<String>> experiencias;
+
+    public static Activity activity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // Instancimos el activity
+        activity = this;
 
         // Instanciamos una referencia al Contexto
         Context context = this.getApplicationContext();
@@ -77,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         final DatabaseReference myRef = database.getReference("users");
 
-        experiencias = new ArrayList<String>();
+        experiencias = new ArrayList<ArrayList<String>>();
         recyclerView = (RecyclerView)findViewById(R.id.experiencias_list);
         linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
@@ -100,8 +106,15 @@ public class MainActivity extends AppCompatActivity {
 //                                System.out.println("HOLAA" + value);
                                 for(DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
                                     String experienciaTitle = singleSnapshot.getKey();
+                                    String fechaRealicacion = singleSnapshot.child("fechaRealizacion").getValue().toString();
+                                    String terminada = singleSnapshot.child("terminada").getValue().toString();
 //                                    System.out.println(experienciaTitle);
-                                    experiencias.add(experienciaTitle);
+//                                    experiencias.add(experienciaTitle);
+                                    ArrayList<String> datosExperiencia = new ArrayList<String>();
+                                    datosExperiencia.add(experienciaTitle);  // posicion 0
+                                    datosExperiencia.add(fechaRealicacion);  // posicion 1
+                                    datosExperiencia.add(terminada);         // posicion 2
+                                    experiencias.add(datosExperiencia);
                                     recyclerViewAdapter = new RecyclerViewAdapterListaSujetos(MainActivity.this, experiencias);
                                     recyclerView.setAdapter(recyclerViewAdapter);
                                 }

@@ -63,7 +63,6 @@ public class UsuariosExperiencia extends AppCompatActivity {
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-//                System.out.println("HOLA");
 
                 usuarios.clear();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
@@ -76,11 +75,12 @@ public class UsuariosExperiencia extends AppCompatActivity {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 for(DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
-                                    String nameUsuario = singleSnapshot.getKey();
-//                                        System.out.println("HOLA" + nameUsuario);
-                                        usuarios.add(nameUsuario);
+                                    String nombreSujeto = singleSnapshot.getKey();
+                                    if (!nombreSujeto.equals("fechaRealizacion") && !nombreSujeto.equals("terminada")) {
+                                        usuarios.add(nombreSujeto);
                                         recyclerViewAdapter = new RecyclerViewAdapterDatosUsuario(UsuariosExperiencia.this, usuarios);
                                         recyclerView.setAdapter(recyclerViewAdapter);
+                                    }
 
                                 }
                             }

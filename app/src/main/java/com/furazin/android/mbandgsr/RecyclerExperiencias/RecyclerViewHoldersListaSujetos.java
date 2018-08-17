@@ -3,57 +3,38 @@ package com.furazin.android.mbandgsr.RecyclerExperiencias;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.TextView;
 
 import com.furazin.android.mbandgsr.R;
 import com.furazin.android.mbandgsr.UsuariosExperiencia;
 
-import java.util.List;
+import java.util.ArrayList;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class RecyclerViewHoldersListaSujetos extends RecyclerView.ViewHolder{
     private static final String TAG = RecyclerViewHoldersListaSujetos.class.getSimpleName();
-//    public ImageView markIcon;
-    public Button Name;
-//    public ImageView deleteIcon;
-    private List<String> experienciasObject;
-    public RecyclerViewHoldersListaSujetos(final View itemView, final List<String> experienciasObject) {
+    public ImageButton btnAbrirExperiencia;
+    public TextView nombreExperiencia;
+    public TextView fechaExperiencia;
+    public CircleImageView marcaExperienciaTerminada;
+
+    private ArrayList<ArrayList<String>> experienciasObject;
+    public RecyclerViewHoldersListaSujetos(final View itemView, final ArrayList<ArrayList<String>> experienciasObject) {
         super(itemView);
         this.experienciasObject = experienciasObject;
-        Name = (Button)itemView.findViewById(R.id.experiencia_title);
-        Name.setOnClickListener(new View.OnClickListener() {
+        btnAbrirExperiencia = (ImageButton)itemView.findViewById(R.id.btnAbrirExperiencia);
+        nombreExperiencia = (TextView)itemView.findViewById(R.id.experiencia_title);
+        fechaExperiencia = (TextView)itemView.findViewById(R.id.fechaExperiencia);
+        marcaExperienciaTerminada = (CircleImageView)itemView.findViewById(R.id.marcaExperienciaTerminada);
+        btnAbrirExperiencia.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                System.out.println("HOLA" + Name.getText());
-
                 Intent i = new Intent(itemView.getContext(), UsuariosExperiencia.class);
-//                System.out.println("HOLA2 " + Name.getText());
-                i.putExtra("id_experiencia",Name.getText());
+                i.putExtra("id_experiencia",nombreExperiencia.getText());
                 itemView.getContext().startActivity(i);
             }
         });
-//        markIcon = (ImageView)itemView.findViewById(R.id.task_icon);
-//        deleteIcon = (ImageView)itemView.findViewById(R.id.task_delete);
-//        deleteIcon.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Toast.makeText(v.getContext(), "Delete icon has been clicked", Toast.LENGTH_LONG).show();
-//                String taskTitle = experienciasObject.get(getAdapterPosition()).getNombre();
-//                Log.d(TAG, "Task Title " + taskTitle);
-//                DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
-//                Query applesQuery = ref.orderByChild("task").equalTo(taskTitle);
-//                applesQuery.addListenerForSingleValueEvent(new ValueEventListener() {
-//                    @Override
-//                    public void onDataChange(DataSnapshot dataSnapshot) {
-//                        for (DataSnapshot appleSnapshot: dataSnapshot.getChildren()) {
-//                            appleSnapshot.getRef().removeValue();
-//                        }
-//                    }
-//                    @Override
-//                    public void onCancelled(DatabaseError databaseError) {
-//                        Log.e(TAG, "onCancelled", databaseError.toException());
-//                    }
-//                });
-//            }
-//        });
     }
 }

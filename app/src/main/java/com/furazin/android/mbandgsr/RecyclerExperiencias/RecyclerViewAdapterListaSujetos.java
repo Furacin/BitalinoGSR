@@ -1,6 +1,7 @@
 package com.furazin.android.mbandgsr.RecyclerExperiencias;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,11 +9,12 @@ import android.view.ViewGroup;
 
 import com.furazin.android.mbandgsr.R;
 
-import java.util.List;
+import java.util.ArrayList;
 public class RecyclerViewAdapterListaSujetos extends RecyclerView.Adapter<RecyclerViewHoldersListaSujetos> {
-    private List<String> experiencias;
+    private ArrayList<ArrayList<String>> experiencias;
     protected Context context;
-    public RecyclerViewAdapterListaSujetos(Context context, List<String> experiencias) {
+    private String terminada;
+    public RecyclerViewAdapterListaSujetos(Context context, ArrayList<ArrayList<String>> experiencias) {
         this.experiencias = experiencias;
         this.context = context;
 
@@ -26,7 +28,20 @@ public class RecyclerViewAdapterListaSujetos extends RecyclerView.Adapter<Recycl
     }
     @Override
     public void onBindViewHolder(RecyclerViewHoldersListaSujetos holder, int position) {
-        holder.Name.setText(experiencias.get(position));
+        holder.nombreExperiencia.setText(experiencias.get(position).get(0));
+        holder.fechaExperiencia.setText(experiencias.get(position).get(1));
+        // Comprobamos si la experiencia está terminada o no y en función de ello coloreamos
+        // el ImageView de verde(terminada) o de amarillo(no terminada)
+        terminada = experiencias.get(position).get(2);
+        if (terminada.equals("no")) {
+            Drawable icon = this.context.getResources().getDrawable(R.drawable.ic_color_verde);
+            holder.marcaExperienciaTerminada.setImageDrawable(icon);
+        }
+        else {
+            Drawable icon = this.context.getResources().getDrawable(R.drawable.ic_color_amarillo);
+            holder.marcaExperienciaTerminada.setImageDrawable(icon);
+        }
+
     }
     @Override
     public int getItemCount() {

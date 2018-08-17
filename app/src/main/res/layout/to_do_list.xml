@@ -1,20 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingTop="18dp"
     android:paddingBottom="18dp"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    tools:context=".MainActivity">
 
-    <Button
-        android:id="@+id/experiencia_title"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="70"
-        android:layout_marginLeft="40dp"
-        android:layout_marginRight="40dp"
-        android:gravity="center"
-        android:text="@string/app_name"
-        android:textSize="16sp"
-        android:textColor="#000000"/>
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/marcaExperienciaTerminada"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_marginLeft="20dp"
+        android:src="@drawable/ic_color_verde" />
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginLeft="15dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/experiencia_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:textSize="19dp"
+                android:text="One"/>
+
+            <TextView
+                android:id="@+id/fechaExperiencia"
+                android:layout_below="@id/experiencia_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Two"/>
+
+            <View
+                android:layout_below="@id/fechaExperiencia"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/grey"/>
+
+            <ImageButton
+                android:id="@+id/btnAbrirExperiencia"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginEnd="12dp"
+                android:gravity="right"
+                android:background="@color/white"
+                android:src="@drawable/ic_start_experiencia_2"
+                android:text="@string/app_name" />
+        </RelativeLayout>
+
+
 </LinearLayout>

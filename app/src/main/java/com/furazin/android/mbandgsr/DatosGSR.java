@@ -496,8 +496,8 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
     @Override
     public void onBackPressed() {
         finish();
-        //Intent i = new Intent(DatosGSR.this,MainActivity.class);
-        //startActivity(i);
+        Intent i = new Intent(DatosGSR.this,MainActivity.class);
+        startActivity(i);
     }
 
     @Override

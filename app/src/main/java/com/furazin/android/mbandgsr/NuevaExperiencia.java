@@ -24,7 +24,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import static com.furazin.android.mbandgsr.MainActivity.EMAIL_USUARIO;
 
@@ -226,6 +228,7 @@ public class NuevaExperiencia extends AppCompatActivity {
                     lista_sujetos.clear();
                     for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
                         String experienciaTitle = singleSnapshot.getKey();
+                        if (!experienciaTitle.equals("fechaRealizacion") && !experienciaTitle.equals("terminada"))
                         lista_sujetos.add(experienciaTitle);
                     }
                     //                        System.out.println(lista_sujetos.size());
@@ -265,8 +268,14 @@ public class NuevaExperiencia extends AppCompatActivity {
                         // Añadimos la informacion del formulario, y en la bd se creara una entrada con la fecha y hora actuales
 //                        NOMBRE_EXPERIENCIA = getFechaYHora();
                         long i =  dataSnapshot.getChildrenCount();
+
                         myRef.child(key).child("Experiencias").child(NOMBRE_EXPERIENCIA).child(experiencia.getNombre()).setValue(experiencia);
-//                        myRef.child(key).child("Experiencias").child(NOMBRE_EXPERIENCIA).child("terminada").setValue("no");
+
+                        Calendar calendar = Calendar.getInstance();
+                        SimpleDateFormat mdformat = new SimpleDateFormat("dd/MM/yyyy");
+                        String strDate = mdformat.format(calendar.getTime());
+                        myRef.child(key).child("Experiencias").child(NOMBRE_EXPERIENCIA).child("fechaRealizacion").setValue(strDate);
+                        myRef.child(key).child("Experiencias").child(NOMBRE_EXPERIENCIA).child("terminada").setValue("no");
                     }
                 }
             }
