@@ -99,7 +99,7 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
     final static int RQS_RECORDING = 1;
 
     private BandClient client = null;
-    private Button btnStart, btnStop, btnBluetooth, btnConectarBitalino;
+    private Button btnStart, btnStop, btnBluetooth, btnConectarBitalino, btnVolverMenu;
     private TextView txtGSR, txtTemperatura, txtFC;
     private TextView nameTextView;
     private TextView addressTextView;
@@ -134,6 +134,7 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
     private ProgressBar progressBar;
 
     private String tipoPrueba;
+    private Boolean finPrueba;
 
 //    private BandGsrEventListener mGsrEventListener = new BandGsrEventListener() {
 //        @Override
@@ -188,6 +189,7 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
         txtVideoSubidoExito = findViewById(R.id.txtVideoSubidoExito);
 
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        finPrueba = false;
 
         // Comprobamos que está emparejado un dispositvo bluetooth Bitalino y obtenemos sus datos
         if(getIntent().hasExtra(EXTRA_DEVICE)){
@@ -226,9 +228,11 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
 
 
         btnStart = (Button) findViewById(R.id.btnStart);
+        btnStart.setEnabled(false);
         btnStop = (Button) findViewById(R.id.btnStop);
         btnBluetooth = (Button) findViewById(R.id.btnEmparejarBluetooth);
         btnConectarBitalino = (Button) findViewById(R.id.btnConectarBitalino);
+        btnVolverMenu = (Button) findViewById(R.id.btnVolverMenu);
 
         resultsTextView = (TextView) findViewById(R.id.results_text_view);
 
@@ -297,6 +301,7 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
                     toast1.show();
                 }
                 else {
+                    btnStart.setEnabled(false);
                     btnStop.setVisibility(View.VISIBLE);
                     limpiarGraphicGSR();
                     try {
@@ -306,6 +311,7 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
                     }
                     switch(tipoPrueba) {
                         case "Sólo Vídeo":
+                        case "Audio y Vídeo":
                             GrabarVideo();
                             break;
                         case "Ninguno":
@@ -328,10 +334,15 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
                 }
                 //timer.cancel();
                 //crono.stop();
+                btnStop.setEnabled(false);
                 graphicGSR();
                 graphicTemperatura();
                 graphicFC();
                 switch(tipoPrueba) {
+                    case "Audio y Vídeo":
+                        txtlblSubidaVideo.setText("Subiendo audio y vídeo... ");
+                        SubirArchivoFirebase(videoPath);
+                        break;
                     case "Sólo Vídeo":
                         txtlblSubidaVideo.setText("Subiendo vídeo... ");
                         SubirArchivoFirebase(videoPath);
@@ -344,6 +355,15 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
                         break;
                 }
                 WriteDatosGraficaFirebase(gsrValues, temperaturaValues, fcValues);
+            }
+        });
+
+        btnVolverMenu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+                Intent i = new Intent(DatosGSR.this,MainActivity.class);
+                startActivity(i);
             }
         });
     }
@@ -422,6 +442,11 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
                     case CONNECTING:
                         break;
                     case CONNECTED:
+                        if (btnStop.getVisibility() != View.VISIBLE) {
+                            btnStart.setEnabled(true);
+                        }
+                        btnBluetooth.setEnabled(false);
+                        btnConectarBitalino.setEnabled(false);
                         break;
                     case ACQUISITION_TRYING:
                         break;
@@ -519,9 +544,21 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
 
     @Override
     public void onBackPressed() {
-        finish();
-        Intent i = new Intent(DatosGSR.this,MainActivity.class);
-        startActivity(i);
+        if (!tipoPrueba.equals("Ninguno") ) {
+            if (finPrueba) {
+                finish();
+                Intent i = new Intent(DatosGSR.this,MainActivity.class);
+                startActivity(i);
+            }
+        }
+        else {
+            if (finPrueba) {
+                finish();
+                Intent i = new Intent(DatosGSR.this, MainActivity.class);
+                startActivity(i);
+            }
+        }
+
     }
 
     @Override
@@ -531,6 +568,7 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
 
         switch (tipoPrueba) {
             case "Sólo Vídeo":
+            case "Audio y Vídeo":
                 if(resultCode==RESULT_OK)
                 {
                     Uri vid = data.getData();
@@ -597,7 +635,7 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
         Uri file = Uri.fromFile(new File(path));
         StorageReference archivoRef = null;
 
-        if (tipoPrueba.equals("Sólo Vídeo")) {
+        if (tipoPrueba.equals("Sólo Vídeo") || tipoPrueba.equals("Audio y Vídeo")) {
             archivoRef= mStorageRef.child(EMAIL_USUARIO + "/Vídeos/" + UsuariosExperiencia.NOMBRE_EXPERIENCIA + "/" + this.NOMBRE_USUARIO + "/video.3gp");
         }
         else {
@@ -615,6 +653,8 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
                         Log.d(UPLOAD_COMPLETE,"Archivo subido con éxito");
                         txtVideoSubidoExito.setVisibility(View.VISIBLE);
                         txtVideoSubidoExito.setText("¡Archivo subido con éxito!");
+                        finPrueba = true;
+                        btnVolverMenu.setVisibility(View.VISIBLE);
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -923,6 +963,11 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
 
             }
         });
+
+            if (tipoPrueba.equals("Ninguno")) {
+                btnVolverMenu.setVisibility(View.VISIBLE);
+                finPrueba = true;
+            }
     }
 
 }
