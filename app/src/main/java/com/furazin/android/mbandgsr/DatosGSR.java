@@ -95,8 +95,8 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
     private static final String UPLOAD_COMPLETE = "UPLOAD SUCCES";
     private StorageReference mStorageRef;
 
-    private int ACTIVITY_START_CAMERA_APP =0;
     static final int REQUEST_VIDEO_CAPTURE = 1;
+    final static int RQS_RECORDING = 1;
 
     private BandClient client = null;
     private Button btnStart, btnStop, btnBluetooth, btnConectarBitalino;
@@ -110,6 +110,7 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
     private final String TAG = this.getClass().getSimpleName();
     VideoView video_record;
     private String videoPath = "";
+    private String audioPath = "";
 
     int contador_gsr, contador_temp, contador_fc;
 
@@ -131,7 +132,8 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
     Timer timer = new Timer();
 
     private ProgressBar progressBar;
-    Integer counter = 1;
+
+    private String tipoPrueba;
 
 //    private BandGsrEventListener mGsrEventListener = new BandGsrEventListener() {
 //        @Override
@@ -196,6 +198,9 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
             bluetoothDevice = getIntent().getParcelableExtra(EXTRA_DEVICE);
             iniciarUIBluetooth();
             setUIBluetooth();
+
+            // Selección multimedia
+            getTipoPrueba();
         }
 
         handler = new Handler(getMainLooper()){
@@ -292,15 +297,23 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
                     toast1.show();
                 }
                 else {
-                    limpiarGraphicGSR();
                     btnStop.setVisibility(View.VISIBLE);
-                    boolean digital1 = true;
+                    limpiarGraphicGSR();
                     try {
                         bitalino.start(new int[]{0,1,2,3,4,5}, 1);
                     } catch (BITalinoException e) {
                         e.printStackTrace();
                     }
-                    GrabarVideo();
+                    switch(tipoPrueba) {
+                        case "Sólo Vídeo":
+                            GrabarVideo();
+                            break;
+                        case "Ninguno":
+                            break;
+                        case "Sólo Audio":
+                            GrabarAudio();
+                            break;
+                    }
                 }
             }
         });
@@ -318,8 +331,19 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
                 graphicGSR();
                 graphicTemperatura();
                 graphicFC();
+                switch(tipoPrueba) {
+                    case "Sólo Vídeo":
+                        txtlblSubidaVideo.setText("Subiendo vídeo... ");
+                        SubirArchivoFirebase(videoPath);
+                        break;
+                    case "Sólo Audio":
+                        txtlblSubidaVideo.setText("Subiendo audio... ");
+                        SubirArchivoFirebase(audioPath);
+                        break;
+                    case "Ninguno":
+                        break;
+                }
                 WriteDatosGraficaFirebase(gsrValues, temperaturaValues, fcValues);
-                SubirArchivoFirebase(videoPath);
             }
         });
     }
@@ -504,12 +528,44 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         // Con esto obtenemos el path del vídeo que acabamos de grabar de la experiencia realizada
-        if(resultCode==RESULT_OK)
-        {
-            Uri vid = data.getData();
-            videoPath = getRealPathFromURI(vid);
+
+        switch (tipoPrueba) {
+            case "Sólo Vídeo":
+                if(resultCode==RESULT_OK)
+                {
+                    Uri vid = data.getData();
+                    videoPath = getRealPathFromURI(vid);
+                }
+                break;
+            case "Sólo Audio":
+                    Uri audio = data.getData();
+                    audioPath = getRealPathFromURI(audio);
+                break;
         }
 
+    }
+
+    /*
+    * Método para obtener el tipo de prueba que se quiere hacer
+     */
+    public void getTipoPrueba() {
+        this.tipoPrueba = InfoExperiencia.tipoPrueba;
+//        myRef.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+//                    Usuario user = snapshot.getValue(Usuario.class);
+//                    if (user.getEmail().equals(EMAIL_USUARIO)) {
+//                        tipoPrueba = snapshot.child("Experiencias").child(UsuariosExperiencia.NOMBRE_EXPERIENCIA).child(NOMBRE_USUARIO).child("opcion_multimedia").getValue().toString();
+//                    }
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//
+//            }
+//        });
     }
 
     /*
@@ -523,6 +579,15 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
     }
 
     /*
+  /  Método para iniciar la grabación de audio por el usuario
+   */
+    public void GrabarAudio() {
+        Intent intent =
+                new Intent(MediaStore.Audio.Media.RECORD_SOUND_ACTION);
+        startActivityForResult(intent, RQS_RECORDING);
+    }
+
+    /*
     / Método para subir un archivo a Firebase
      */
     public void SubirArchivoFirebase(String path) {
@@ -530,8 +595,16 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
         progressBar.setVisibility(View.VISIBLE);
         txtlblSubidaVideo.setVisibility(View.VISIBLE);
         Uri file = Uri.fromFile(new File(path));
+        StorageReference archivoRef = null;
 
-        StorageReference archivoRef = mStorageRef.child(EMAIL_USUARIO + "/Vídeos/" + UsuariosExperiencia.NOMBRE_EXPERIENCIA + "/" + this.NOMBRE_USUARIO + "/video.3gp");
+        if (tipoPrueba.equals("Sólo Vídeo")) {
+            archivoRef= mStorageRef.child(EMAIL_USUARIO + "/Vídeos/" + UsuariosExperiencia.NOMBRE_EXPERIENCIA + "/" + this.NOMBRE_USUARIO + "/video.3gp");
+        }
+        else {
+            if (tipoPrueba.equals("Sólo Audio")) {
+                archivoRef= mStorageRef.child(EMAIL_USUARIO + "/Audios/" + UsuariosExperiencia.NOMBRE_EXPERIENCIA + "/" + this.NOMBRE_USUARIO + "/audio.amr");
+            }
+        }
 
         archivoRef.putFile(file)
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {

@@ -71,23 +71,43 @@ public class MainActivity extends AppCompatActivity {
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
-        FloatingActionButton fab = (FloatingActionButton)findViewById(R.id.fab);
+        final FloatingActionButton fab = (FloatingActionButton)findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(getApplicationContext(),NuevaExperiencia.class);
                 startActivity(i);
+                finish();
             }
         });
-
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        final DatabaseReference myRef = database.getReference("users");
 
         experiencias = new ArrayList<ArrayList<String>>();
         recyclerView = (RecyclerView)findViewById(R.id.experiencias_list);
         linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
 
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener(){
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy){
+                if (dy<0 && !fab.isShown())
+                    fab.show();
+                else if(dy>0 && fab.isShown())
+                    fab.hide();
+            }
+
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+        });
+
+        getListaUsuarios();
+
+    }
+
+    public void getListaUsuarios() {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        final DatabaseReference myRef = database.getReference("users");
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -98,18 +118,15 @@ public class MainActivity extends AppCompatActivity {
                     final String user_key;
                     if (user.getEmail().equals(EMAIL_USUARIO)) {
                         // Obtenemos la key del usuario logueado
-                        user_key = snapshot.getKey();
+                        String key = snapshot.getKey();
 
-                        myRef.child(user_key).child("Experiencias").addValueEventListener(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-//                                System.out.println("HOLAA" + value);
-                                for(DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
+                            for(DataSnapshot singleSnapshot : dataSnapshot.child(key).child("Experiencias").getChildren()) {
+                                if (singleSnapshot.child("pruebaTerminada").exists()) {
                                     String experienciaTitle = singleSnapshot.getKey();
                                     String fechaRealicacion = singleSnapshot.child("fechaRealizacion").getValue().toString();
-                                    String terminada = singleSnapshot.child("terminada").getValue().toString();
-//                                    System.out.println(experienciaTitle);
-//                                    experiencias.add(experienciaTitle);
+                                    String terminada = singleSnapshot.child("pruebaTerminada").getValue().toString();
+                                    //                                    System.out.println(experienciaTitle);
+                                    //                                    experiencias.add(experienciaTitle);
                                     ArrayList<String> datosExperiencia = new ArrayList<String>();
                                     datosExperiencia.add(experienciaTitle);  // posicion 0
                                     datosExperiencia.add(fechaRealicacion);  // posicion 1
@@ -119,13 +136,6 @@ public class MainActivity extends AppCompatActivity {
                                     recyclerView.setAdapter(recyclerViewAdapter);
                                 }
                             }
-
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
-
-                            }
-                        });
-
                     }
                 }
             }
@@ -134,7 +144,6 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-
     }
 
     @Override

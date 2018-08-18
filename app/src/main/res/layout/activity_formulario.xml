@@ -174,7 +174,7 @@
                     android:id="@+id/radioAudio"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Solo Audio" />
+                    android:text="Sólo Audio" />
 
                 <RadioButton
                     android:id="@+id/radioAudioYVideo"

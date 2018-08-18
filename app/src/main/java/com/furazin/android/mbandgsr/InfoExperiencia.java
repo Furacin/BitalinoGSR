@@ -23,8 +23,11 @@ public class InfoExperiencia extends AppCompatActivity {
 
     public static String id_usuario;
     String EMAIL_USUARIO = MainActivity.EMAIL_USUARIO;
-    TextView fecha, nombre, apellidos, sexo, fecha_nacimiento, descripcion, txtTerminada;
+    TextView fecha, nombre, apellidos, sexo, fecha_nacimiento, descripcion, txtTerminada, txtTipoPrueba;
     Button btnStartExperiencia;
+
+    // Variable para almacenar el tipo de prueba
+    static public String tipoPrueba = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +42,8 @@ public class InfoExperiencia extends AppCompatActivity {
         descripcion = (TextView) findViewById(R.id.descripcion);
         btnStartExperiencia = (Button) findViewById(R.id.btnStartExperiencia);
         txtTerminada = (TextView) findViewById(R.id.experienciaTerminada);
+        txtTipoPrueba = (TextView) findViewById(R.id.tipoPruebaInfoExperiencia);
+
 
         id_usuario = getIntent().getExtras().getString("id_usuario");
         FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -59,13 +64,14 @@ public class InfoExperiencia extends AppCompatActivity {
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 Experiencia e = dataSnapshot.getValue(Experiencia.class);
 //                                System.out.println(e.getNombre());
-                                String a = "Fecha de realización: ";
-                                fecha.setText(a + id_usuario);
-                                nombre.setText("Nombre: " + e.getNombre());
-                                apellidos.setText("Apellidos: " + e.getApellidos());
-                                sexo.setText("Sexo: " + e.getSexo());
-                                fecha_nacimiento.setText("Fecha de nacimiento: " + e.getFecha_nacimiento());
-                                descripcion.setText("Descripción: " + e.getDescripcion());
+                                fecha.setText(id_usuario);
+                                nombre.setText(e.getNombre());
+                                apellidos.setText( e.getApellidos());
+                                sexo.setText(e.getSexo());
+                                fecha_nacimiento.setText(e.getFecha_nacimiento());
+                                descripcion.setText(e.getDescripcion());
+                                txtTipoPrueba.setText(e.getOpcion_multimedia());
+                                tipoPrueba = e.getOpcion_multimedia();
 
                                 if (e.getTerminada().equals("si")) {
                                     txtTerminada.setVisibility(View.VISIBLE);

@@ -2,6 +2,7 @@ package com.furazin.android.mbandgsr;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -170,6 +171,8 @@ public class NuevaExperiencia extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 finish();
+                Intent i = new Intent(NuevaExperiencia.this,MainActivity.class);
+                startActivity(i);
             }
         });
 
@@ -228,7 +231,7 @@ public class NuevaExperiencia extends AppCompatActivity {
                     lista_sujetos.clear();
                     for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
                         String experienciaTitle = singleSnapshot.getKey();
-                        if (!experienciaTitle.equals("fechaRealizacion") && !experienciaTitle.equals("terminada"))
+                        if (!experienciaTitle.equals("fechaRealizacion") && !experienciaTitle.equals("pruebaTerminada"))
                         lista_sujetos.add(experienciaTitle);
                     }
                     //                        System.out.println(lista_sujetos.size());
@@ -267,15 +270,13 @@ public class NuevaExperiencia extends AppCompatActivity {
 //                        Experiencia experiencia = ExperienciaFormulario();
                         // Añadimos la informacion del formulario, y en la bd se creara una entrada con la fecha y hora actuales
 //                        NOMBRE_EXPERIENCIA = getFechaYHora();
-                        long i =  dataSnapshot.getChildrenCount();
-
-                        myRef.child(key).child("Experiencias").child(NOMBRE_EXPERIENCIA).child(experiencia.getNombre()).setValue(experiencia);
-
+//                        long i =  dataSnapshot.getChildrenCount();
                         Calendar calendar = Calendar.getInstance();
                         SimpleDateFormat mdformat = new SimpleDateFormat("dd/MM/yyyy");
                         String strDate = mdformat.format(calendar.getTime());
                         myRef.child(key).child("Experiencias").child(NOMBRE_EXPERIENCIA).child("fechaRealizacion").setValue(strDate);
-                        myRef.child(key).child("Experiencias").child(NOMBRE_EXPERIENCIA).child("terminada").setValue("no");
+                        myRef.child(key).child("Experiencias").child(NOMBRE_EXPERIENCIA).child("pruebaTerminada").setValue("no");
+                        myRef.child(key).child("Experiencias").child(NOMBRE_EXPERIENCIA).child(experiencia.getNombre()).setValue(experiencia);
                     }
                 }
             }
@@ -289,10 +290,10 @@ public class NuevaExperiencia extends AppCompatActivity {
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        //myRef.removeEventListener(referenceListener);
+    public void onBackPressed() {
         finish();
+        Intent i = new Intent(NuevaExperiencia.this,MainActivity.class);
+        startActivity(i);
     }
 
 

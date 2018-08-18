@@ -76,7 +76,7 @@ public class UsuariosExperiencia extends AppCompatActivity {
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 for(DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
                                     String nombreSujeto = singleSnapshot.getKey();
-                                    if (!nombreSujeto.equals("fechaRealizacion") && !nombreSujeto.equals("terminada")) {
+                                    if (!nombreSujeto.equals("fechaRealizacion") && !nombreSujeto.equals("pruebaTerminada")) {
                                         usuarios.add(nombreSujeto);
                                         recyclerViewAdapter = new RecyclerViewAdapterDatosUsuario(UsuariosExperiencia.this, usuarios);
                                         recyclerView.setAdapter(recyclerViewAdapter);
