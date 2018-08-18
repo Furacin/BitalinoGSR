@@ -954,6 +954,20 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
 
                         // Marcamos experiencia como terminada
                         myRef.child(key).child("Experiencias").child(UsuariosExperiencia.NOMBRE_EXPERIENCIA).child(NOMBRE_USUARIO).child("terminada").setValue("si");
+
+                        // Recorremos cada prueba de la experiencias y comprobamos si tiene todas las pruebas terminadas
+                        boolean terminadaAux = true;
+                        for (DataSnapshot dataSnapShotExperiencias : snapshot.child("Experiencias").child(UsuariosExperiencia.NOMBRE_EXPERIENCIA).getChildren()) {
+                            if (dataSnapShotExperiencias.hasChildren()) {
+                                if (dataSnapShotExperiencias.child("terminada").getValue().toString().equals("no") && !dataSnapShotExperiencias.getKey().equals(NOMBRE_USUARIO)){
+                                    terminadaAux = false;
+                                }
+                            }
+                        }
+                        // Si todas las pruebas están terminadas, seteamos la variable en Firebase
+                        if (terminadaAux) {
+                            myRef.child(key).child("Experiencias").child(UsuariosExperiencia.NOMBRE_EXPERIENCIA).child("pruebaTerminada").setValue("si");
+                        }
                     }
                 }
             }
