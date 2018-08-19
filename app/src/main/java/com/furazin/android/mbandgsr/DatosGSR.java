@@ -3,22 +3,28 @@ package com.furazin.android.mbandgsr;
 import android.app.Activity;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Parcelable;
+import android.os.SystemClock;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Chronometer;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -50,6 +56,7 @@ import com.jjoe64.graphview.series.LineGraphSeries;
 import com.microsoft.band.BandClient;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Timer;
@@ -127,7 +134,7 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
     ArrayList<DataPoint> fcValues; // Array con los distintos valores de la GSR
 
     // Cronómetro
-    //Chronometer crono;
+    Chronometer crono;
 
     Timer timer = new Timer();
 
@@ -135,6 +142,9 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
 
     private String tipoPrueba;
     private Boolean finPrueba;
+
+    File audiofile = null;
+    MediaRecorder recorder;
 
 //    private BandGsrEventListener mGsrEventListener = new BandGsrEventListener() {
 //        @Override
@@ -237,7 +247,7 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
         resultsTextView = (TextView) findViewById(R.id.results_text_view);
 
         // Cronómetro
-//        crono = (Chronometer) findViewById(R.id.chronometer3);
+        crono = (Chronometer) findViewById(R.id.chronometer3);
 
 //        // Gráfica
         graphGSR = (GraphView) findViewById(R.id.graph_GSR);
@@ -317,7 +327,14 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
                         case "Ninguno":
                             break;
                         case "Sólo Audio":
-                            GrabarAudio();
+                            try {
+                                crono.setVisibility(View.VISIBLE);
+                                crono.setBase(SystemClock.elapsedRealtime());
+                                crono.start();
+                                GrabarAudio();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
                             break;
                     }
                 }
@@ -332,7 +349,7 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
                 } catch (BITalinoException e) {
                     e.printStackTrace();
                 }
-                //timer.cancel();
+                timer.cancel();
                 //crono.stop();
                 btnStop.setEnabled(false);
                 graphicGSR();
@@ -348,6 +365,10 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
                         SubirArchivoFirebase(videoPath);
                         break;
                     case "Sólo Audio":
+                        crono.stop();
+                        recorder.stop();
+                        recorder.release();
+                        addRecordingToMediaLibrary();
                         txtlblSubidaVideo.setText("Subiendo audio... ");
                         SubirArchivoFirebase(audioPath);
                         break;
@@ -576,8 +597,8 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
                 }
                 break;
             case "Sólo Audio":
-                    Uri audio = data.getData();
-                    audioPath = getRealPathFromURI(audio);
+//                    Uri audio = data.getData();
+//                    audioPath = getRealPathFromURI(audio);
                 break;
         }
 
@@ -619,10 +640,24 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
     /*
   /  Método para iniciar la grabación de audio por el usuario
    */
-    public void GrabarAudio() {
-        Intent intent =
-                new Intent(MediaStore.Audio.Media.RECORD_SOUND_ACTION);
-        startActivityForResult(intent, RQS_RECORDING);
+    public void GrabarAudio() throws IOException {
+//        Intent intent =
+//                new Intent(MediaStore.Audio.Media.RECORD_SOUND_ACTION);
+//        startActivityForResult(intent, RQS_RECORDING);
+        File sampleDir = Environment.getExternalStorageDirectory();
+        try {
+            audiofile = File.createTempFile("sound", ".mp3", sampleDir);
+        } catch (IOException e) {
+            Log.e(TAG, "sdcard access error");
+            return;
+        }
+        recorder = new MediaRecorder();
+        recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+        recorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
+        recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+        recorder.setOutputFile(audiofile.getAbsolutePath());
+        recorder.prepare();
+        recorder.start();
     }
 
     /*
@@ -640,7 +675,7 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
         }
         else {
             if (tipoPrueba.equals("Sólo Audio")) {
-                archivoRef= mStorageRef.child(EMAIL_USUARIO + "/Audios/" + UsuariosExperiencia.NOMBRE_EXPERIENCIA + "/" + this.NOMBRE_USUARIO + "/audio.amr");
+                archivoRef= mStorageRef.child(EMAIL_USUARIO + "/Audios/" + UsuariosExperiencia.NOMBRE_EXPERIENCIA + "/" + this.NOMBRE_USUARIO + "/audio.mp3");
             }
         }
 
@@ -982,6 +1017,24 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
                 btnVolverMenu.setVisibility(View.VISIBLE);
                 finPrueba = true;
             }
+    }
+
+    protected void addRecordingToMediaLibrary() {
+        ContentValues values = new ContentValues(4);
+        long current = System.currentTimeMillis();
+        values.put(MediaStore.Audio.Media.TITLE, "audio" + audiofile.getName());
+        values.put(MediaStore.Audio.Media.DATE_ADDED, (int) (current / 1000));
+        values.put(MediaStore.Audio.Media.MIME_TYPE, "audio/3gpp");
+        values.put(MediaStore.Audio.Media.DATA, audiofile.getAbsolutePath());
+        ContentResolver contentResolver = getContentResolver();
+
+        Uri base = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+        Uri newUri = contentResolver.insert(base, values);
+
+        sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, newUri));
+//        Toast.makeText(this, "Added File " + newUri, Toast.LENGTH_LONG).show();
+        
+        audioPath = getRealPathFromURI(newUri);
     }
 
 }
