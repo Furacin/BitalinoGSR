@@ -79,20 +79,21 @@
                 android:id="@+id/btnStart"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Empezar"
-                android:layout_marginTop="10dp"
-                android:layout_below="@+id/txtStep"
-                android:layout_toStartOf="@+id/textView" />
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="66dp"
+                android:layout_marginTop="268dp"
+                android:text="Empezar" />
 
             <Button
                 android:id="@+id/btnStop"
-                android:layout_marginTop="10dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:visibility="invisible"
+                android:layout_alignParentEnd="true"
+                android:layout_alignTop="@+id/btnStart"
+                android:layout_marginEnd="66dp"
                 android:text="Terminar"
-                android:layout_below="@+id/txtStep"
-                android:layout_toEndOf="@+id/textView" />
+                android:visibility="invisible" />
 
             <ProgressBar
                 android:id="@+id/progressBar"
@@ -166,18 +167,10 @@
                 android:text="" />
 
             <TextView
-                android:id="@+id/txtTemperatura"
-                android:layout_marginBottom="5dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/txtGSR"
-                android:text="" />
-
-            <TextView
                 android:id="@+id/txtFC"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/txtTemperatura"
+                android:layout_below="@+id/txtGSR"
                 android:layout_marginBottom="20dp"
                 android:text="" />
 
@@ -198,28 +191,13 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Temperatura"
-                android:layout_centerInParent="true"
-                android:layout_above="@+id/graph_Temperatura"
-                android:id="@+id/textView" />
-
-            <com.jjoe64.graphview.GraphView
-                android:layout_below="@+id/graph_GSR"
-                android:layout_width="match_parent"
-                android:layout_height="200dip"
-                android:layout_marginBottom="20dp"
-                android:id="@+id/graph_Temperatura" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:text="Frecuencia Cardíaca"
                 android:layout_centerInParent="true"
                 android:layout_above="@+id/graph_FC"
                 android:id="@+id/textView2" />
 
             <com.jjoe64.graphview.GraphView
-                android:layout_below="@+id/graph_Temperatura"
+                android:layout_below="@+id/graph_GSR"
                 android:layout_width="match_parent"
                 android:layout_height="200dip"
                 android:layout_marginBottom="20dp"
@@ -227,13 +205,13 @@
 
             <Chronometer
                 android:id="@+id/chronometer3"
+                android:visibility="invisible"
+                android:textSize="24dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="365dp"
-                android:textSize="24dp"
-                android:visibility="invisible" />
+                android:layout_marginTop="223dp" />
 
         </RelativeLayout>
 

@@ -233,7 +233,7 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
         mStorageRef = FirebaseStorage.getInstance().getReference();
 
         txtGSR = (TextView) findViewById(R.id.txtGSR);
-        txtTemperatura = (TextView) findViewById(R.id.txtTemperatura);
+//        txtTemperatura = (TextView) findViewById(R.id.txtTemperatura);
         txtFC = (TextView) findViewById(R.id.txtFC);
 
 
@@ -251,7 +251,7 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
 
 //        // Gráfica
         graphGSR = (GraphView) findViewById(R.id.graph_GSR);
-        graphTemperatura = (GraphView) findViewById(R.id.graph_Temperatura);
+//        graphTemperatura = (GraphView) findViewById(R.id.graph_Temperatura);
         graphFC = (GraphView) findViewById(R.id.graph_FC);
         gsrValues = new ArrayList<>();
         temperaturaValues = new ArrayList<>();
@@ -353,7 +353,7 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
                 //crono.stop();
                 btnStop.setEnabled(false);
                 graphicGSR();
-                graphicTemperatura();
+//                graphicTemperatura();
                 graphicFC();
                 switch(tipoPrueba) {
                     case "Audio y Vídeo":
@@ -397,7 +397,7 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
         isUpdateReceiverRegistered = true;
 
         txtGSR.setText("");
-        txtTemperatura.setText("");
+//        txtTemperatura.setText("");
         txtFC.setText("");
     }
 
@@ -877,7 +877,7 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        temperaturaValues.add(new DataPoint(contador_temp,res));
+//        temperaturaValues.add(new DataPoint(contador_temp,res));
         contador_temp ++;
     }
 
@@ -953,14 +953,14 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
         }
 
         //if (datos_temperatura.size() != 0) {
-        final ArrayList<String> valores_temperatura = new ArrayList<>();
-
-            for (int i = 0; i < datos_temperatura.size(); i++) {
-                //int x = (int) datos_temperatura.get(i).getX();
-                int y = (int) datos_temperatura.get(i).getY();
-
-                valores_temperatura.add((String.valueOf(y)));
-            }
+//        final ArrayList<String> valores_temperatura = new ArrayList<>();
+//
+//            for (int i = 0; i < datos_temperatura.size(); i++) {
+//                //int x = (int) datos_temperatura.get(i).getX();
+//                int y = (int) datos_temperatura.get(i).getY();
+//
+//                valores_temperatura.add((String.valueOf(y)));
+//            }
         //}
 
         //if (datos_fc.size()!=0 ) {
@@ -984,7 +984,7 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
                         final String key = snapshot.getKey();
 
                         myRef.child(key).child("Experiencias").child(UsuariosExperiencia.NOMBRE_EXPERIENCIA).child(NOMBRE_USUARIO).child("Datos Graficas").child("GSR").setValue(valores_gsr);
-                        myRef.child(key).child("Experiencias").child(UsuariosExperiencia.NOMBRE_EXPERIENCIA).child(NOMBRE_USUARIO).child("Datos Graficas").child("Temperatura").setValue(valores_temperatura);
+//                        myRef.child(key).child("Experiencias").child(UsuariosExperiencia.NOMBRE_EXPERIENCIA).child(NOMBRE_USUARIO).child("Datos Graficas").child("Temperatura").setValue(valores_temperatura);
                         myRef.child(key).child("Experiencias").child(UsuariosExperiencia.NOMBRE_EXPERIENCIA).child(NOMBRE_USUARIO).child("Datos Graficas").child("FC").setValue(valores_fc);
 
                         // Marcamos experiencia como terminada
@@ -1033,7 +1033,7 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
 
         sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, newUri));
 //        Toast.makeText(this, "Added File " + newUri, Toast.LENGTH_LONG).show();
-        
+
         audioPath = getRealPathFromURI(newUri);
     }
 
