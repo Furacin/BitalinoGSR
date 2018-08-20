@@ -59,6 +59,11 @@ public class Login extends AppCompatActivity {
                 editTextPassword = (EditText) findViewById(R.id.edittext_password2);
                 password = editTextPassword.getText().toString();
 
+                if (!validate()) {
+                    onLoginFailed();
+                    return;
+                }
+
                 final ProgressDialog progressDialog = new ProgressDialog(Login.this,
                         R.style.loginDialogStyle);
                 progressDialog.setIndeterminate(true);
@@ -141,6 +146,10 @@ public class Login extends AppCompatActivity {
         finish();
     }
 
+    public void onLoginFailed() {
+        Toast.makeText(getBaseContext(), "Fallo con los campos introducidos", Toast.LENGTH_LONG).show();
+    }
+
     ////////////////////////////////////////////////////////////////////////////
 
     private void saveProfile() {
@@ -167,5 +176,28 @@ public class Login extends AppCompatActivity {
         //Notificamos la usuario de que se han guardado los datos del perfil correctamente.
         //Toast.makeText(getApplicationContext(),getString(R.string.msg_save), Toast.LENGTH_SHORT).show();
 
+    }
+
+    public boolean validate() {
+        boolean valid = true;
+
+        String email = editTextEmail.getText().toString();
+        String password = editTextPassword.getText().toString();
+
+        if (email.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            editTextEmail.setError("Introduce una dirección de email válida");
+            valid = false;
+        } else {
+            editTextEmail.setError(null);
+        }
+
+        if (password.isEmpty() || password.length() < 6 ) {
+            editTextPassword.setError("Mínimo 6 caracteres alfanuméricos");
+            valid = false;
+        } else {
+            editTextPassword.setError(null);
+        }
+
+        return valid;
     }
 }
