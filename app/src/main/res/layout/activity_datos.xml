@@ -80,9 +80,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
-                android:layout_marginStart="66dp"
-                android:layout_marginTop="268dp"
+                android:layout_below="@+id/txtStep"
+                android:layout_marginStart="52dp"
                 android:text="Empezar" />
 
             <Button
@@ -90,8 +89,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
-                android:layout_alignTop="@+id/btnStart"
-                android:layout_marginEnd="66dp"
+                android:layout_below="@+id/txtStep"
+                android:layout_marginEnd="50dp"
                 android:text="Terminar"
                 android:visibility="invisible" />
 
@@ -205,13 +204,12 @@
 
             <Chronometer
                 android:id="@+id/chronometer3"
-                android:visibility="invisible"
-                android:textSize="24dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
+                android:layout_alignBottom="@+id/btnStart"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="223dp" />
+                android:textSize="24dp"
+                android:visibility="invisible" />
 
         </RelativeLayout>
 

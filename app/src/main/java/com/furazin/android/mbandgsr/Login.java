@@ -1,5 +1,6 @@
 package com.furazin.android.mbandgsr;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -8,6 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -36,7 +38,7 @@ public class Login extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.login_activity);
+        setContentView(R.layout.login_activity_2);
 
         // Instanciamos una referencia al Contexto
         Context context = this.getApplicationContext();
@@ -45,15 +47,33 @@ public class Login extends AppCompatActivity {
         sharedPref = context.getSharedPreferences(
                 getString(R.string.preference_file_key), Context.MODE_PRIVATE);
 
-        Button bt_conectar = (Button) findViewById(R.id.bt_conectar);
+        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+
+        Button bt_conectar = (Button) findViewById(R.id.bt_conectar2);
         bt_conectar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                editTextEmail = (EditText) findViewById(R.id.edittext_email);
+                editTextEmail = (EditText) findViewById(R.id.edittext_email2);
                 email = editTextEmail.getText().toString();
 
-                editTextPassword = (EditText) findViewById(R.id.edittext_password);
+                editTextPassword = (EditText) findViewById(R.id.edittext_password2);
                 password = editTextPassword.getText().toString();
+
+                final ProgressDialog progressDialog = new ProgressDialog(Login.this,
+                        R.style.loginDialogStyle);
+                progressDialog.setIndeterminate(true);
+                progressDialog.setMessage("Autenticando...");
+                progressDialog.show();
+
+                new android.os.Handler().postDelayed(
+                        new Runnable() {
+                            public void run() {
+                                // On complete call either onLoginSuccess or onLoginFailed
+                                onLoginSuccess();
+                                // onLoginFailed();
+//                                progressDialog.dismiss();
+                            }
+                        }, 3000);
                 iniciarSesion(email,password);
             }
         });
@@ -114,6 +134,11 @@ public class Login extends AppCompatActivity {
         if (mAuthListener != null) {
             mAuth.removeAuthStateListener(mAuthListener);
         }
+    }
+
+    public void onLoginSuccess() {
+
+        finish();
     }
 
     ////////////////////////////////////////////////////////////////////////////
