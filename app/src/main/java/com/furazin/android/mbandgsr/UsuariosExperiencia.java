@@ -16,7 +16,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by manza on 15/06/2017.
@@ -28,7 +27,7 @@ public class UsuariosExperiencia extends AppCompatActivity {
     public static String EMAIL_USUARIO;
 
     public static String NOMBRE_EXPERIENCIA;
-    private List<String> usuarios;
+    private ArrayList<ArrayList<String>> usuarios;
     private RecyclerView recyclerView;
     private LinearLayoutManager linearLayoutManager;
     private RecyclerViewAdapterDatosUsuario recyclerViewAdapter;
@@ -55,7 +54,8 @@ public class UsuariosExperiencia extends AppCompatActivity {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         final DatabaseReference myRef = database.getReference("users");
 
-        usuarios = new ArrayList<String>();
+//        usuarios = new ArrayList<String>();
+        usuarios = new ArrayList<ArrayList<String>>();
         recyclerView = (RecyclerView)findViewById(R.id.experiencias_list);
         linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
@@ -75,9 +75,16 @@ public class UsuariosExperiencia extends AppCompatActivity {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 for(DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
+                                    ArrayList<String> infoSujeto = new ArrayList<String>();
                                     String nombreSujeto = singleSnapshot.getKey();
                                     if (!nombreSujeto.equals("fechaRealizacion") && !nombreSujeto.equals("pruebaTerminada")) {
-                                        usuarios.add(nombreSujeto);
+                                        String apellidosSueto = singleSnapshot.child("apellidos").getValue().toString();
+                                        String opcionMultimedia = singleSnapshot.child("opcion_multimedia").getValue().toString();
+                                        infoSujeto.add(nombreSujeto);                                                     // Nombre del sujeto
+                                        infoSujeto.add(apellidosSueto);          // Apellido del sujeto
+                                        infoSujeto.add(opcionMultimedia);  // Multimedia que contiene la prueba
+
+                                        usuarios.add(infoSujeto);
                                         recyclerViewAdapter = new RecyclerViewAdapterDatosUsuario(UsuariosExperiencia.this, usuarios);
                                         recyclerView.setAdapter(recyclerViewAdapter);
                                     }

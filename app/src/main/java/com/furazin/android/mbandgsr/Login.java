@@ -35,10 +35,15 @@ public class Login extends AppCompatActivity {
     // Variable para recordar las credenciales del usuario
     private SharedPreferences sharedPref;
 
+    ProgressDialog progressDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_activity_2);
+
+        progressDialog = new ProgressDialog(Login.this,
+                R.style.loginDialogStyle);
 
         // Instanciamos una referencia al Contexto
         Context context = this.getApplicationContext();
@@ -64,8 +69,6 @@ public class Login extends AppCompatActivity {
                     return;
                 }
 
-                final ProgressDialog progressDialog = new ProgressDialog(Login.this,
-                        R.style.loginDialogStyle);
                 progressDialog.setIndeterminate(true);
                 progressDialog.setMessage("Autenticando...");
                 progressDialog.show();
@@ -142,8 +145,8 @@ public class Login extends AppCompatActivity {
     }
 
     public void onLoginSuccess() {
-
-        finish();
+        progressDialog.hide();
+        //finish();
     }
 
     public void onLoginFailed() {

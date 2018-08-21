@@ -10,24 +10,24 @@ import android.view.ViewGroup;
 import com.furazin.android.mbandgsr.R;
 
 import java.util.ArrayList;
-public class RecyclerViewAdapterListaSujetos extends RecyclerView.Adapter<RecyclerViewHoldersListaSujetos> {
+public class RecyclerViewAdapterListaExperiencias extends RecyclerView.Adapter<RecyclerViewHoldersListaExperiencias> {
     private ArrayList<ArrayList<String>> experiencias;
     protected Context context;
     private String terminada;
-    public RecyclerViewAdapterListaSujetos(Context context, ArrayList<ArrayList<String>> experiencias) {
+    public RecyclerViewAdapterListaExperiencias(Context context, ArrayList<ArrayList<String>> experiencias) {
         this.experiencias = experiencias;
         this.context = context;
 
     }
     @Override
-    public RecyclerViewHoldersListaSujetos onCreateViewHolder(ViewGroup parent, int viewType) {
-        RecyclerViewHoldersListaSujetos viewHolder = null;
+    public RecyclerViewHoldersListaExperiencias onCreateViewHolder(ViewGroup parent, int viewType) {
+        RecyclerViewHoldersListaExperiencias viewHolder = null;
         View layoutView = LayoutInflater.from(parent.getContext()).inflate(R.layout.to_do_list, parent, false);
-        viewHolder = new RecyclerViewHoldersListaSujetos(layoutView, experiencias);
+        viewHolder = new RecyclerViewHoldersListaExperiencias(layoutView, experiencias);
         return viewHolder;
     }
     @Override
-    public void onBindViewHolder(RecyclerViewHoldersListaSujetos holder, int position) {
+    public void onBindViewHolder(RecyclerViewHoldersListaExperiencias holder, int position) {
         holder.nombreExperiencia.setText(experiencias.get(position).get(0));
         holder.fechaExperiencia.setText(experiencias.get(position).get(1));
         // Comprobamos si la experiencia está terminada o no y en función de ello coloreamos

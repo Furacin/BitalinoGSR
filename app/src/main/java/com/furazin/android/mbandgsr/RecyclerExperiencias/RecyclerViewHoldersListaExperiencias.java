@@ -13,15 +13,15 @@ import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class RecyclerViewHoldersListaSujetos extends RecyclerView.ViewHolder{
-    private static final String TAG = RecyclerViewHoldersListaSujetos.class.getSimpleName();
+public class RecyclerViewHoldersListaExperiencias extends RecyclerView.ViewHolder{
+    private static final String TAG = RecyclerViewHoldersListaExperiencias.class.getSimpleName();
     public ImageButton btnAbrirExperiencia;
     public TextView nombreExperiencia;
     public TextView fechaExperiencia;
     public CircleImageView marcaExperienciaTerminada;
 
     private ArrayList<ArrayList<String>> experienciasObject;
-    public RecyclerViewHoldersListaSujetos(final View itemView, final ArrayList<ArrayList<String>> experienciasObject) {
+    public RecyclerViewHoldersListaExperiencias(final View itemView, final ArrayList<ArrayList<String>> experienciasObject) {
         super(itemView);
         this.experienciasObject = experienciasObject;
         btnAbrirExperiencia = (ImageButton)itemView.findViewById(R.id.btnAbrirExperiencia);
