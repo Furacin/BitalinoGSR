@@ -11,6 +11,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.graphics.drawable.AnimationDrawable;
 import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Bundle;
@@ -18,13 +19,13 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Parcelable;
-import android.os.SystemClock;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Chronometer;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -136,6 +137,9 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
     // Cronómetro
     Chronometer crono;
 
+    AnimationDrawable microAnimation;
+    ImageView microImage;
+
     Timer timer = new Timer();
 
     private ProgressBar progressBar;
@@ -197,6 +201,9 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
         txtSubidaVideo = findViewById(R.id.txtSubidaVideo);
         txtlblSubidaVideo = findViewById(R.id.textoLblSubirVideo);
         txtVideoSubidoExito = findViewById(R.id.txtVideoSubidoExito);
+        microImage = findViewById(R.id.image_mic);
+        microImage.setBackgroundResource(R.drawable.mic_animation);
+        microAnimation = (AnimationDrawable) microImage.getBackground();
 
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         finPrueba = false;
@@ -247,7 +254,7 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
         resultsTextView = (TextView) findViewById(R.id.results_text_view);
 
         // Cronómetro
-        crono = (Chronometer) findViewById(R.id.chronometer3);
+//        crono = (Chronometer) findViewById(R.id.chronometer3);
 
 //        // Gráfica
         graphGSR = (GraphView) findViewById(R.id.graph_GSR);
@@ -328,9 +335,10 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
                             break;
                         case "Sólo Audio":
                             try {
-                                crono.setVisibility(View.VISIBLE);
-                                crono.setBase(SystemClock.elapsedRealtime());
-                                crono.start();
+//                                crono.setVisibility(View.VISIBLE);
+//                                crono.setBase(SystemClock.elapsedRealtime());
+//                                crono.start();
+                                microAnimation.start();
                                 GrabarAudio();
                             } catch (IOException e) {
                                 e.printStackTrace();
@@ -365,7 +373,8 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
                         SubirArchivoFirebase(videoPath);
                         break;
                     case "Sólo Audio":
-                        crono.stop();
+//                        crono.stop();
+                        microAnimation.stop();
                         recorder.stop();
                         recorder.release();
                         addRecordingToMediaLibrary();
