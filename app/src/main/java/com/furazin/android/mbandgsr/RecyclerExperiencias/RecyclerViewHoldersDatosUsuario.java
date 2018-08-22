@@ -26,6 +26,7 @@ public class RecyclerViewHoldersDatosUsuario extends RecyclerView.ViewHolder {
     public TextView Apellidos;
     public CircleImageView MarcaMultimedia;
     public ImageButton btnInicioPrueba;
+    public String sujeto_key;
 
     private ArrayList<ArrayList<String>> experienciasObject;
     public RecyclerViewHoldersDatosUsuario(final View itemView, final ArrayList<ArrayList<String>> experienciasObject, final Context parent) {
@@ -40,7 +41,7 @@ public class RecyclerViewHoldersDatosUsuario extends RecyclerView.ViewHolder {
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(itemView.getContext(), InfoExperiencia.class);
-                i.putExtra("id_usuario",Name.getText());
+                i.putExtra("id_usuario",sujeto_key);
                 itemView.getContext().startActivity(i);
 
                 // Cerramos el activity del que venimos

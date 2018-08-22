@@ -49,6 +49,8 @@ public class NuevaExperiencia extends AppCompatActivity {
 
     Dialog dialog;
 
+    int cont_sujetos;
+
     // Variable para recordar las credenciales del usuario
     private SharedPreferences sharedPref;
 
@@ -69,6 +71,8 @@ public class NuevaExperiencia extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nueva_experiencia);
+        cont_sujetos = 1;
+
 
         // Instanciamos una referencia al Contexto
         Context context = this.getApplicationContext();
@@ -230,9 +234,12 @@ public class NuevaExperiencia extends AppCompatActivity {
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     lista_sujetos.clear();
                     for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
-                        String experienciaTitle = singleSnapshot.getKey();
-                        if (!experienciaTitle.equals("fechaRealizacion") && !experienciaTitle.equals("pruebaTerminada"))
-                        lista_sujetos.add(experienciaTitle);
+                        if (!singleSnapshot.getKey().equals("fechaRealizacion") && !singleSnapshot.getKey().equals("pruebaTerminada")) {
+                            String nombre_sujeto = singleSnapshot.child("nombre").getValue().toString();
+                            String apellidos_sujeto = singleSnapshot.child("apellidos").getValue().toString();
+                            if (!nombre_sujeto.equals("fechaRealizacion") && !nombre_sujeto.equals("pruebaTerminada") && !apellidos_sujeto.equals("fechaRealizacion") && !apellidos_sujeto.equals("pruebaTerminada"))
+                                lista_sujetos.add(nombre_sujeto + " " + apellidos_sujeto);
+                        }
                     }
                     //                        System.out.println(lista_sujetos.size());
                     //                        lista_sujetos = EliminarRepetidos(lista_sujetos);
@@ -276,7 +283,8 @@ public class NuevaExperiencia extends AppCompatActivity {
                         String strDate = mdformat.format(calendar.getTime());
                         myRef.child(key).child("Experiencias").child(NOMBRE_EXPERIENCIA).child("fechaRealizacion").setValue(strDate);
                         myRef.child(key).child("Experiencias").child(NOMBRE_EXPERIENCIA).child("pruebaTerminada").setValue("no");
-                        myRef.child(key).child("Experiencias").child(NOMBRE_EXPERIENCIA).child(experiencia.getNombre()).setValue(experiencia);
+                        myRef.child(key).child("Experiencias").child(NOMBRE_EXPERIENCIA).child(String.valueOf(cont_sujetos)).setValue(experiencia);
+                        cont_sujetos++;
                     }
                 }
             }

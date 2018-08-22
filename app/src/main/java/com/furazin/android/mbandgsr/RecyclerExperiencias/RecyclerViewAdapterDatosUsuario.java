@@ -65,6 +65,7 @@ public class RecyclerViewAdapterDatosUsuario extends RecyclerView.Adapter<Recycl
                 holder.MarcaMultimedia.setImageDrawable(icon);
                 break;
         }
+        holder.sujeto_key = usuario.get(position).get(3).toString();
     }
 
     @Override

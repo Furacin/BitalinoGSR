@@ -76,9 +76,9 @@ public class UsuariosExperiencia extends AppCompatActivity {
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 for(DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
                                     ArrayList<String> infoSujeto = new ArrayList<String>();
-                                    String nombreSujeto = singleSnapshot.getKey();
-                                    if (!nombreSujeto.equals("fechaRealizacion") && !nombreSujeto.equals("pruebaTerminada")) {
-                                        String apellidosSueto = singleSnapshot.child("apellidos").getValue().toString();
+                                    String num_sujeto = singleSnapshot.getKey();
+                                    if (!num_sujeto.equals("fechaRealizacion") && !num_sujeto.equals("pruebaTerminada")) {
+                                        String nombreSujeto = singleSnapshot.child("nombre").getValue().toString() + " " + singleSnapshot.child("apellidos").getValue().toString();
                                         String opcionMultimedia = singleSnapshot.child("opcion_multimedia").getValue().toString();
                                         String pruebaTerminada = singleSnapshot.child("terminada").getValue().toString();
                                         if (pruebaTerminada.equals("si")) {
@@ -87,8 +87,9 @@ public class UsuariosExperiencia extends AppCompatActivity {
                                         else {
                                             infoSujeto.add("Pendiente");
                                         }
-                                        infoSujeto.add(nombreSujeto + " " + apellidosSueto);    // Nombre y Apellidos del sujeto
+                                        infoSujeto.add(nombreSujeto);    // Nombre y Apellidos del sujeto
                                         infoSujeto.add(opcionMultimedia);  // Multimedia que contiene la prueba
+                                        infoSujeto.add(singleSnapshot.getKey()); // key del sujeto
                                         usuarios.add(infoSujeto);
                                         recyclerViewAdapter = new RecyclerViewAdapterDatosUsuario(UsuariosExperiencia.this, usuarios);
                                         recyclerView.setAdapter(recyclerViewAdapter);
