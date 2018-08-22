@@ -15,6 +15,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
 /**
  * Created by manza on 12/06/2017.
  */
@@ -64,8 +67,11 @@ public class InfoExperiencia extends AppCompatActivity {
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 Experiencia e = dataSnapshot.getValue(Experiencia.class);
 //                                System.out.println(e.getNombre());
-                                fecha.setText(id_usuario);
-                                nombre.setText(e.getNombre());
+                                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+                                Calendar c = Calendar.getInstance();
+                                String date = sdf.format(c.getTime());
+                                fecha.setText(date);
+                                nombre.setText(id_usuario);
                                 apellidos.setText( e.getApellidos());
                                 sexo.setText(e.getSexo());
                                 fecha_nacimiento.setText(e.getFecha_nacimiento());

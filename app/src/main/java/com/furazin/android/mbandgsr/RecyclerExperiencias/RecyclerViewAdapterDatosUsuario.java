@@ -1,6 +1,8 @@
 package com.furazin.android.mbandgsr.RecyclerExperiencias;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -36,6 +38,16 @@ public class RecyclerViewAdapterDatosUsuario extends RecyclerView.Adapter<Recycl
     public void onBindViewHolder(RecyclerViewHoldersDatosUsuario holder, int position) {
 //        holder.Name.setText(experiencias.get(position));
         holder.Name.setText(usuario.get(position).get(0));
+        if (usuario.get(position).get(0).equals("Finalizada")) {
+            holder.Name.setTextColor(Color.parseColor("#4EE57F"));
+            holder.Name.setTypeface(null, Typeface.BOLD_ITALIC);
+        }
+        else {
+            if (usuario.get(position).get(0).equals("Pendiente")) {
+                holder.Name.setTextColor(Color.parseColor("#E5DD81"));
+                holder.Name.setTypeface(null, Typeface.BOLD_ITALIC);
+            }
+        }
         holder.Apellidos.setText(usuario.get(position).get(1));
         opcion_multimedia = usuario.get(position).get(2);
         Drawable icon;

@@ -80,10 +80,15 @@ public class UsuariosExperiencia extends AppCompatActivity {
                                     if (!nombreSujeto.equals("fechaRealizacion") && !nombreSujeto.equals("pruebaTerminada")) {
                                         String apellidosSueto = singleSnapshot.child("apellidos").getValue().toString();
                                         String opcionMultimedia = singleSnapshot.child("opcion_multimedia").getValue().toString();
-                                        infoSujeto.add(nombreSujeto);                                                     // Nombre del sujeto
-                                        infoSujeto.add(apellidosSueto);          // Apellido del sujeto
+                                        String pruebaTerminada = singleSnapshot.child("terminada").getValue().toString();
+                                        if (pruebaTerminada.equals("si")) {
+                                            infoSujeto.add("Finalizada");
+                                        }
+                                        else {
+                                            infoSujeto.add("Pendiente");
+                                        }
+                                        infoSujeto.add(nombreSujeto + " " + apellidosSueto);    // Nombre y Apellidos del sujeto
                                         infoSujeto.add(opcionMultimedia);  // Multimedia que contiene la prueba
-
                                         usuarios.add(infoSujeto);
                                         recyclerViewAdapter = new RecyclerViewAdapterDatosUsuario(UsuariosExperiencia.this, usuarios);
                                         recyclerView.setAdapter(recyclerViewAdapter);

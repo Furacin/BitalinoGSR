@@ -4,7 +4,7 @@
 
     <string name="steps"></string>
     <string name="start">Start</string>
-    <string name="auth_failed">Error al iniciar sesión. Por favor intente de nuevo</string>
+    <string name="auth_failed">Error al iniciar sesión. Revise los campos e intente de nuevo</string>
     <string name="password_key" />
     <string name="email_key" />
     <string name="preference_file_key" />
