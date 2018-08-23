@@ -208,6 +208,9 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         finPrueba = false;
 
+        // Selección multimedia
+        getTipoPrueba();
+
         // Comprobamos que está emparejado un dispositvo bluetooth Bitalino y obtenemos sus datos
         if(getIntent().hasExtra(EXTRA_DEVICE)){
             this.NOMBRE_USUARIO = InfoSujeto.id_usuario;
@@ -217,9 +220,6 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
             bluetoothDevice = getIntent().getParcelableExtra(EXTRA_DEVICE);
             iniciarUIBluetooth();
             setUIBluetooth();
-
-            // Selección multimedia
-            getTipoPrueba();
         }
 
         handler = new Handler(getMainLooper()){

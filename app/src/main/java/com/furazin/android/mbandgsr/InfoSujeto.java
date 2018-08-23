@@ -26,7 +26,7 @@ public class InfoSujeto extends AppCompatActivity {
 
     public static String id_usuario;
     String EMAIL_USUARIO = MainActivity.EMAIL_USUARIO;
-    TextView fecha, nombre, apellidos, sexo, fecha_nacimiento, descripcion, txtTerminada, txtTipoPrueba;
+    TextView fecha, nombre, apellidos, sexo, fecha_nacimiento, descripcion, txtTerminada, txtTipoPrueba, txtTituloExperiencia;
     Button btnStartExperiencia;
 
     // Variable para almacenar el tipo de prueba
@@ -37,7 +37,7 @@ public class InfoSujeto extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_experiencia);
 
-        fecha = (TextView) findViewById(R.id.fecha);
+        fecha = (TextView) findViewById(R.id.fechaRealizacion);
         nombre = (TextView) findViewById(R.id.nombre);
         apellidos = (TextView) findViewById(R.id.apellidos);
         sexo = (TextView) findViewById(R.id.sexo);
@@ -46,6 +46,7 @@ public class InfoSujeto extends AppCompatActivity {
         btnStartExperiencia = (Button) findViewById(R.id.btnStartExperiencia);
         txtTerminada = (TextView) findViewById(R.id.experienciaTerminada);
         txtTipoPrueba = (TextView) findViewById(R.id.tipoPruebaInfoExperiencia);
+//        txtTituloExperiencia = (TextView) findViewById(R.id.tituloExperiencia);
 
 
         id_usuario = getIntent().getExtras().getString("id_usuario");
@@ -70,7 +71,8 @@ public class InfoSujeto extends AppCompatActivity {
                                 SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
                                 Calendar c = Calendar.getInstance();
                                 String date = sdf.format(c.getTime());
-                                fecha.setText(date);
+//                                txtTituloExperiencia.setText(UsuariosExperiencia.NOMBRE_EXPERIENCIA);
+                                fecha.setText("Fecha de realización de la prueba: " + date);
                                 nombre.setText(e.getNombre());
                                 apellidos.setText( e.getApellidos());
                                 sexo.setText(e.getSexo());
@@ -81,7 +83,9 @@ public class InfoSujeto extends AppCompatActivity {
 
                                 if (e.getTerminada().equals("si")) {
                                     txtTerminada.setVisibility(View.VISIBLE);
-                                    btnStartExperiencia.setEnabled(false);
+//                                    btnStartExperiencia.setEnabled(false);
+                                    btnStartExperiencia.setAlpha(.3f);
+                                    btnStartExperiencia.setClickable(false);
                                 }
                             }
 
