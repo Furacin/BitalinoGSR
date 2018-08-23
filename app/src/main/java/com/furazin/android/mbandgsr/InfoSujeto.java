@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.furazin.android.mbandgsr.FirebaseBD.Experiencia;
@@ -26,7 +27,8 @@ public class InfoSujeto extends AppCompatActivity {
 
     public static String id_usuario;
     String EMAIL_USUARIO = MainActivity.EMAIL_USUARIO;
-    TextView fecha, nombre, apellidos, sexo, fecha_nacimiento, descripcion, txtTerminada, txtTipoPrueba, txtTituloExperiencia;
+    TextView fecha, nombre, apellidos, fecha_nacimiento, descripcion, txtTerminada, txtTipoPrueba;
+    ImageView sexo;
     Button btnStartExperiencia;
 
     // Variable para almacenar el tipo de prueba
@@ -35,12 +37,12 @@ public class InfoSujeto extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_experiencia);
+        setContentView(R.layout.activity_info_sujeto);
 
         fecha = (TextView) findViewById(R.id.fechaRealizacion);
         nombre = (TextView) findViewById(R.id.nombre);
         apellidos = (TextView) findViewById(R.id.apellidos);
-        sexo = (TextView) findViewById(R.id.sexo);
+        sexo = (ImageView) findViewById(R.id.sexo);
         fecha_nacimiento = (TextView) findViewById(R.id.fecha_nacimiento);
         descripcion = (TextView) findViewById(R.id.descripcion);
         btnStartExperiencia = (Button) findViewById(R.id.btnStartExperiencia);
@@ -75,7 +77,12 @@ public class InfoSujeto extends AppCompatActivity {
                                 fecha.setText("Fecha de realización de la prueba: " + date);
                                 nombre.setText(e.getNombre());
                                 apellidos.setText( e.getApellidos());
-                                sexo.setText(e.getSexo());
+                                if (e.getSexo().equals("Femenino")) {
+                                    sexo.setImageResource(R.drawable.mujer);
+                                }
+                                else
+                                    sexo.setImageResource(R.drawable.hombre);
+//                                sexo.setText(e.getSexo());
                                 fecha_nacimiento.setText(e.getFecha_nacimiento());
                                 descripcion.setText(e.getDescripcion());
                                 txtTipoPrueba.setText(e.getOpcion_multimedia());

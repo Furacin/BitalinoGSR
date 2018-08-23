@@ -150,46 +150,6 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
     File audiofile = null;
     MediaRecorder recorder;
 
-//    private BandGsrEventListener mGsrEventListener = new BandGsrEventListener() {
-//        @Override
-//        public void onBandGsrChanged(final BandGsrEvent event) {
-//            if (event != null) {
-//                appendGSRToUI(String.format("GSR = %d kOhms\n", event.getResistance()));
-//                nuevoDatoGSR(event.getResistance());
-//            }
-//        }
-//    };
-
-//    private BandBarometerEventListener mBarometerEventListener = new BandBarometerEventListener() {
-//        @Override
-//        public void onBandBarometerChanged(final BandBarometerEvent event) {
-//            if (event != null) {
-//                appendTemperaturaToUI(String.format("Temperatura = %.2f degrees Celsius", event.getTemperature()));
-//                nuevoDatoTemperatura(event.getTemperature());
-////                try {
-////                    Thread.sleep(2500);
-////                } catch (InterruptedException e) {
-////                    e.printStackTrace();
-////                }
-//            }
-//        }
-//    };
-
-//    private BandHeartRateEventListener mHeartRateEventListener = new BandHeartRateEventListener() {
-//        @Override
-//        public void onBandHeartRateChanged(final BandHeartRateEvent event) {
-//            if (event != null) {
-//                appendFCToUI(String.format("Frecuencia cardiaca = %d beats per minute\n", event.getHeartRate()));
-//                nuevoDatoFC(event.getHeartRate());
-////                try {
-////                    Thread.sleep(2500);
-////                } catch (InterruptedException e) {
-////                    e.printStackTrace();
-////                }
-//            }
-//        }
-//    };
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -574,19 +534,26 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
 
     @Override
     public void onBackPressed() {
-        if (!tipoPrueba.equals("Ninguno") ) {
-            if (finPrueba) {
-                finish();
-                Intent i = new Intent(DatosGSR.this,MainActivity.class);
-                startActivity(i);
+        if (NOMBRE_USUARIO != null) {
+            if (!tipoPrueba.equals("Ninguno") ) {
+                if (finPrueba) {
+                    finish();
+                    Intent i = new Intent(DatosGSR.this,MainActivity.class);
+                    startActivity(i);
+                }
+            }
+            else {
+                if (finPrueba) {
+                    finish();
+                    Intent i = new Intent(DatosGSR.this, MainActivity.class);
+                    startActivity(i);
+                }
             }
         }
         else {
-            if (finPrueba) {
-                finish();
-                Intent i = new Intent(DatosGSR.this, MainActivity.class);
-                startActivity(i);
-            }
+            finish();
+            Intent i = new Intent(getApplicationContext(), MainActivity.class);
+            startActivity(i);
         }
 
     }

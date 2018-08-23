@@ -78,14 +78,13 @@
              android:layout_marginTop="10dp"
              android:text="TextView" />
 
-         <TextView
+         <ImageView
              android:id="@+id/sexo"
-             android:layout_width="wrap_content"
-             android:layout_height="wrap_content"
+             android:layout_width="20dp"
+             android:layout_height="20dp"
              android:layout_below="@+id/apellidos"
-             android:layout_marginLeft="87dp"
-             android:layout_marginTop="10dp"
-             android:text="TextView" />
+             android:layout_marginLeft="80dp"
+             android:layout_marginTop="10dp" />
 
          <TextView
              android:id="@+id/fecha_nacimiento"
@@ -197,7 +196,7 @@
              android:layout_marginBottom="30dp"
              android:textColor="#F17300"
              android:textStyle="bold"
-             android:background="@drawable/rounded_button"
+             android:background="@drawable/rounded_button_info_prueba"
              android:text="Inicio" />
 
          <TextView

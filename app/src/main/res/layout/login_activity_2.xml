@@ -54,11 +54,12 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="24dp"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="80dp"
+            android:background="@drawable/rounded_button_login"
             android:padding="12dp"
-            android:background="#92BB1D"
-            android:textColor="@color/white"
-            android:text="Login" />
+            android:text="Login"
+            android:textColor="#92BB1D"
+            android:textStyle="bold" />
 
     </LinearLayout>
 </ScrollView>

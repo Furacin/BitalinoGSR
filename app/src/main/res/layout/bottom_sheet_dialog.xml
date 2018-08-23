@@ -37,7 +37,7 @@
             android:layout_marginTop="5dp"
             android:layout_marginLeft="-10dp"
             android:textSize="13dp"
-            android:text="Experiencias que ya han sido terminadas(cada sujeto ya ha realizado su prueba correspondiente)."
+            android:text="Experiencias que ya han sido terminadas (cada sujeto ya ha realizado su prueba correspondiente)."
             android:textAppearance="@style/TextAppearance.AppCompat.Subhead"/>
     </LinearLayout>
 
@@ -63,7 +63,7 @@
             android:layout_marginTop="5dp"
             android:layout_marginLeft="-10dp"
             android:textSize="13dp"
-            android:text="Experiencias pendientes por realizar(hay sujetos que no han realizado su prueba todavía)."
+            android:text="Experiencias pendientes por realizar (hay sujetos que no han realizado su prueba todavía)."
             android:textAppearance="@style/TextAppearance.AppCompat.Subhead"/>
     </LinearLayout>
 
