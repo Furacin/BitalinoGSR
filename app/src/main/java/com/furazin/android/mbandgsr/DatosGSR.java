@@ -210,7 +210,7 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
 
         // Comprobamos que está emparejado un dispositvo bluetooth Bitalino y obtenemos sus datos
         if(getIntent().hasExtra(EXTRA_DEVICE)){
-            this.NOMBRE_USUARIO = InfoExperiencia.id_usuario;
+            this.NOMBRE_USUARIO = InfoSujeto.id_usuario;
             // Obtenemos email del usuario que se ha logueado
             this.EMAIL_USUARIO = MainActivity.EMAIL_USUARIO;
 
@@ -617,7 +617,7 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
     * Método para obtener el tipo de prueba que se quiere hacer
      */
     public void getTipoPrueba() {
-        this.tipoPrueba = InfoExperiencia.tipoPrueba;
+        this.tipoPrueba = InfoSujeto.tipoPrueba;
 //        myRef.addValueEventListener(new ValueEventListener() {
 //            @Override
 //            public void onDataChange(DataSnapshot dataSnapshot) {

@@ -7,7 +7,7 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.furazin.android.mbandgsr.InfoExperiencia;
+import com.furazin.android.mbandgsr.InfoSujeto;
 import com.furazin.android.mbandgsr.R;
 import com.furazin.android.mbandgsr.UsuariosExperiencia;
 
@@ -40,7 +40,7 @@ public class RecyclerViewHoldersDatosUsuario extends RecyclerView.ViewHolder {
         btnInicioPrueba.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(itemView.getContext(), InfoExperiencia.class);
+                Intent i = new Intent(itemView.getContext(), InfoSujeto.class);
                 i.putExtra("id_usuario",sujeto_key);
                 itemView.getContext().startActivity(i);
 

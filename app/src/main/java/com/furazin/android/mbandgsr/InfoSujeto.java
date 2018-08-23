@@ -22,7 +22,7 @@ import java.util.Calendar;
  * Created by manza on 12/06/2017.
  */
 
-public class InfoExperiencia extends AppCompatActivity {
+public class InfoSujeto extends AppCompatActivity {
 
     public static String id_usuario;
     String EMAIL_USUARIO = MainActivity.EMAIL_USUARIO;
@@ -71,7 +71,7 @@ public class InfoExperiencia extends AppCompatActivity {
                                 Calendar c = Calendar.getInstance();
                                 String date = sdf.format(c.getTime());
                                 fecha.setText(date);
-                                nombre.setText(id_usuario);
+                                nombre.setText(e.getNombre());
                                 apellidos.setText( e.getApellidos());
                                 sexo.setText(e.getSexo());
                                 fecha_nacimiento.setText(e.getFecha_nacimiento());
