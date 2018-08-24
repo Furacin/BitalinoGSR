@@ -90,7 +90,7 @@ public class InfoSujeto extends AppCompatActivity {
                     if (user.getEmail().equals(EMAIL_USUARIO)) {
                         // Obtenemos la key del usuario logueado
                         user_key = snapshot.getKey();
-                        myRef.child(user_key).child("Experiencias").child(UsuariosExperiencia.NOMBRE_EXPERIENCIA).child(id_usuario).addValueEventListener(new ValueEventListener() {
+                        myRef.child(user_key).child("Experiencias").child(SujetosExperiencia.NOMBRE_EXPERIENCIA).child(id_usuario).addValueEventListener(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 Experiencia e = dataSnapshot.getValue(Experiencia.class);
@@ -98,7 +98,7 @@ public class InfoSujeto extends AppCompatActivity {
                                 SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
                                 Calendar c = Calendar.getInstance();
                                 String date = sdf.format(c.getTime());
-//                                txtTituloExperiencia.setText(UsuariosExperiencia.NOMBRE_EXPERIENCIA);
+//                                txtTituloExperiencia.setText(SujetosExperiencia.NOMBRE_EXPERIENCIA);
                                 fecha.setText("Fecha de realización de la prueba: " + date);
                                 nombre.setText(e.getNombre());
                                 apellidos.setText( e.getApellidos());

@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import com.furazin.android.mbandgsr.InfoSujeto;
 import com.furazin.android.mbandgsr.R;
-import com.furazin.android.mbandgsr.UsuariosExperiencia;
+import com.furazin.android.mbandgsr.SujetosExperiencia;
 
 import java.util.ArrayList;
 
@@ -45,7 +45,7 @@ public class RecyclerViewHoldersDatosUsuario extends RecyclerView.ViewHolder {
                 itemView.getContext().startActivity(i);
 
                 // Cerramos el activity del que venimos
-                ((UsuariosExperiencia)parent).finish();
+                ((SujetosExperiencia)parent).finish();
             }
         });
     }

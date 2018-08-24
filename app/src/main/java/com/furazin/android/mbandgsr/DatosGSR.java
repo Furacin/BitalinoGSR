@@ -591,7 +591,7 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
 //                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
 //                    Usuario user = snapshot.getValue(Usuario.class);
 //                    if (user.getEmail().equals(EMAIL_USUARIO)) {
-//                        tipoPrueba = snapshot.child("Experiencias").child(UsuariosExperiencia.NOMBRE_EXPERIENCIA).child(NOMBRE_USUARIO).child("opcion_multimedia").getValue().toString();
+//                        tipoPrueba = snapshot.child("Experiencias").child(SujetosExperiencia.NOMBRE_EXPERIENCIA).child(NOMBRE_USUARIO).child("opcion_multimedia").getValue().toString();
 //                    }
 //                }
 //            }
@@ -647,11 +647,11 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
         StorageReference archivoRef = null;
 
         if (tipoPrueba.equals("Sólo Vídeo") || tipoPrueba.equals("Audio y Vídeo")) {
-            archivoRef= mStorageRef.child(EMAIL_USUARIO + "/Vídeos/" + UsuariosExperiencia.NOMBRE_EXPERIENCIA + "/" + this.NOMBRE_USUARIO + "/video.3gp");
+            archivoRef= mStorageRef.child(EMAIL_USUARIO + "/Vídeos/" + SujetosExperiencia.NOMBRE_EXPERIENCIA + "/" + this.NOMBRE_USUARIO + "/video.3gp");
         }
         else {
             if (tipoPrueba.equals("Sólo Audio")) {
-                archivoRef= mStorageRef.child(EMAIL_USUARIO + "/Audios/" + UsuariosExperiencia.NOMBRE_EXPERIENCIA + "/" + this.NOMBRE_USUARIO + "/audio.mp3");
+                archivoRef= mStorageRef.child(EMAIL_USUARIO + "/Audios/" + SujetosExperiencia.NOMBRE_EXPERIENCIA + "/" + this.NOMBRE_USUARIO + "/audio.mp3");
             }
         }
 
@@ -959,16 +959,16 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
                         // Obtenemos la key del usuario logueado
                         final String key = snapshot.getKey();
 
-                        myRef.child(key).child("Experiencias").child(UsuariosExperiencia.NOMBRE_EXPERIENCIA).child(NOMBRE_USUARIO).child("Datos Graficas").child("GSR").setValue(valores_gsr);
-//                        myRef.child(key).child("Experiencias").child(UsuariosExperiencia.NOMBRE_EXPERIENCIA).child(NOMBRE_USUARIO).child("Datos Graficas").child("Temperatura").setValue(valores_temperatura);
-                        myRef.child(key).child("Experiencias").child(UsuariosExperiencia.NOMBRE_EXPERIENCIA).child(NOMBRE_USUARIO).child("Datos Graficas").child("FC").setValue(valores_fc);
+                        myRef.child(key).child("Experiencias").child(SujetosExperiencia.NOMBRE_EXPERIENCIA).child(NOMBRE_USUARIO).child("Datos Graficas").child("GSR").setValue(valores_gsr);
+//                        myRef.child(key).child("Experiencias").child(SujetosExperiencia.NOMBRE_EXPERIENCIA).child(NOMBRE_USUARIO).child("Datos Graficas").child("Temperatura").setValue(valores_temperatura);
+                        myRef.child(key).child("Experiencias").child(SujetosExperiencia.NOMBRE_EXPERIENCIA).child(NOMBRE_USUARIO).child("Datos Graficas").child("FC").setValue(valores_fc);
 
                         // Marcamos experiencia como terminada
-                        myRef.child(key).child("Experiencias").child(UsuariosExperiencia.NOMBRE_EXPERIENCIA).child(NOMBRE_USUARIO).child("terminada").setValue("si");
+                        myRef.child(key).child("Experiencias").child(SujetosExperiencia.NOMBRE_EXPERIENCIA).child(NOMBRE_USUARIO).child("terminada").setValue("si");
 
                         // Recorremos cada prueba de la experiencias y comprobamos si tiene todas las pruebas terminadas
                         boolean terminadaAux = true;
-                        for (DataSnapshot dataSnapShotExperiencias : snapshot.child("Experiencias").child(UsuariosExperiencia.NOMBRE_EXPERIENCIA).getChildren()) {
+                        for (DataSnapshot dataSnapShotExperiencias : snapshot.child("Experiencias").child(SujetosExperiencia.NOMBRE_EXPERIENCIA).getChildren()) {
                             if (dataSnapShotExperiencias.hasChildren()) {
                                 if (dataSnapShotExperiencias.child("terminada").getValue().toString().equals("no") && !dataSnapShotExperiencias.getKey().equals(NOMBRE_USUARIO)){
                                     terminadaAux = false;
@@ -977,7 +977,7 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
                         }
                         // Si todas las pruebas están terminadas, seteamos la variable en Firebase
                         if (terminadaAux) {
-                            myRef.child(key).child("Experiencias").child(UsuariosExperiencia.NOMBRE_EXPERIENCIA).child("pruebaTerminada").setValue("si");
+                            myRef.child(key).child("Experiencias").child(SujetosExperiencia.NOMBRE_EXPERIENCIA).child("pruebaTerminada").setValue("si");
                         }
                     }
                 }

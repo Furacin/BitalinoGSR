@@ -21,7 +21,7 @@ import java.util.ArrayList;
  * Created by manza on 15/06/2017.
  */
 
-public class UsuariosExperiencia extends AppCompatActivity {
+public class SujetosExperiencia extends AppCompatActivity {
 
     private SharedPreferences sharedPref;
     public static String EMAIL_USUARIO;
@@ -91,7 +91,7 @@ public class UsuariosExperiencia extends AppCompatActivity {
                                         infoSujeto.add(opcionMultimedia);  // Multimedia que contiene la prueba
                                         infoSujeto.add(singleSnapshot.getKey()); // key del sujeto
                                         usuarios.add(infoSujeto);
-                                        recyclerViewAdapter = new RecyclerViewAdapterDatosUsuario(UsuariosExperiencia.this, usuarios);
+                                        recyclerViewAdapter = new RecyclerViewAdapterDatosUsuario(SujetosExperiencia.this, usuarios);
                                         recyclerView.setAdapter(recyclerViewAdapter);
                                     }
 

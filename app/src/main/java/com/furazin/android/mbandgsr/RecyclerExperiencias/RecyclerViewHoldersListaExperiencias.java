@@ -7,7 +7,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.furazin.android.mbandgsr.R;
-import com.furazin.android.mbandgsr.UsuariosExperiencia;
+import com.furazin.android.mbandgsr.SujetosExperiencia;
 
 import java.util.ArrayList;
 
@@ -31,7 +31,7 @@ public class RecyclerViewHoldersListaExperiencias extends RecyclerView.ViewHolde
         btnAbrirExperiencia.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(itemView.getContext(), UsuariosExperiencia.class);
+                Intent i = new Intent(itemView.getContext(), SujetosExperiencia.class);
                 i.putExtra("id_experiencia",nombreExperiencia.getText());
                 itemView.getContext().startActivity(i);
             }

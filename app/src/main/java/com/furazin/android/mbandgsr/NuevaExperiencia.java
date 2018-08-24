@@ -99,15 +99,15 @@ public class NuevaExperiencia extends AppCompatActivity {
         btn_nuevaexperiencia.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                titulo.setVisibility(View.VISIBLE);
-                linea.setVisibility(View.VISIBLE);
-                btn_newuser.setVisibility(View.VISIBLE);
-                btn_crearExperiencia.setVisibility(View.VISIBLE);
-
                 if (!isEmpty(edit_nombre_experiencia)) {
+                    btn_crearExperiencia.setVisibility(View.VISIBLE);
+                    titulo.setVisibility(View.VISIBLE);
+                    linea.setVisibility(View.VISIBLE);
+                    btn_newuser.setVisibility(View.VISIBLE);
                     NOMBRE_EXPERIENCIA = edit_nombre_experiencia.getText().toString();
                     edit_nombre_experiencia.setKeyListener(null);
                     btn_nuevaexperiencia.setEnabled(false);
+                    btn_nuevaexperiencia.setAlpha(.3f);
                 }
                 else
                     Toast.makeText(getApplicationContext(), "Se debe de introducir un nombre.", Toast.LENGTH_SHORT).show();
