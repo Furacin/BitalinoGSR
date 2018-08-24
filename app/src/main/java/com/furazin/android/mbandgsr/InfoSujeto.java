@@ -3,6 +3,7 @@ package com.furazin.android.mbandgsr;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -54,6 +55,30 @@ public class InfoSujeto extends AppCompatActivity {
         id_usuario = getIntent().getExtras().getString("id_usuario");
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         final DatabaseReference myRef = database.getReference("users");
+
+        btnStartExperiencia.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if(motionEvent.getAction()==MotionEvent.ACTION_DOWN){
+                    btnStartExperiencia.setAlpha(0.3f);
+                }
+                if(motionEvent.getAction()==MotionEvent.ACTION_UP){
+                    btnStartExperiencia.setAlpha(1f);
+                }
+                return false;
+            }
+        });
+
+        btnStartExperiencia.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                MainActivity.activity.finish();
+                Intent i = new Intent(getApplicationContext(), DatosGSR.class);
+                i.putExtra("id_usuario",id_usuario);
+                startActivity(i);
+                finish();
+            }
+        });
 
         myRef.addValueEventListener(new ValueEventListener() {
 
@@ -108,17 +133,6 @@ public class InfoSujeto extends AppCompatActivity {
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
-            }
-        });
-
-        btnStartExperiencia.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                MainActivity.activity.finish();
-                Intent i = new Intent(getApplicationContext(), DatosGSR.class);
-                i.putExtra("id_usuario",id_usuario);
-                startActivity(i);
-                finish();
             }
         });
 

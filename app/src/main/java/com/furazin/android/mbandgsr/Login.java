@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -31,6 +32,7 @@ public class Login extends AppCompatActivity {
     private String TAG;
     String email, password;
     EditText editTextEmail, editTextPassword;
+    Button bt_conectar;
 
     // Variable para recordar las credenciales del usuario
     private SharedPreferences sharedPref;
@@ -54,7 +56,7 @@ public class Login extends AppCompatActivity {
 
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
-        Button bt_conectar = (Button) findViewById(R.id.bt_conectar2);
+        bt_conectar = (Button) findViewById(R.id.bt_conectar2);
         bt_conectar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -83,6 +85,19 @@ public class Login extends AppCompatActivity {
                             }
                         }, 3000);
                 iniciarSesion(email,password);
+            }
+        });
+
+        bt_conectar.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if(motionEvent.getAction()==MotionEvent.ACTION_DOWN){
+                    bt_conectar.setAlpha(0.2f);
+                }
+                if(motionEvent.getAction()==MotionEvent.ACTION_UP){
+                    bt_conectar.setAlpha(1f);
+                }
+                return false;
             }
         });
 
@@ -143,6 +158,11 @@ public class Login extends AppCompatActivity {
             mAuth.removeAuthStateListener(mAuthListener);
         }
     }
+
+//    @Override
+//    public boolean onTouchEvent(MotionEvent event) {
+//
+//    }
 
     public void onLoginSuccess() {
         progressDialog.hide();
