@@ -107,7 +107,7 @@ public class NuevaExperiencia extends AppCompatActivity {
                     NOMBRE_EXPERIENCIA = edit_nombre_experiencia.getText().toString();
                     edit_nombre_experiencia.setKeyListener(null);
                     btn_nuevaexperiencia.setEnabled(false);
-                    btn_nuevaexperiencia.setAlpha(.3f);
+                    btn_nuevaexperiencia.setAlpha(.2f);
                 }
                 else
                     Toast.makeText(getApplicationContext(), "Se debe de introducir un nombre.", Toast.LENGTH_SHORT).show();
