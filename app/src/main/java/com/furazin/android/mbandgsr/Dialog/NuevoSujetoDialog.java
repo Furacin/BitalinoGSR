@@ -16,10 +16,10 @@ import java.util.Calendar;
  */
 
 @SuppressLint("ValidFragment")
-public class DateDialog extends DialogFragment implements DatePickerDialog.OnDateSetListener {
+public class NuevoSujetoDialog extends DialogFragment implements DatePickerDialog.OnDateSetListener {
 
 //    EditText txtDate;
-//    public DateDialog(View view) {
+//    public NuevoSujetoDialog(View view) {
 //        txtDate = (EditText)view;
 //    }
 

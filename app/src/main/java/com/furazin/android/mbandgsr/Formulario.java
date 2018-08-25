@@ -13,7 +13,7 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.furazin.android.mbandgsr.Dialog.DateDialog;
+import com.furazin.android.mbandgsr.Dialog.NuevoSujetoDialog;
 import com.furazin.android.mbandgsr.FirebaseBD.Experiencia;
 import com.furazin.android.mbandgsr.FirebaseBD.Usuario;
 import com.google.firebase.database.DataSnapshot;
@@ -65,7 +65,7 @@ public class Formulario extends AppCompatActivity{
             @Override
             public void onFocusChange(View view, boolean b) {
                 if (b) {
-                    DateDialog dialog = new DateDialog();// = new DateDialog(view);
+                    NuevoSujetoDialog dialog = new NuevoSujetoDialog();// = new NuevoSujetoDialog(view);
                     android.app.FragmentTransaction ft = getFragmentManager().beginTransaction();
                     dialog.show(ft, "DatePicker");
                 }
@@ -76,7 +76,7 @@ public class Formulario extends AppCompatActivity{
         dateIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DateDialog dialog = new DateDialog(); //= new DateDialog(view);
+                NuevoSujetoDialog dialog = new NuevoSujetoDialog(); //= new NuevoSujetoDialog(view);
                 android.app.FragmentTransaction ft = getFragmentManager().beginTransaction();
                 dialog.show(ft, "DatePicker");
             }

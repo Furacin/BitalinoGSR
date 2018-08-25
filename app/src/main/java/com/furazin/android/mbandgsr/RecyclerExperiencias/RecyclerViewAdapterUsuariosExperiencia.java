@@ -34,7 +34,8 @@ public class RecyclerViewAdapterUsuariosExperiencia extends RecyclerView.Adapter
 
     @Override
     public void onBindViewHolder(RecyclerViewHoldersUsuariosExperiencia holder, int position) {
-        holder.nombre_usuario.setText(usuarios_creados.get(position));
+        String contador = String.valueOf(position+1);
+        holder.nombre_usuario.setText(contador + ") " + usuarios_creados.get(position));
     }
 
     @Override

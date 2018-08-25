@@ -49,7 +49,7 @@ public class NuevaExperiencia extends AppCompatActivity {
 
     Dialog dialog;
 
-    int cont_sujetos;
+    public static int cont_sujetos;
 
     // Variable para recordar las credenciales del usuario
     private SharedPreferences sharedPref;
@@ -59,7 +59,7 @@ public class NuevaExperiencia extends AppCompatActivity {
     private LinearLayoutManager linearLayoutManager;
     private RecyclerViewAdapterUsuariosExperiencia recyclerViewAdapter;
 
-    final String[] user_key = new String[1];
+    public static String user_key;
 
     // Write a message to the database
     FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -72,7 +72,6 @@ public class NuevaExperiencia extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nueva_experiencia);
         cont_sujetos = 1;
-
 
         // Instanciamos una referencia al Contexto
         Context context = this.getApplicationContext();
@@ -94,6 +93,7 @@ public class NuevaExperiencia extends AppCompatActivity {
         btn_nuevaexperiencia = (Button) findViewById(R.id.btn_nombre_experiencia);
         btn_crearExperiencia = (Button) findViewById(R.id.btn_crearexp);
         edit_nombre_experiencia = (EditText) findViewById(R.id.edittext_experiencia);
+        edit_nombre_experiencia.getText().toString();
 
         // Cuando el investigador introduce un nombre para la experiencia, se muestra el botón para añadir sujetos de prueba
         btn_nuevaexperiencia.setOnClickListener(new View.OnClickListener() {
@@ -192,32 +192,10 @@ public class NuevaExperiencia extends AppCompatActivity {
                     Usuario user = snapshot.getValue(Usuario.class);
                     if (user.getEmail().equals(EMAIL_USUARIO)) {
                         // Obtenemos la key del usuario logueado
-                        user_key[0] = snapshot.getKey();
+                        user_key = snapshot.getKey();
                         AñadirSujetosRecyclerView();
                     }
                 }
-
-//                DatabaseReference ref = myRef.child(user_key[0]).child("Experiencias").child(edit_nombre_experiencia.getText().toString());
-//                ValueEventListener eventListener = new ValueEventListener() {
-//                    @Override
-//                    public void onDataChange(DataSnapshot dataSnapshot) {
-//                        for (DataSnapshot ds : dataSnapshot.getChildren()) {
-//                            String sujeto = ds.child(edit_nombre_experiencia.getText().toString()).getValue(String.class);
-//                            lista_sujetos.add(sujeto);
-//                        }
-//                        for (String sujeto : lista_sujetos) {
-//                            TextView usersTextView = usersTextView = (TextView) findViewById(R.id.users);
-//                            usersTextView.setText(usersTextView.getText().toString() + sujeto + " , ");
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onCancelled(DatabaseError databaseError) {
-//
-//                    }
-//                };
-//                ref.addListenerForSingleValueEvent(eventListener);
-
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
@@ -228,8 +206,8 @@ public class NuevaExperiencia extends AppCompatActivity {
 
     public void  AñadirSujetosRecyclerView() {
 
-        if (user_key[0] != null) {
-            referenceListener = myRef.child(user_key[0]).child("Experiencias").child(edit_nombre_experiencia.getText().toString()).addValueEventListener(new ValueEventListener() {
+        if (user_key != null) {
+            referenceListener = myRef.child(user_key).child("Experiencias").child(edit_nombre_experiencia.getText().toString()).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     lista_sujetos.clear();
