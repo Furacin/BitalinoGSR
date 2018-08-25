@@ -47,7 +47,7 @@ public class RecyclerViewHoldersUsuariosExperiencia extends RecyclerView.ViewHol
                 String pregunta = "¿Quitar de la lista a ";
                 // Extraemos el caracter del paréntesis
                 String nombreUsuario = nombre_usuario.getText().toString().substring(3,nombre_usuario.getText().toString().length());
-                String pregunta2 = " ?";
+                String pregunta2 = "?";
                 SpannableString  str = new SpannableString(pregunta + nombreUsuario + pregunta2);
                 str.setSpan(new StyleSpan(Typeface.BOLD), pregunta.length(), pregunta.length() + nombreUsuario.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                 builder.setMessage(str)
@@ -66,15 +66,5 @@ public class RecyclerViewHoldersUsuariosExperiencia extends RecyclerView.ViewHol
                 builder.create();
             }
         });
-//        start_exp = (Button) itemView.findViewById(R.id.start_exp);
-//        start_exp.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-////                System.out.println("HOLA" + Name.getText());
-//                Intent i = new Intent(itemView.getContext(), DatosGSR.class);
-//                i.putExtra("id_usuario",nombre_usuario.getText());
-//                itemView.getContext().startActivity(i);
-//            }
-//        });
     }
 }

@@ -35,6 +35,8 @@ public class MainActivity extends AppCompatActivity {
     private SharedPreferences sharedPref;
     public static String EMAIL_USUARIO;
 
+    public static String user_key;
+
     // DrawerLayout
     private DrawerLayout mDrawerLayout;
 
@@ -132,12 +134,11 @@ public class MainActivity extends AppCompatActivity {
                 experiencias.clear();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     Usuario user = snapshot.getValue(Usuario.class);
-                    final String user_key;
                     if (user.getEmail().equals(EMAIL_USUARIO)) {
                         // Obtenemos la key del usuario logueado
-                        String key = snapshot.getKey();
+                        user_key = snapshot.getKey();
 
-                            for(DataSnapshot singleSnapshot : dataSnapshot.child(key).child("Experiencias").getChildren()) {
+                            for(DataSnapshot singleSnapshot : dataSnapshot.child(user_key).child("Experiencias").getChildren()) {
                                 if (singleSnapshot.child("pruebaTerminada").exists()) {
                                     String experienciaTitle = singleSnapshot.getKey();
                                     String fechaRealicacion = singleSnapshot.child("fechaRealizacion").getValue().toString();
