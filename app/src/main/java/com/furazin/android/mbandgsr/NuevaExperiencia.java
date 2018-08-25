@@ -9,8 +9,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -67,11 +69,17 @@ public class NuevaExperiencia extends AppCompatActivity {
 
     private ValueEventListener referenceListener;
 
+    private LinearLayout invisible_layout;
+
+    private AppCompatActivity activiy;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nueva_experiencia);
         cont_sujetos = 1;
+
+        activiy = this;
 
         // Instanciamos una referencia al Contexto
         Context context = this.getApplicationContext();
@@ -86,6 +94,7 @@ public class NuevaExperiencia extends AppCompatActivity {
         linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
 
+        invisible_layout = (LinearLayout) findViewById(R.id.invisible_layout);
 
         titulo = (TextView) findViewById(R.id.textview_titulo);
         linea = findViewById(R.id.line1);
@@ -99,13 +108,19 @@ public class NuevaExperiencia extends AppCompatActivity {
         btn_nuevaexperiencia.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                // Check if no view has focus:
+                View v = activiy.getCurrentFocus();
+                if (v != null) {
+                    InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                }
                 if (!isEmpty(edit_nombre_experiencia)) {
                     btn_crearExperiencia.setVisibility(View.VISIBLE);
                     titulo.setVisibility(View.VISIBLE);
                     linea.setVisibility(View.VISIBLE);
                     btn_newuser.setVisibility(View.VISIBLE);
                     NOMBRE_EXPERIENCIA = edit_nombre_experiencia.getText().toString();
-                    edit_nombre_experiencia.setKeyListener(null);
+//                    edit_nombre_experiencia.setKeyListener(null);
                     btn_nuevaexperiencia.setEnabled(false);
                     btn_nuevaexperiencia.setAlpha(.2f);
                 }
