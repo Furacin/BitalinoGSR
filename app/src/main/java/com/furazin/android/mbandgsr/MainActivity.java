@@ -17,6 +17,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 import com.furazin.android.mbandgsr.FirebaseBD.Usuario;
 import com.furazin.android.mbandgsr.RecyclerExperiencias.RecyclerViewAdapterListaExperiencias;
@@ -114,6 +115,10 @@ public class MainActivity extends AppCompatActivity {
         getListaUsuarios();
 
         final View bottomSheetLayout = getLayoutInflater().inflate(R.layout.bottom_sheet_dialog, null);
+        TextView t1 = (TextView) bottomSheetLayout.findViewById(R.id.tv_detail);
+        TextView t2 = (TextView) bottomSheetLayout.findViewById(R.id.tv_detail_2);
+        t1.setText(R.string.t1_detail);
+        t2.setText(R.string.t2_detail);
         (bottomSheetLayout.findViewById(R.id.button_close)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

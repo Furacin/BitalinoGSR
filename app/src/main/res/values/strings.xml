@@ -24,4 +24,7 @@
     <string name="dialog_si">Sí</string>
     <string name="dialog_cancelar">Cancelar</string>
 
+    <!--Bottom Sheet Dialog-->
+    <string name="t1_detail"><b>Experiencias que ya han sido terminadas</b> (cada sujeto ya ha realizado su prueba correspondiente).</string>
+    <string name="t2_detail"><b>Experiencias pendientes por realizar</b> (hay sujetos que no han realizado su prueba todavía).</string>
 </resources>
