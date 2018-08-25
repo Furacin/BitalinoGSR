@@ -200,15 +200,16 @@
 
             <Button
                 android:id="@+id/InicioPrueba_Button"
-                android:layout_width="260dp"
-                android:layout_height="60dp"
+                android:layout_width="130dp"
+                android:layout_height="wrap_content"
                 android:layout_below="@+id/line2"
-                android:layout_marginTop="60dp"
-                android:text="Iniciar prueba"
-                android:textSize="18dp"
-                android:textColor="@color/white"
-                android:backgroundTint="@color/colorPrimary"
-                android:drawableRight="@drawable/ic_empezar"
+                android:layout_marginTop="30dp"
+                android:layout_marginBottom="15dp"
+                android:text="Guardar"
+                android:textSize="15dp"
+                android:textStyle="bold"
+                android:textColor="@color/colorPrimary"
+                android:background="@drawable/rounded_button_guardar_sujeto_dialog"
                 android:layout_centerInParent="true"/>
 
         </RelativeLayout>

@@ -33,7 +33,7 @@ public class RecyclerViewAdapterListaExperiencias extends RecyclerView.Adapter<R
         // Comprobamos si la experiencia está terminada o no y en función de ello coloreamos
         // el ImageView de verde(terminada) o de amarillo(no terminada)
         terminada = experiencias.get(position).get(2);
-        if (terminada.equals("no")) {
+        if (terminada.equals("si")) {
             Drawable icon = this.context.getResources().getDrawable(R.drawable.ic_color_verde);
             holder.marcaExperienciaTerminada.setImageDrawable(icon);
         }

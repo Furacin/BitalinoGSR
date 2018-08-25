@@ -216,6 +216,7 @@
                 android:layout_height="50dp"
                 android:layout_alignBottom="@+id/btnStart"
                 android:layout_centerHorizontal="true"
+                android:visibility="invisible"
                 />
         </RelativeLayout>
 

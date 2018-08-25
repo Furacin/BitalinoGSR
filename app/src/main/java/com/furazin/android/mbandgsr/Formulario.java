@@ -36,6 +36,7 @@ public class Formulario extends AppCompatActivity{
 //    RadioButton radio_video, radio_audio, radio_video_audio, radio_ninguno;
     RadioGroup radio_sexo;
     RadioGroup radio_opcion_multimedia;
+    Button ButtonInicio;
 
     TextView titulo;
 
@@ -87,20 +88,12 @@ public class Formulario extends AppCompatActivity{
         edit_fecha_nacimiento = (EditText) findViewById(R.id.editTextFecha);
         edit_descripcion = (EditText) findViewById(R.id.text_descripcion);
 
-//        radio_sexo_femenino = (RadioButton) findViewById(R.id.radioButton1) ;
-//        radio_sexo_masculino = (RadioButton) findViewById(R.id.radioButton2) ;
-//
-//        radio_video = (RadioButton) findViewById(R.id.radioVideo);
-//        radio_audio = (RadioButton) findViewById(R.id.radioAudio);
-//        radio_video_audio = (RadioButton) findViewById(R.id.radioAudioYVideo);
-//        radio_ninguno = (RadioButton) findViewById(R.id.radioNoMultimedia);
-
         radio_sexo = (RadioGroup) findViewById(R.id.radioGenero);
         radio_opcion_multimedia = (RadioGroup) findViewById(R.id.radioMultimedia);
 
         titulo = (TextView) findViewById(R.id.formulario_titulo);
 
-        Button ButtonInicio = (Button) findViewById(R.id.InicioPrueba_Button);
+        ButtonInicio = (Button) findViewById(R.id.InicioPrueba_Button);
         ButtonInicio.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -112,9 +105,6 @@ public class Formulario extends AppCompatActivity{
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-//                    Intent i = new Intent(getApplicationContext(), DatosGSR.class);
-//                    startActivity(i);
-//                    finish();
                 }
                 else {
                     Toast.makeText(getApplicationContext(), "No puede estar ningún campo del formulario vacío", Toast.LENGTH_SHORT).show();
@@ -126,41 +116,6 @@ public class Formulario extends AppCompatActivity{
     private boolean isEmpty(EditText etText) {
         return etText.getText().toString().trim().length() == 0;
     }
-
-//    public void WriteFirebase(final Experiencia experiencia) {
-//
-//        // Obtenemos email del usuario que se ha logueado
-//        final String email = sharedPref.getString((getString(R.string.email_key)), "");
-//
-//        // Write a message to the database
-//        FirebaseDatabase database = FirebaseDatabase.getInstance();
-//        final DatabaseReference myRef = database.getReference("users");
-//
-//        myRef.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-//                    Usuario user = snapshot.getValue(Usuario.class);
-//                    if (user.getEmail().equals(email)) {
-//                        // Obtenemos la key del usuario logueado
-//                        String key = snapshot.getKey();
-//                        // Creamos una experiencia con los datos del formulario para ser almacenada en la base de datos en firabase
-////                        Experiencia experiencia = ExperienciaFormulario();
-//                        // Añadimos la informacion del formulario, y en la bd se creara una entrada con la fecha y hora actuales
-////                        NOMBRE_EXPERIENCIA = getFechaYHora();
-//                        myRef.child(key).child("Experiencias").child(NOMBRE_EXPERIENCIA).child(experiencia.getNombre()).setValue(experiencia);
-////                        myRef.child(key).child("Experiencias").child(NOMBRE_EXPERIENCIA).child("terminada").setValue("no");
-//                    }
-//                }
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//
-//            }
-//        });
-//
-//    }
 
     public void WriteFirebase() {
 
@@ -183,9 +138,6 @@ public class Formulario extends AppCompatActivity{
                         // Creamos una experiencia con los datos del formulario para ser almacenada en la base de datos en firabase
                         Experiencia experiencia = ExperienciaFormulario();
                         // Añadimos la informacion del formulario, y en la bd se creara una entrada con la fecha y hora actuales
-//                        NOMBRE_EXPERIENCIA = experiencia.getNombre();
-//                        String titulo_experiencia = titulo.getText().toString(); // Obtenemos el titulo de la experiencia a través del Dialog abierto desde el activity de creación de experiencia
-//                        myRef.child(key).child("Experiencias").child(NOMBRE_EXPERIENCIA).child(titulo_experiencia).setValue(experiencia);
                         myRef.child(key).child("Experiencias").child(NOMBRE_EXPERIENCIA).child(experiencia.getNombre()).setValue(experiencia);
                     }
                }

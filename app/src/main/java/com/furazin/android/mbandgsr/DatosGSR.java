@@ -161,6 +161,7 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
         txtSubidaVideo = findViewById(R.id.txtSubidaVideo);
         txtlblSubidaVideo = findViewById(R.id.textoLblSubirVideo);
         txtVideoSubidoExito = findViewById(R.id.txtVideoSubidoExito);
+        // Animación del micrófono a la hora de grabar audio
         microImage = findViewById(R.id.image_mic);
         microImage.setBackgroundResource(R.drawable.mic_animation);
         microAnimation = (AnimationDrawable) microImage.getBackground();
@@ -298,6 +299,7 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
 //                                crono.setVisibility(View.VISIBLE);
 //                                crono.setBase(SystemClock.elapsedRealtime());
 //                                crono.start();
+                                microImage.setVisibility(View.VISIBLE);
                                 microAnimation.start();
                                 GrabarAudio();
                             } catch (IOException e) {

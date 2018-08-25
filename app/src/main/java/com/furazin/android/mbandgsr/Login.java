@@ -159,11 +159,6 @@ public class Login extends AppCompatActivity {
         }
     }
 
-//    @Override
-//    public boolean onTouchEvent(MotionEvent event) {
-//
-//    }
-
     public void onLoginSuccess() {
         progressDialog.hide();
         //finish();

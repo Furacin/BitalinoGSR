@@ -120,7 +120,7 @@ public class NuevaExperiencia extends AppCompatActivity {
                     linea.setVisibility(View.VISIBLE);
                     btn_newuser.setVisibility(View.VISIBLE);
                     NOMBRE_EXPERIENCIA = edit_nombre_experiencia.getText().toString();
-//                    edit_nombre_experiencia.setKeyListener(null);
+                    edit_nombre_experiencia.setKeyListener(null);
                     btn_nuevaexperiencia.setEnabled(false);
                     btn_nuevaexperiencia.setAlpha(.2f);
                 }
