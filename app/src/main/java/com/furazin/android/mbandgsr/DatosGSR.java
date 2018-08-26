@@ -22,6 +22,7 @@ import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Chronometer;
@@ -231,9 +232,23 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
         btnBluetooth.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                btnBluetooth.setAlpha(1f);
                 Intent i = new Intent(getApplicationContext(),ScanActivity.class);
                 startActivity(i);
                 finish();
+            }
+        });
+
+        btnBluetooth.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if(motionEvent.getAction()==MotionEvent.ACTION_DOWN){
+                    btnBluetooth.setAlpha(0.2f);
+                }
+                if(motionEvent.getAction()==MotionEvent.ACTION_UP){
+                    btnBluetooth.setAlpha(1f);
+                }
+                return false;
             }
         });
 
@@ -254,6 +269,7 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
 //
 //                new SubscriptionTask().execute();
 //                 Inicializamos la generación de aleatorios para las gráficas
+//                btnConectarBitalino.setAlpha(1f);
                 timer.schedule(new RandomValues(), 0, 2000);
 //
                 if (addressTextView.getText().toString().equals("00:00:00:00:00:00")) {
@@ -268,6 +284,19 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
                     }
                 }
 
+            }
+        });
+
+        btnConectarBitalino.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if(motionEvent.getAction()==MotionEvent.ACTION_DOWN){
+                    btnConectarBitalino.setAlpha(0.2f);
+                }
+                if(motionEvent.getAction()==MotionEvent.ACTION_UP){
+                    btnConectarBitalino.setAlpha(1f);
+                }
+                return false;
             }
         });
 

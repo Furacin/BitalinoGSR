@@ -13,67 +13,162 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="?attr/colorPrimary"
+                android:theme="@style/ThemeOverlay.AppCompat.Dark" />
+
+            <!--<ImageView-->
+                <!--android:id="@+id/logo_instrucciones"-->
+                <!--android:layout_width="20dp"-->
+                <!--android:layout_height="20dp"-->
+                <!--android:layout_alignBottom="@+id/btnStart"-->
+                <!--android:layout_centerHorizontal="true"-->
+                <!--android:background="@drawable/ic_instrucciones"-->
+                <!--android:layout_alignParentLeft="true"-->
+                <!--/>-->
+
+            <TextView
+                android:id="@+id/lbl_titulo_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginTop="72dp"
+                android:drawableLeft="@drawable/ic_instrucciones"
+                android:paddingLeft="10dp"
+                android:text="Instrucciones"
+                android:textColor="@color/colorPrimary"
+                android:textSize="22dp"
+                android:textStyle="bold" />
+
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:text="Name:"
-                    android:id="@+id/lblName" android:layout_weight="1" android:textSize="16dp"
+                    android:text="@string/info_bitalino"
+                    android:layout_below="@+id/lbl_titulo_info"
+                    android:id="@+id/lblInfo" android:layout_weight="1"
+                    android:paddingLeft="10dp"
+                     />
+
+                <View
+                    android:id="@+id/linea1"
+                    android:layout_width="fill_parent"
+                    android:layout_height="2dip"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_below="@id/lblInfo"
+                    android:background="#969696" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="Información de Bitalino"
+                    android:layout_below="@id/linea1"
+                    android:layout_marginTop="15dp"
+                    android:drawableLeft="@drawable/ic_bitalino"
+                    android:textStyle="bold"
+                    android:id="@+id/lblBitalino" android:layout_weight="1" android:textSize="20dp"
+                    android:gravity="center_vertical" android:paddingLeft="10dp" android:textColor="@color/colorPrimary" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="Nombre del dispositivo:"
+                    android:id="@+id/lblName" android:layout_weight="1" android:textSize="14dp"
                     android:gravity="center_vertical" android:paddingLeft="10dp" android:textColor="@android:color/black"
+                    android:layout_below="@id/lblBitalino"
+                    android:layout_marginTop="15dp"
                     android:textStyle="bold"/>
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:text="name"
-                    android:id="@+id/device_name_text_view" android:layout_weight="1" android:textSize="16dp"
+                    android:text="Ningún dispositivo sincronizado"
+                    android:id="@+id/device_name_text_view" android:layout_weight="1" android:textSize="14dp"
                     android:gravity="center_vertical" android:paddingLeft="10dp"
                     android:textColor="@color/material_grey_600" android:textStyle="italic"
                     android:layout_below="@+id/lblName"/>
 
-                <TextView android:layout_width="match_parent" android:layout_height="match_parent" android:text="MAC address:"
-                    android:id="@+id/lblMac" android:layout_weight="1" android:textSize="16dp"
+                <TextView android:layout_width="match_parent" android:layout_height="match_parent" android:text="Dirección MAC:"
+                    android:id="@+id/lblMac" android:layout_weight="1" android:textSize="14dp"
                     android:gravity="center_vertical" android:paddingLeft="10dp" android:textColor="@android:color/black"
                     android:textStyle="bold"
                     android:layout_below="@+id/device_name_text_view"/>
+
                 <TextView android:layout_width="match_parent" android:layout_height="match_parent" android:text="00:00:00:00:00:00"
-                    android:id="@+id/mac_address_text_view" android:layout_weight="1" android:textSize="16dp"
+                    android:id="@+id/mac_address_text_view" android:layout_weight="1" android:textSize="14dp"
                     android:gravity="center_vertical" android:paddingLeft="10dp"
                     android:textColor="@color/material_grey_600" android:textStyle="italic"
                     android:layout_below="@+id/lblMac"/>
-                <Button
-                    android:id="@+id/btnEmparejarBluetooth"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Emparejar Bluetooth"
-                    android:layout_marginTop="10dp"
-                    android:layout_below="@+id/mac_address_text_view"
-                  />
-                <Button
-                    android:id="@+id/btnConectarBitalino"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Conectar Bitalino"
-                    android:layout_marginTop="10dp"
-                    android:layout_below="@+id/btnEmparejarBluetooth"
-                    />
-                <TextView android:layout_width="match_parent" android:layout_height="match_parent" android:text="Results:"
+
+                <TextView android:layout_width="match_parent" android:layout_height="match_parent" android:text="Resultados:"
                     android:id="@+id/lbl_text_view"
                     android:layout_weight="1" android:textSize="16dp"
+                    android:layout_marginTop="15dp"
                     android:gravity="center_vertical" android:paddingLeft="10dp" android:textColor="@android:color/black"
-                    android:layout_below="@+id/btnConectarBitalino"
+                    android:layout_below="@+id/mac_address_text_view"
                     android:textStyle="bold"/>
+
                 <TextView android:layout_width="match_parent" android:layout_height="match_parent" android:text="..."
                     android:id="@+id/results_text_view" android:layout_weight="1" android:textSize="16dp"
                     android:gravity="center_vertical" android:paddingLeft="10dp"
                     android:layout_below="@+id/lbl_text_view"
                     android:textColor="@color/material_grey_600" android:textStyle="italic"/>
 
+                <Button
+                    android:id="@+id/btnEmparejarBluetooth"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:text="Emparejar"
+                    android:layout_marginTop="20dp"
+                    android:textColor="#B1740F"
+                    android:layout_marginLeft="10dp"
+                    android:layout_below="@+id/results_text_view"
+                    android:background="@drawable/rounded_button_emparejar_bluetooth"
+                  />
+
+                <Button
+                    android:id="@+id/btnConectarBitalino"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:text="Conectar"
+                    android:layout_marginTop="10dp"
+                    android:layout_below="@+id/btnEmparejarBluetooth"
+                    android:layout_marginLeft="10dp"
+                    android:background="@drawable/rounded_button_emparejar_bluetooth"
+                    android:textColor="#B1740F"
+                    />
+
+                <View
+                    android:id="@+id/linea2"
+                    android:layout_width="fill_parent"
+                    android:layout_height="2dip"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_below="@id/btnConectarBitalino"
+                    android:background="#969696" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="Gráficas"
+                    android:layout_below="@id/linea2"
+                    android:layout_marginTop="15dp"
+                    android:textStyle="bold"
+                    android:id="@+id/lblGraficas" android:layout_weight="1" android:textSize="20dp"
+                    android:drawableLeft="@drawable/ic_graficas"
+                    android:gravity="center_vertical" android:paddingLeft="10dp" android:textColor="@color/colorPrimary" />
 
             <TextView
             android:id="@+id/txtStep"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/steps"
-            android:layout_below="@+id/results_text_view"/>
+            android:layout_below="@+id/lblGraficas"/>
 
             <Button
                 android:id="@+id/btnStart"
