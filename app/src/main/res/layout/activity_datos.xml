@@ -20,16 +20,6 @@
                 android:background="?attr/colorPrimary"
                 android:theme="@style/ThemeOverlay.AppCompat.Dark" />
 
-            <!--<ImageView-->
-                <!--android:id="@+id/logo_instrucciones"-->
-                <!--android:layout_width="20dp"-->
-                <!--android:layout_height="20dp"-->
-                <!--android:layout_alignBottom="@+id/btnStart"-->
-                <!--android:layout_centerHorizontal="true"-->
-                <!--android:background="@drawable/ic_instrucciones"-->
-                <!--android:layout_alignParentLeft="true"-->
-                <!--/>-->
-
             <TextView
                 android:id="@+id/lbl_titulo_info"
                 android:layout_width="match_parent"
@@ -123,12 +113,12 @@
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:text="Emparejar"
-                    android:layout_marginTop="350dp"
+                    android:layout_marginTop="330dp"
                     android:textColor="#B1740F"
                     android:layout_marginLeft="230dp"
                     android:background="@drawable/rounded_button_emparejar_bluetooth"
                   />
-            <!--android:layout_below="@+id/results_text_view"-->
+
                 <Button
                     android:id="@+id/btnConectarBitalino"
                     android:layout_width="100dp"

@@ -20,6 +20,16 @@
             android:background="?attr/colorPrimary"
             android:theme="@style/ThemeOverlay.AppCompat.Dark" />
 
+        <TextView
+            android:id="@+id/nombreExperiencia"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Andrea"
+            android:textSize="20dp"
+            android:textStyle="bold|italic"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="60dp"/>
+
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -32,7 +42,7 @@
                 android:textSize="18dp"
                 android:textStyle="bold"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="80dp"/>
+                android:layout_marginTop="85dp"/>
 
             <View
                 android:layout_width="fill_parent"

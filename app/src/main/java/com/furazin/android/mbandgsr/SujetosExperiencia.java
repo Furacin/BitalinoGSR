@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.widget.TextView;
 
 import com.furazin.android.mbandgsr.FirebaseBD.Usuario;
 import com.furazin.android.mbandgsr.RecyclerExperiencias.RecyclerViewAdapterDatosUsuario;
@@ -31,6 +32,7 @@ public class SujetosExperiencia extends AppCompatActivity {
     private RecyclerView recyclerView;
     private LinearLayoutManager linearLayoutManager;
     private RecyclerViewAdapterDatosUsuario recyclerViewAdapter;
+    private TextView txtNombreExperiencia;
 
     public static Context usuariosExperienciaContext;
 
@@ -59,6 +61,8 @@ public class SujetosExperiencia extends AppCompatActivity {
         recyclerView = (RecyclerView)findViewById(R.id.experiencias_list);
         linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
+        txtNombreExperiencia = (TextView) findViewById(R.id.nombreExperiencia);
+        txtNombreExperiencia.setText(NOMBRE_EXPERIENCIA);
 
         myRef.addValueEventListener(new ValueEventListener() {
             @Override

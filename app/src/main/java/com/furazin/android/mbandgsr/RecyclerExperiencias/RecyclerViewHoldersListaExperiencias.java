@@ -36,6 +36,16 @@ public class RecyclerViewHoldersListaExperiencias extends RecyclerView.ViewHolde
     private ArrayList<ArrayList<String>> experienciasObject;
     public RecyclerViewHoldersListaExperiencias(final View itemView, final ArrayList<ArrayList<String>> experienciasObject) {
         super(itemView);
+
+        itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(itemView.getContext(), SujetosExperiencia.class);
+                i.putExtra("id_experiencia",nombreExperiencia.getText());
+                itemView.getContext().startActivity(i);
+            }
+        });
+
         this.experienciasObject = experienciasObject;
         btnAbrirExperiencia = (ImageButton)itemView.findViewById(R.id.btnAbrirExperiencia);
         nombreExperiencia = (TextView)itemView.findViewById(R.id.experiencia_title);

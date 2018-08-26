@@ -31,6 +31,19 @@ public class RecyclerViewHoldersDatosUsuario extends RecyclerView.ViewHolder {
     private ArrayList<ArrayList<String>> experienciasObject;
     public RecyclerViewHoldersDatosUsuario(final View itemView, final ArrayList<ArrayList<String>> experienciasObject, final Context parent) {
         super(itemView);
+
+        itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(itemView.getContext(), InfoSujeto.class);
+                i.putExtra("id_usuario",sujeto_key);
+                itemView.getContext().startActivity(i);
+
+                // Cerramos el activity del que venimos
+                ((SujetosExperiencia)parent).finish();
+            }
+        });
+
         this.experienciasObject = experienciasObject;
         Name = (TextView) itemView.findViewById(R.id.nombre_sujeto);
         Apellidos = (TextView) itemView.findViewById(R.id.sujeto_apellidos);
