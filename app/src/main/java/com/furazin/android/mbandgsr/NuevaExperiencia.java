@@ -170,12 +170,11 @@ public class NuevaExperiencia extends AppCompatActivity {
                         String descripcion = edit_descripcion.getText().toString();
                         Experiencia experiencia = new Experiencia(nombre,apellidos,fecha_nacimiento, sexo,opcion_multimedia,descripcion);
 
+                        ObtenerKey();
+
                         WriteFirebase(experiencia);
 
                         dialog.dismiss();
-
-
-                            ObtenerKey();
 //                        AñadirSujetosRecyclerView();
                     }
                 });
@@ -284,7 +283,7 @@ public class NuevaExperiencia extends AppCompatActivity {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
+                myRef.child(user_key).child("Experiencias").child(NOMBRE_EXPERIENCIA).removeValue();
             }
         });
 

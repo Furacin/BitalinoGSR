@@ -19,6 +19,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Parcelable;
+import android.os.SystemClock;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.util.Log;
@@ -189,11 +190,14 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
             public void handleMessage(Message msg) {
                 Bundle bundle = msg.getData();
                 BITalinoFrame frame = bundle.getParcelable(FRAME);
-
+                String infoFrame = frame.toString().substring(19,frame.toString().length());
+                infoFrame = infoFrame.substring(0,infoFrame.indexOf("D"));
+                String seq = infoFrame.substring(0,6);
+                String data = infoFrame.substring(infoFrame.indexOf("A"),infoFrame.length()-2);
                 Log.d(TAG, frame.toString());
 
                 if(frame != null){ //BITalino
-                    resultsTextView.setText(frame.toString());
+                    resultsTextView.setText(seq + "\n" + data);
                 }
             }
         };
@@ -216,7 +220,7 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
         resultsTextView = (TextView) findViewById(R.id.results_text_view);
 
         // Cronómetro
-//        crono = (Chronometer) findViewById(R.id.chronometer3);
+        crono = (Chronometer) findViewById(R.id.chronometer3);
 
 //        // Gráfica
         graphGSR = (GraphView) findViewById(R.id.graph_GSR);
@@ -236,6 +240,8 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
                 Intent i = new Intent(getApplicationContext(),ScanActivity.class);
                 startActivity(i);
                 finish();
+//                btnBluetooth.setEnabled(false);
+//                btnBluetooth.setAlpha(.3f);
             }
         });
 
@@ -309,6 +315,7 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
                 }
                 else {
                     btnStart.setEnabled(false);
+                    btnStart.setAlpha(.2f);
                     btnStop.setVisibility(View.VISIBLE);
                     limpiarGraphicGSR();
                     try {
@@ -322,12 +329,15 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
                             GrabarVideo();
                             break;
                         case "Ninguno":
+                            crono.setVisibility(View.VISIBLE);
+                            crono.setBase(SystemClock.elapsedRealtime());
+                            crono.start();
                             break;
                         case "Sólo Audio":
                             try {
-//                                crono.setVisibility(View.VISIBLE);
-//                                crono.setBase(SystemClock.elapsedRealtime());
-//                                crono.start();
+                                crono.setVisibility(View.VISIBLE);
+                                crono.setBase(SystemClock.elapsedRealtime());
+                                crono.start();
                                 microImage.setVisibility(View.VISIBLE);
                                 microAnimation.start();
                                 GrabarAudio();
@@ -351,6 +361,7 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
                 timer.cancel();
                 //crono.stop();
                 btnStop.setEnabled(false);
+                btnStop.setAlpha(.2f);
                 graphicGSR();
 //                graphicTemperatura();
                 graphicFC();
@@ -364,7 +375,7 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
                         SubirArchivoFirebase(videoPath);
                         break;
                     case "Sólo Audio":
-//                        crono.stop();
+                        crono.stop();
                         microAnimation.stop();
                         recorder.stop();
                         recorder.release();
@@ -373,6 +384,9 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
                         SubirArchivoFirebase(audioPath);
                         break;
                     case "Ninguno":
+                        crono.stop();
+                        txtVideoSubidoExito.setVisibility(View.VISIBLE);
+                        txtVideoSubidoExito.setText("Se han guardado los datos");
                         break;
                 }
                 WriteDatosGraficaFirebase(gsrValues, temperaturaValues, fcValues);
@@ -502,7 +516,23 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
                     }
                     else if(parcelable.getClass().equals(BITalinoDescription.class)){ //BITalino
                         isBITalino2 = ((BITalinoDescription)parcelable).isBITalino2();
-                        resultsTextView.setText("isBITalino2: " + isBITalino2 + "; FwVersion: " + String.valueOf(((BITalinoDescription)parcelable).getFwVersion()));
+                        if (isBITalino2) {
+                            resultsTextView.setTextColor(Color.parseColor("#4EE57F"));
+                            resultsTextView.setText("CONECTADO");
+                            btnBluetooth.setEnabled(false);
+                            btnBluetooth.setAlpha(.3f);
+                            btnConectarBitalino.setEnabled(false);
+                            btnConectarBitalino.setAlpha(.3f);
+                        }
+                        else {
+                            resultsTextView.setTextColor(Color.parseColor("#EE4266"));
+                            resultsTextView.setText("NO CONECTADO");
+                            btnBluetooth.setEnabled(true);
+                            btnBluetooth.setAlpha(1f);
+                            btnConectarBitalino.setEnabled(true);
+                            btnConectarBitalino.setAlpha(1f);
+                        }
+//                        resultsTextView.setText("isBITalino2: " + isBITalino2 + "; FwVersion: " + String.valueOf(((BITalinoDescription)parcelable).getFwVersion()));
                     }
                 }
             }

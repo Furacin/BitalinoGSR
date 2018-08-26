@@ -112,32 +112,31 @@
                     android:layout_below="@+id/mac_address_text_view"
                     android:textStyle="bold"/>
 
-                <TextView android:layout_width="match_parent" android:layout_height="match_parent" android:text="..."
+                <TextView android:layout_width="match_parent" android:layout_height="match_parent" android:text="NO CONECTADO"
                     android:id="@+id/results_text_view" android:layout_weight="1" android:textSize="16dp"
                     android:gravity="center_vertical" android:paddingLeft="10dp"
                     android:layout_below="@+id/lbl_text_view"
-                    android:textColor="@color/material_grey_600" android:textStyle="italic"/>
+                    android:textColor="#EE4266" android:textStyle="bold"/>
 
                 <Button
                     android:id="@+id/btnEmparejarBluetooth"
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:text="Emparejar"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="350dp"
                     android:textColor="#B1740F"
-                    android:layout_marginLeft="10dp"
-                    android:layout_below="@+id/results_text_view"
+                    android:layout_marginLeft="230dp"
                     android:background="@drawable/rounded_button_emparejar_bluetooth"
                   />
-
+            <!--android:layout_below="@+id/results_text_view"-->
                 <Button
                     android:id="@+id/btnConectarBitalino"
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:text="Conectar"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="30dp"
                     android:layout_below="@+id/btnEmparejarBluetooth"
-                    android:layout_marginLeft="10dp"
+                    android:layout_marginLeft="230dp"
                     android:background="@drawable/rounded_button_emparejar_bluetooth"
                     android:textColor="#B1740F"
                     />
@@ -149,7 +148,7 @@
                     android:layout_marginLeft="20dp"
                     android:layout_marginRight="20dp"
                     android:layout_marginTop="20dp"
-                    android:layout_below="@id/btnConectarBitalino"
+                    android:layout_below="@id/results_text_view"
                     android:background="#969696" />
 
                 <TextView
@@ -177,7 +176,10 @@
                 android:layout_alignParentStart="true"
                 android:layout_below="@+id/txtStep"
                 android:layout_marginStart="52dp"
-                android:text="Empezar" />
+                android:background="@drawable/rounded_button_info_prueba"
+                android:textColor="#FFF17300"
+                android:textStyle="bold"
+                android:text="Inicio" />
 
             <Button
                 android:id="@+id/btnStop"
@@ -186,7 +188,10 @@
                 android:layout_alignParentEnd="true"
                 android:layout_below="@+id/txtStep"
                 android:layout_marginEnd="50dp"
-                android:text="Terminar"
+                android:background="@drawable/rounded_button_info_prueba"
+                android:textStyle="bold"
+                android:textColor="#FFF17300"
+                android:text="Finalizar"
                 android:visibility="invisible" />
 
             <ProgressBar
@@ -244,11 +249,13 @@
             <Button
                 android:id="@+id/btnVolverMenu"
                 android:layout_marginTop="20dp"
-                android:layout_width="wrap_content"
+                android:layout_width="150dp"
                 android:layout_height="wrap_content"
                 android:visibility="invisible"
+                android:textColor="#2F4858"
                 android:text="Volver al menú principal"
                 android:layout_below="@+id/txtVideoSubidoExito"
+                android:background="@drawable/rounded_button_aux"
                 android:layout_centerHorizontal="true"/>
 
             <TextView
@@ -297,14 +304,14 @@
                 android:layout_marginBottom="20dp"
                 android:id="@+id/graph_FC" />
 
-            <!--<Chronometer-->
-                <!--android:id="@+id/chronometer3"-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_alignBottom="@+id/btnStart"-->
-                <!--android:layout_centerHorizontal="true"-->
-                <!--android:textSize="24dp"-->
-                <!--android:visibility="invisible" />-->
+            <Chronometer
+                android:id="@+id/chronometer3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/btnStart"
+                android:layout_centerHorizontal="true"
+                android:textSize="24dp"
+                android:visibility="invisible" />
             <ImageView
                 android:id="@+id/image_mic"
                 android:layout_width="50dp"

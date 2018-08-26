@@ -30,9 +30,9 @@
 
     <!--Bitalino-->
     <string name="info_bitalino">
-        <font size="12"><b>\n1</b>. <i>Pulsar botón <b>Emparejar</b> para sincronizar con Bitalino mediante Bluetooth.</i></font>
-        <font size="12"><b>\n\n2</b>. <i>Pulsar <b>Conectar</b> para iniciar una conexión.</i></font>
-        <font size="12"><b>\n\n3</b>. <i>Presionar sobre el icono de inicio para comenzar a obtener datos.</i></font>
-        <font size="12"><b>\n\n4</b>. <i>Una vez terminado pulsar sobre el icono de Terminar para finalizar y guardar los datos.</i></font>
+        <font size="12"><b>\n1</b>. <i>Pulsar botón <b>Emparejar</b> para seleccionar un dispositivo Bitalino mediante Bluetooth.</i></font>
+        <font size="12"><b>\n\n2</b>. <i>Pulsar <b>Conectar</b> para conectar con Bitalino.</i></font>
+        <font size="12"><b>\n\n3</b>. <i>Presionar <b>Inicio</b> para comenzar a obtener datos.</i></font>
+        <font size="12"><b>\n\n4</b>. <i>Una vez terminado pulsar <b>Terminar</b> guardar los datos.</i></font>
     </string>
 </resources>
