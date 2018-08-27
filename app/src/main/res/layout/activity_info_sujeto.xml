@@ -39,11 +39,21 @@
              <!--android:textColor="#000000"-->
              <!--android:textStyle="bold" />-->
 
+         <Button
+             android:id="@+id/btnEditarSujeto"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:layout_marginTop="30dp"
+             android:layout_marginLeft="30dp"
+             android:layout_below="@+id/linea"
+             android:textStyle="bold"
+             android:text="Modificar datos" />
+
          <TextView
              android:id="@+id/txtDatosSujeto"
              android:layout_width="wrap_content"
              android:layout_height="wrap_content"
-             android:layout_below="@+id/linea"
+             android:layout_below="@+id/btnEditarSujeto"
              android:layout_marginLeft="30dp"
              android:layout_marginTop="30dp"
              android:textSize="12dp"
@@ -69,6 +79,14 @@
              android:layout_marginTop="10dp"
              android:text="TextView" />
 
+         <ImageView
+             android:id="@+id/sexo"
+             android:layout_width="20dp"
+             android:layout_height="20dp"
+             android:layout_below="@+id/apellidos"
+             android:layout_marginLeft="80dp"
+             android:layout_marginTop="10dp" />
+
          <TextView
              android:id="@+id/apellidos"
              android:layout_width="wrap_content"
@@ -77,14 +95,6 @@
              android:layout_marginLeft="112dp"
              android:layout_marginTop="10dp"
              android:text="TextView" />
-
-         <ImageView
-             android:id="@+id/sexo"
-             android:layout_width="20dp"
-             android:layout_height="20dp"
-             android:layout_below="@+id/apellidos"
-             android:layout_marginLeft="80dp"
-             android:layout_marginTop="10dp" />
 
          <TextView
              android:id="@+id/fecha_nacimiento"
