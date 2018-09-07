@@ -431,7 +431,7 @@ public class DatosGSR extends Activity implements OnBITalinoDataAvailable {
         handler.sendMessage(message);
 
         double gsr = getConvertedGSR(bitalinoFrame.getAnalog(2));
-        if (String.valueOf(gsr) != "Infinity" && gsr > 10000) {
+        if (String.valueOf(gsr) != "Infinity" && gsr > 10000 && gsr <900000) {
             System.out.println("GSR ANALOG ---> " + gsr);
             nuevoDatoGSR(gsr);
         }

@@ -27,7 +27,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -51,6 +55,10 @@ public class MainActivity extends AppCompatActivity {
     public static Activity activity;
 
     private BottomSheetDialog mBottomSheetDialog;
+
+    //Opciones de ordenación
+    private static ArrayList<Date> fechaExperiencias =new ArrayList<>();
+    private boolean ascending = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -137,6 +145,7 @@ public class MainActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
 //                experiencias.remove(experiencias);
                 experiencias.clear();
+                ArrayList<ArrayList<String>> datos = new ArrayList<>();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     Usuario user = snapshot.getValue(Usuario.class);
                     if (user.getEmail().equals(EMAIL_USUARIO)) {
@@ -154,13 +163,42 @@ public class MainActivity extends AppCompatActivity {
                                     datosExperiencia.add(experienciaTitle);  // posicion 0
                                     datosExperiencia.add(fechaRealicacion);  // posicion 1
                                     datosExperiencia.add(terminada);         // posicion 2
-                                    experiencias.add(datosExperiencia);
-                                    recyclerViewAdapter = new RecyclerViewAdapterListaExperiencias(MainActivity.this, experiencias);
-                                    recyclerView.setAdapter(recyclerViewAdapter);
+                                    datos.add(datosExperiencia);
+//                                    experiencias.add(datosExperiencia);
+//                                    recyclerViewAdapter = new RecyclerViewAdapterListaExperiencias(MainActivity.this, experiencias);
+//                                    recyclerView.setAdapter(recyclerViewAdapter);
+
+                                    SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE);
+                                    Date date = null;
+                                    try {
+                                        date = formatter.parse(singleSnapshot.child("fechaRealizacion").getValue().toString());
+                                    } catch (ParseException e) {
+                                        e.printStackTrace();
+                                    }
+                                    fechaExperiencias.add(date);
                                 }
                             }
+//                            for (int i=0; i<datos.size(); i++) {
+//
+//                            }
+
+//                            Collections.sort(datos, new Comparator<ArrayList<String>>() {
+//                                @Override
+//                                public int compare(ArrayList<String> strings, ArrayList<String> t1) {
+//                                    System.out.println(strings.get(1));
+//                                    System.out.println(t1.get(1));
+//                                    return strings.get(1).compareTo(t1.get(1));
+//                                }
+//                            });
+                            for (int i=0; i<datos.size(); i++) {
+                                experiencias.add(datos.get(i));
+                                recyclerViewAdapter = new RecyclerViewAdapterListaExperiencias(MainActivity.this, experiencias);
+                                recyclerView.setAdapter(recyclerViewAdapter);
+                            }
+
                     }
                 }
+
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {

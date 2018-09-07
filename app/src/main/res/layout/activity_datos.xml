@@ -94,7 +94,7 @@
                     android:textColor="@color/material_grey_600" android:textStyle="italic"
                     android:layout_below="@+id/lblMac"/>
 
-                <TextView android:layout_width="match_parent" android:layout_height="match_parent" android:text="Resultados:"
+                <TextView android:layout_width="match_parent" android:layout_height="match_parent" android:text="Estado:"
                     android:id="@+id/lbl_text_view"
                     android:layout_weight="1" android:textSize="16dp"
                     android:layout_marginTop="15dp"
@@ -306,7 +306,8 @@
                 android:id="@+id/image_mic"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:layout_alignBottom="@+id/btnStart"
+                android:layout_marginTop="10dp"
+                android:layout_below="@+id/btnStart"
                 android:layout_centerHorizontal="true"
                 android:visibility="invisible"
                 />
